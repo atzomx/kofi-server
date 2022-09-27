@@ -1,0 +1,7 @@
+addReviewers: true
+addAssignees: false
+reviewers:
+  - joseriosjose
+  - AndradeRevillaErick
+  - SaulMoreyra
+numberOfReviewers: 1

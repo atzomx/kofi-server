@@ -1,0 +1,10 @@
+node_modules
+dist
+mongo
+src/server/schema.gql
+.env
+.env.test
+.vscode
+
+src/tests/config/schema.gql
+coverage
