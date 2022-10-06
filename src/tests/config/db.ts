@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
 import mongodb from "@database";
+import mongoose from "mongoose";
 
 async function start() {
   await mongodb.create();
