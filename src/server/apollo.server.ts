@@ -1,11 +1,11 @@
-import * as path from "path";
-import { ApolloServer } from "apollo-server-express";
-import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
-import Entities from "@entities";
-import { Log } from "@core/infrastructure/utils";
-import { buildSchema } from "type-graphql";
-import express from "express";
 import http from "http";
+import * as path from "path";
+import { Log } from "@core/infrastructure/utils";
+import Entities from "@entities";
+import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
+import { ApolloServer } from "apollo-server-express";
+import express from "express";
+import { buildSchema } from "type-graphql";
 
 export async function create(port: number, dir = __dirname) {
   const app = express();

@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
-import { MongoMemoryServer } from "mongodb-memory-server";
 import { Log } from "@core/infrastructure/utils";
+import { MongoMemoryServer } from "mongodb-memory-server";
+import mongoose from "mongoose";
 
 export async function create() {
   let { MONGO_URL } = process.env;

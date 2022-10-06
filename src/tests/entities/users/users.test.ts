@@ -1,8 +1,8 @@
-import { User, UserModel } from "@entities/users";
+import http from "http";
 import { IPagination } from "@core/domain/interfaces";
 import TestUtils from "@core/infrastructure/utils/test.utils";
 import authUtils from "@entities/auth/application/auth.utils";
-import http from "http";
+import { User, UserModel } from "@entities/users";
 import { Types } from "mongoose";
 import request from "supertest-graphql";
 import server from "../../config";

@@ -1,6 +1,6 @@
 import { IsOptional, MaxLength, MinLength } from "class-validator";
-import { Field, InputType } from "type-graphql";
 import { Types } from "mongoose";
+import { Field, InputType } from "type-graphql";
 import { IDocumentType } from "../domain/document.enum";
 
 @InputType()

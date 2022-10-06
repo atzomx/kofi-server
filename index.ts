@@ -1,8 +1,8 @@
 import "reflect-metadata";
 
-import dotenv from "dotenv";
 import mongodb from "@database";
 import server from "@server";
+import dotenv from "dotenv";
 
 dotenv.config();
 mongodb.start();

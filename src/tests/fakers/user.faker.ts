@@ -1,8 +1,8 @@
-import { faker } from "@faker-js/faker";
 import TestUtils from "@core/infrastructure/utils/test.utils";
-import { IUserGender, IUserStatus } from "@entities/users/domain/user.enums";
-import User from "@entities/users/domain/user.entity";
 import UserUtils from "@entities/users/application/user.utils";
+import User from "@entities/users/domain/user.entity";
+import { IUserGender, IUserStatus } from "@entities/users/domain/user.enums";
+import { faker } from "@faker-js/faker";
 
 class UserFaker {
   static get() {
