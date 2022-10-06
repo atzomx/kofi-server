@@ -1,12 +1,12 @@
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
-import Document from "../domain/document.entity";
-import DocumentController from "../application/document.controller";
 import {
   ValidateArgs,
   ValidateIdentifier,
 } from "@core/infrastructure/decorators";
-import { DocumentInputCreate, DocumentInputUpdate } from "./document.inputs";
 import NamerUtils from "@core/infrastructure/utils/namer.utils";
+import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import DocumentController from "../application/document.controller";
+import Document from "../domain/document.entity";
+import { DocumentInputCreate, DocumentInputUpdate } from "./document.inputs";
 
 const NAMES = NamerUtils.get("document");
 

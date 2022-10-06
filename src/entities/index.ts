@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/ban-types */
-
 import { NonEmptyArray } from "type-graphql";
 import { AuthResolver } from "./auth";
 import { DocumentResolver } from "./document";

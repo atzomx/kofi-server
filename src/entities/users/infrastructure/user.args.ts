@@ -1,7 +1,6 @@
+import { PaginateArgs } from "@core/infrastructure/responses";
 import { ArgsType, Field } from "type-graphql";
 import { IUserGender, IUserStatus } from "../domain/user.enums";
-
-import { PaginateArgs } from "@core/infrastructure/responses";
 
 @ArgsType()
 export class UserPaginationArgs extends PaginateArgs {

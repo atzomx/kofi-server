@@ -1,6 +1,6 @@
-import { ApolloServer, ExpressContext } from "apollo-server-express";
-import { create } from "@server/apollo.server";
 import http from "http";
+import { create } from "@server/apollo.server";
+import { ApolloServer, ExpressContext } from "apollo-server-express";
 
 let server: {
   server: ApolloServer<ExpressContext>;
