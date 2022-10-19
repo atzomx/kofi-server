@@ -7,6 +7,6 @@ export enum IMessageType {
 }
 
 registerEnumType(IMessageType, {
-  name: "Type",
+  name: "MessageType",
   description: "Message type",
 });

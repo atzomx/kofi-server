@@ -1,8 +1,8 @@
-import { Index, prop } from "@typegoose/typegoose";
+import { prop } from "@typegoose/typegoose";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 import { IMessageType } from "./message.enums";
-@Index({ owner: 1, name: 1 }, { unique: true })
+
 @ObjectType()
 class Message {
   @Field(() => ID)
@@ -24,9 +24,13 @@ class Message {
   @prop({ required: true })
   public status!: IMessageType;
 
-  @Field({ description: "Media file message" })
+  @Field({ nullable: true, description: "Media file message" })
   @prop({ required: false })
   public media?: string;
+
+  @Field({ nullable: true, description: "Message creation YYYY-MM-DD." })
+  @prop({ required: false })
+  public createdAt?: Date;
 }
 
 export default Message;

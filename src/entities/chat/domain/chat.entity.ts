@@ -1,4 +1,5 @@
-import { Index, prop } from "@typegoose/typegoose";
+import { User } from "@entities/users";
+import { Index, prop, Ref } from "@typegoose/typegoose";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 
@@ -8,9 +9,13 @@ class Chat {
   @Field(() => ID)
   readonly _id?: Types.ObjectId;
 
-  @Field(() => String)
-  @prop({ required: true })
-  public participants!: Types.ObjectId[];
+  @Field(() => [User], { description: "Chat participants." })
+  @prop({
+    type: () => [Types.ObjectId],
+    ref: User,
+    default: [],
+  })
+  public participants?: Ref<User, string>[];
 }
 
 export default Chat;

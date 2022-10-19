@@ -5,6 +5,7 @@ import {
   FilterQuery,
   HydratedDocument,
   Model,
+  SortOrder,
   Types,
 } from "mongoose";
 
@@ -52,12 +53,14 @@ class Repository<T> {
       page?: number;
       limit?: number;
     },
+    sort?: string | { [key: string]: SortOrder },
   ) {
     const skip = Paginate.getSkip({ page, limit });
     const documents = this.instance
       .find(query)
       .skip(skip)
       .limit(limit)
+      .sort(sort)
       .lean<T[]>();
     const total = this.instance.find().countDocuments();
 
