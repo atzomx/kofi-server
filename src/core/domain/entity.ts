@@ -7,7 +7,7 @@ class Entity {
   @prop({ required: false })
   public createdAt?: Date;
 
-  @Field(() => Date, { nullable: true, description: "Creation YYYY-MM-DD." })
+  @Field(() => Date, { nullable: true, description: "Update YYYY-MM-DD." })
   @prop({ required: false })
   public updatedAt?: Date;
 }

@@ -13,17 +13,19 @@ class ChatRepository extends Repository<Chat> {
     const query = {
       $or: [{ participants: ids }, { participants: reverseIds }],
     };
-    const chatByIds = await super.instance.findOne<Chat>(query);
+    const chatByIds = await this.instance.findOneAndUpdate<Chat>(query, {
+      updateAt: Date.now(),
+    });
     if (chatByIds) return chatByIds;
 
-    const chatCreated = await super.instance.create<Chat>({
+    const chatCreated = await this.instance.create<Chat>({
       participants: ids,
     });
     return chatCreated;
   }
 
   exist(id: string) {
-    return super.instance.exists({ _id: id });
+    return this.instance.exists({ _id: id });
   }
 }
 
