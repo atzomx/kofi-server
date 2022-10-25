@@ -1,10 +1,11 @@
+import Entity from "@core/domain/entity";
 import { prop } from "@typegoose/typegoose";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 import { IMessageType } from "./message.enums";
 
 @ObjectType()
-class Message {
+class Message extends Entity {
   @Field(() => ID)
   readonly _id?: Types.ObjectId;
 
@@ -27,10 +28,6 @@ class Message {
   @Field({ nullable: true, description: "Media file message" })
   @prop({ required: false })
   public media?: string;
-
-  @Field({ nullable: true, description: "Message creation YYYY-MM-DD." })
-  @prop({ required: false })
-  public createdAt?: Date;
 }
 
 export default Message;

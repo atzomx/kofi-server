@@ -1,4 +1,4 @@
-import { ChatController } from "@entities/chat";
+import { ChatRepository } from "@entities/chat";
 import { MessageRepository } from "@entities/messages";
 import Message from "../domain/message.entity";
 import { IMessageType } from "../domain/message.enums";
@@ -36,9 +36,9 @@ class MessageController {
   }
 
   async create(inputMessage: MessageInputCreate): Promise<Message> {
-    const controller = new ChatController();
+    const repository = new ChatRepository();
 
-    const chat = await controller.findOrCreateChat([
+    const chat = await repository.findOrCreateChat([
       inputMessage.destinatary.toString(),
       inputMessage.remitent.toString(),
     ]);
