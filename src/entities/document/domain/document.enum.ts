@@ -7,6 +7,6 @@ export enum IDocumentType {
 }
 
 registerEnumType(IDocumentType, {
-  name: "Type",
+  name: "DocumentType",
   description: "Document type",
 });
