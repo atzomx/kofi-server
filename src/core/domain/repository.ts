@@ -54,6 +54,7 @@ class Repository<T> {
       limit?: number;
     },
     sort?: string | { [key: string]: SortOrder },
+    populate?: string | string[],
   ) {
     const skip = Paginate.getSkip({ page, limit });
     const documents = this.instance
@@ -61,6 +62,7 @@ class Repository<T> {
       .skip(skip)
       .limit(limit)
       .sort(sort)
+      .populate(populate)
       .lean<T[]>();
     const total = this.instance.find().countDocuments();
 
