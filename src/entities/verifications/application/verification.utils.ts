@@ -21,7 +21,7 @@ const searchingQuery = ({
   const cleanSearch = new Sanitizer(search).clean().accents().toString();
   const textQuery = cleanSearch
     ? {
-        $or: [{ userId: { $regex: cleanSearch, $options: "i" } }],
+        userId: cleanSearch,
       }
     : null;
 
