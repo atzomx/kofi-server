@@ -4,6 +4,7 @@ import { AuthResolver } from "./auth";
 import { ChatResolver } from "./chat";
 import { DocumentResolver } from "./document";
 import { MessageResolver } from "./messages";
+import { NotificationResolver } from "./notifications";
 import { UserResolver } from "./users";
 
 export const resolvers: NonEmptyArray<Function> = [
@@ -12,6 +13,7 @@ export const resolvers: NonEmptyArray<Function> = [
   DocumentResolver,
   MessageResolver,
   ChatResolver,
+  NotificationResolver,
 ];
 
 export default { resolvers };
