@@ -1,0 +1,5 @@
+import { PaginateArgs } from "@core/infrastructure/responses";
+import { ArgsType } from "type-graphql";
+
+@ArgsType()
+export class ChatPaginationArgs extends PaginateArgs {}
