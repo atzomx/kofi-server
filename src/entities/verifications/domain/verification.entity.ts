@@ -10,9 +10,11 @@ class Verification {
 
   @Field({ description: "Image to verification." })
   @prop({ required: true })
-  readonly media!: Types.ObjectId;
+  readonly media!: string;
 
-  @Field({ description: "User profile to verification." })
+  @Field(() => String, {
+    description: "User profile to verification.",
+  })
   @prop({ required: true })
   readonly userId!: Types.ObjectId;
 
@@ -27,6 +29,14 @@ class Verification {
   @Field(() => IVerificationPoses, { description: "Verification poses." })
   @prop({ required: true, enum: IVerificationPoses })
   public pose!: IVerificationPoses;
+
+  @Field({ description: "CreatedAt of process." })
+  @prop({ required: true })
+  public createdAt!: Date;
+
+  @Field({ description: "UpdatedAt of process." })
+  @prop({ required: true })
+  public updatedAt!: Date;
 }
 
 export default Verification;

@@ -20,6 +20,6 @@ registerEnumType(IVerificationPoses, {
 });
 
 registerEnumType(IVerificationStatus, {
-  name: "Status",
+  name: "StatusVerification",
   description: "Verification status",
 });
