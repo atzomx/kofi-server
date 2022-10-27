@@ -23,11 +23,11 @@ export class VerificationAlreadyExistsError extends UserInputError {
       return [
         ...acc,
         {
-          constrains: `Verification ${current} already exists`,
+          constrains: `Verification ${current} already exists for this user`,
           property: current,
         },
       ];
     }, [] as Array<ICustomError>);
-    super("Verification already exists", { errors });
+    super("Verification already exists for this user", { errors });
   }
 }
