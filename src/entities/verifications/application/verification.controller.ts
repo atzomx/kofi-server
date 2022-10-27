@@ -1,4 +1,5 @@
 import { IPagination } from "@core/domain/interfaces";
+import { UserController } from "@entities/users";
 import Verification from "../domain/verification.entity";
 import {
   VerificationAlreadyExistsError,
@@ -14,13 +15,17 @@ import VerificationUtils from "./verification.utils";
 
 class VerificationController {
   private repository: VerificationRepository;
+  private userController: UserController;
 
   constructor() {
     this.repository = new VerificationRepository();
+    this.userController = new UserController();
   }
 
-  findById(id: string) {
-    return this.repository.findById(id);
+  async findById(id: string) {
+    const currentVerification = await this.repository.findById(id);
+    if (!currentVerification) throw new VerificationNotFoundError();
+    return currentVerification;
   }
 
   async paginate({
@@ -57,6 +62,7 @@ class VerificationController {
   }
 
   async create(verification: VerificationInputCreate): Promise<Verification> {
+    await this.userController.findById(verification.userId.toString());
     const query = {
       $or: [{ userId: verification.userId }],
     };
@@ -75,12 +81,11 @@ class VerificationController {
     id: string,
     verification: VerificationInputUpdate,
   ): Promise<Verification> {
-    const currentVerification = await this.repository.findById(id);
-    if (!currentVerification) throw new VerificationNotFoundError();
     const updatedVerification = await this.repository.findByIdAndUpdate(
       id,
       verification,
     );
+    if (!updatedVerification) throw new VerificationNotFoundError();
     return updatedVerification;
   }
 }

@@ -20,8 +20,10 @@ class UserController {
     this.repository = new UserRepository();
   }
 
-  findById(id: string) {
-    return this.repository.findById(id);
+  async findById(id: string) {
+    const currentUser = await this.repository.findById(id);
+    if (!currentUser) throw new UserNotFoundError();
+    return currentUser;
   }
 
   async paginate({
@@ -84,8 +86,7 @@ class UserController {
   }
 
   async update(id: string, user: UserInputUpdate): Promise<User> {
-    const currentUser = await this.repository.findById(id);
-    if (!currentUser) throw new UserNotFoundError();
+    const currentUser = await this.findById(id);
 
     const sanitized = UserUtils.sanitize({
       firstName: user.firstName ?? currentUser.firstName,
