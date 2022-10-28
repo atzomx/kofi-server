@@ -8,9 +8,9 @@ class ChatController {
     this.repository = new ChatRepository();
   }
 
-  async paginate({ limit, page }: PaginateArgs) {
+  async paginate({ user, limit, page }: PaginateArgs & { user: string }) {
     const paginator = this.repository.paginate(
-      {},
+      { participants: user },
       { limit, page },
       { updatedAt: -1 },
       "participants",

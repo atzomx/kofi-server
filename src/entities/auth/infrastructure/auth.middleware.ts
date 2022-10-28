@@ -20,4 +20,8 @@ export const IsAuth: MiddlewareFn<IContext> = ({ context }, next) => {
   return next();
 };
 
-export default { IsAuth };
+export const IsSubscribed: MiddlewareFn<IContext> = (data, next) => {
+  return next();
+};
+
+export default { IsAuth, IsSubscribed };

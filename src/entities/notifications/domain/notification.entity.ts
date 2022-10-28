@@ -17,11 +17,11 @@ class Notification extends Entity {
   @prop({ required: true })
   public type!: INotificationType;
 
-  @Field(() => String, { description: "Notification type" })
+  @Field(() => String, { description: "Notification owner" })
   @prop({ required: true })
-  public to!: Types.ObjectId;
+  public owner!: Types.ObjectId;
 
-  @Field(() => String, { description: "Notification type" })
+  @Field(() => String, { description: "Notification from origin" })
   @prop({ required: true })
   public from!: string;
 

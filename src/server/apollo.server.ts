@@ -1,11 +1,14 @@
 import http from "http";
 import * as path from "path";
+import PubSub from "@core/application/PubSub";
 import { Log } from "@core/infrastructure/utils";
 import Entities from "@entities";
 import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
 import { ApolloServer } from "apollo-server-express";
 import express from "express";
+import { useServer } from "graphql-ws/lib/use/ws";
 import { buildSchema } from "type-graphql";
+import { WebSocketServer } from "ws";
 
 export async function create(port: number, dir = __dirname) {
   const app = express();
@@ -15,14 +18,34 @@ export async function create(port: number, dir = __dirname) {
     resolvers: Entities.resolvers,
     emitSchemaFile: path.resolve(dir, "schema.gql"),
     validate: true,
+    pubSub: PubSub.create(),
   });
+
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: "/graphql",
+  });
+
+  const serverCleanup = useServer({ schema }, wsServer);
 
   const server = new ApolloServer({
     debug: false,
     schema,
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose();
+            },
+          };
+        },
+      },
+    ],
     context: ({ req, res }) => ({ req, res }),
   });
+
   await server.start();
 
   server.applyMiddleware({ app });
