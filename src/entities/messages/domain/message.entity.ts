@@ -9,23 +9,23 @@ class Message extends Entity {
   @Field(() => ID)
   readonly _id?: Types.ObjectId;
 
-  @Field(() => String)
+  @Field(() => String, { description: "Chat identifier" })
   @prop({ required: true })
   public chat!: Types.ObjectId;
 
-  @Field(() => String)
+  @Field(() => String, { description: "Owner identifier" })
   @prop({ required: true })
   public owner!: Types.ObjectId;
 
-  @Field({ description: "Message content" })
+  @Field(() => String, { description: "Message content" })
   @prop({ required: true })
   public message!: string;
 
-  @Field({ description: "Status type" })
+  @Field(() => IMessageType, { description: "Status type" })
   @prop({ required: true })
   public status!: IMessageType;
 
-  @Field({ nullable: true, description: "Media file message" })
+  @Field(() => String, { nullable: true, description: "Media file message" })
   @prop({ required: false })
   public media?: string;
 }

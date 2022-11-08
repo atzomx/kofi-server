@@ -1,5 +1,6 @@
 import { ChatRepository } from "@entities/chat";
 import { MessageRepository } from "@entities/messages";
+import { Types } from "mongoose";
 import Message from "../domain/message.entity";
 import { IMessageType } from "../domain/message.enums";
 import { MessagePaginationArgs } from "../infrastructure/message.args";
@@ -35,7 +36,9 @@ class MessageController {
     };
   }
 
-  async create(inputMessage: MessageInputCreate): Promise<Message> {
+  async create(
+    inputMessage: MessageInputCreate & { remitent: Types.ObjectId },
+  ): Promise<Message> {
     const repository = new ChatRepository();
 
     const chat = await repository.findOrCreateChat([
@@ -43,15 +46,18 @@ class MessageController {
       inputMessage.remitent.toString(),
     ]);
 
-    const message = await this.repository.create({
+    const message: Message = {
       chat: chat._id,
       message: inputMessage.message,
       media: inputMessage.media,
       owner: inputMessage.remitent,
       status: IMessageType.sent,
-    });
+    };
 
-    return message;
+    const created = await this.repository.create(message);
+
+    // eslint-disable-next-line no-underscore-dangle
+    return { ...message, _id: created._id };
   }
 }
 
