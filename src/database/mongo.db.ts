@@ -16,8 +16,9 @@ export async function create() {
 
 async function start() {
   try {
+    const { MONGO_URL } = process.env;
     await create();
-    Log.i("Database connected");
+    Log.i(`Database connected at ${MONGO_URL}`);
   } catch (error) {
     Log.e("Error to connect database");
   }

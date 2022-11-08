@@ -62,7 +62,6 @@ class MessageResolver {
     return result;
   }
 
-  @UseMiddleware(AuthMiddleware.IsSubscribed)
   @Subscription({
     description: "Subscription for a new message.",
     name: NAMES.new,
@@ -70,21 +69,18 @@ class MessageResolver {
     filter: ({
       payload,
       args,
+      context,
     }: {
       payload: IMessageExtra;
       context: IContext;
-      args: { chat: string; user: string };
+      args: { chat: string };
     }) => {
       const isFromMyChat = `${payload.chat}` === args.chat;
-      const isForMe = `${payload.destinatary}` === args.user;
+      const isForMe = `${payload.destinatary}` === context.payload.id;
       return isFromMyChat && isForMe;
     },
   })
-  newMessage(
-    @Root() message: Message,
-    @Arg("chat") _chat: string,
-    @Arg("user") _user: string,
-  ): Message {
+  newMessage(@Root() message: Message, @Arg("chat") _chat: string): Message {
     return message;
   }
 }

@@ -6,9 +6,8 @@ import Entities from "@entities";
 import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
 import { ApolloServer } from "apollo-server-express";
 import express from "express";
-import { useServer } from "graphql-ws/lib/use/ws";
 import { buildSchema } from "type-graphql";
-import { WebSocketServer } from "ws";
+import SocketServer from "./socket.server";
 
 export async function create(port: number, dir = __dirname) {
   const app = express();
@@ -21,29 +20,25 @@ export async function create(port: number, dir = __dirname) {
     pubSub: PubSub.create(),
   });
 
-  const wsServer = new WebSocketServer({
-    server: httpServer,
-    path: "/graphql",
-  });
-
-  const serverCleanup = useServer({ schema }, wsServer);
+  const socketServer = await SocketServer.create(httpServer, schema);
 
   const server = new ApolloServer({
     debug: false,
     schema,
+    introspection: process.env.NODE_ENV !== "production",
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
       {
         async serverWillStart() {
           return {
             async drainServer() {
-              await serverCleanup.dispose();
+              await socketServer.dispose();
             },
           };
         },
       },
     ],
-    context: ({ req, res }) => ({ req, res }),
+    context: (context) => context,
   });
 
   await server.start();
