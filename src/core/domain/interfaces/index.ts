@@ -6,8 +6,9 @@ export interface ICustomError {
 }
 
 export interface IContext {
-  req: Request;
-  res: Response;
+  connectionParams?: { Authorization: string; [key: string]: string };
+  req?: Request;
+  res?: Response;
   payload?: { id: string };
 }
 

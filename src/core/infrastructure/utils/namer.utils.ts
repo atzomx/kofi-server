@@ -4,6 +4,7 @@ const get = (base: string) => {
     update: `${base}Update`,
     paginate: `${base}Paginate`,
     find: `${base}ById`,
+    new: `${base}New`,
   };
 };
 
