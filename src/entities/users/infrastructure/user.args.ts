@@ -1,6 +1,6 @@
 import { PaginateArgs } from "@core/infrastructure/responses";
 import { ArgsType, Field } from "type-graphql";
-import { IUserGender, IUserStatus } from "../domain/user.enums";
+import { IUserStatus } from "../domain/user.enums";
 
 @ArgsType()
 export class UserPaginationArgs extends PaginateArgs {
@@ -21,10 +21,4 @@ export class UserPaginationArgs extends PaginateArgs {
     description: "User start creation date.",
   })
   public endDate?: Date;
-
-  @Field(() => IUserGender, {
-    nullable: true,
-    description: "User gender.",
-  })
-  public gender?: IUserGender;
 }

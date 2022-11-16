@@ -13,7 +13,7 @@ export class UserNotFoundError extends UserInputError {
 
 export class UserAlreadyExistsError extends UserInputError {
   constructor(existingUser: User, inputUser: User) {
-    const uniqueValues = ["curp", "email", "userName"];
+    const uniqueValues = ["userName"];
     const errors = uniqueValues.reduce((acc, current) => {
       if (existingUser[current] !== inputUser[current]) return acc;
       return [
