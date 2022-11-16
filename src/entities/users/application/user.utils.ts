@@ -1,12 +1,9 @@
 /* eslint-disable indent */
 import { Sanitize, Sanitizer } from "@core/infrastructure/utils";
-import { IUserGender, IUserStatus } from "../domain/user.enums";
+import { IUserStatus } from "../domain/user.enums";
 
 type TSanitize = {
-  firstName: string;
-  lastName: string;
-  secondLastName: string;
-  curp: string;
+  name: string;
 };
 
 type TSeaching = {
@@ -14,31 +11,20 @@ type TSeaching = {
   endDate?: Date;
   startDate?: Date;
   status?: IUserStatus;
-  gender?: IUserGender;
 };
 
 const sanitize = ({
-  firstName: _fn,
-  lastName: _ln,
-  secondLastName: _sln,
-  curp,
+  name: _nm,
 }: TSanitize) => {
-  const fullName = [_fn, _ln, _sln].map(Sanitize.clean);
-  const [firstName, lastName, secondLastName] = fullName;
-  const normalizedFullName = Sanitize.accents(fullName.join(" "));
+  const fullName = Sanitize.clean(_nm);
   return {
-    normalizedFullName,
-    firstName,
-    lastName,
-    secondLastName,
-    curp: Sanitize.clean(curp),
+    fullName,
   };
 };
 
 const searchingQuery = ({
   search = "",
   status,
-  gender,
   startDate,
   endDate = new Date(),
 }: TSeaching) => {
@@ -50,7 +36,6 @@ const searchingQuery = ({
           { email: { $regex: cleanSearch, $options: "i" } },
           { phoneNumber: { $regex: cleanSearch, $options: "i" } },
           { userName: { $regex: cleanSearch, $options: "i" } },
-          { curp: { $regex: cleanSearch, $options: "i" } },
         ],
       }
     : null;
@@ -61,7 +46,6 @@ const searchingQuery = ({
 
   return {
     ...(status ? { status } : {}),
-    ...(gender ? { gender } : {}),
     ...(textQuery ?? {}),
     ...(dateQuery ?? {}),
   };
