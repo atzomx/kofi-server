@@ -7,7 +7,7 @@
   "scripts": {
     "dev:start": "nodemon -r tsconfig-paths/register ./index.ts",
     "dev:killport": "npx kill-port 4000",
-    "dev:format": "npx prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
+    "dev:format": "npx prettier --ignore-path .gitignore --write \"**/*.{js,ts,json}\"",
     "prod:build": "rimraf ./dist && tsc -p ./tsconfig.build.json && tsc-alias -p tsconfig.json",
     "prod:start": "node ./dist/index.js",
     "test:all": "jest --detectOpenHandles --forceExit",
@@ -44,7 +44,7 @@
   "dependencies": {
     "@typegoose/typegoose": "9.8.1",
     "apollo-server-core": "3.8.1",
-    "apollo-server-express": "3.8.1",
+    "apollo-server-express": "^3.11.1",
     "bcrypt": "5.0.1",
     "chalk": "4.1.2",
     "class-validator": "0.13.2",
