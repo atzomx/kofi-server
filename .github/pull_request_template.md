@@ -4,7 +4,7 @@ Include a summary of the change and relevant motivation/context.
 
 ### Type of Change:
 
-- [ ] Component
+- [ ] Entity
 - [ ] Configuration
 - [ ] Documentation
 - [ ] Fix / Bug
