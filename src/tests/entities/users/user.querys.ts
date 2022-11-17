@@ -2,18 +2,23 @@ import { gql } from "apollo-server-core";
 
 const user = `
     _id
-    firstName
-    lastName
-    secondLastName
-    normalizedFullName
-    image
-    curp
-    gender
-    birthday
-    phoneNumber
-    email
+    name
     userName
+    birthday
+    location
     status
+    password
+    description
+    interest
+    personality
+    maritalStatus
+    lookingFor
+    employer
+    pets
+    sexualOrientation
+    degree
+    religion
+    nacionality
 `;
 
 const userById = gql`

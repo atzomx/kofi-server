@@ -1,44 +1,51 @@
-import TestUtils from "@core/infrastructure/utils/test.utils";
-import UserUtils from "@entities/users/application/user.utils";
+import {
+  getEnumRandom,
+  getManyFromArray,
+} from "@core/infrastructure/utils/test.utils";
 import User from "@entities/users/domain/user.entity";
-import { IUserGender, IUserStatus } from "@entities/users/domain/user.enums";
+import {
+  IUserDegree,
+  IUserInterests,
+  IUserLookingFor,
+  IUserMaritalStatus,
+  IUserPersonality,
+  IUserPets,
+  IUserReligion,
+  IUserSexualOrientation,
+  IUserStatus,
+} from "@entities/users/domain/user.enums";
 import { faker } from "@faker-js/faker";
 
 class UserFaker {
   static get() {
-    const userBasic = UserFaker.basic();
-    const status = TestUtils.getEnumRandom(IUserStatus);
-    const birthday = faker.date.birthdate();
-    const user: User = { ...userBasic, status, birthday };
+    const basic = UserFaker.basic();
 
-    const sanitized = UserUtils.sanitize({
-      curp: user.curp,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      secondLastName: user.secondLastName,
-    });
+    const complete: User = {
+      ...basic,
+      description: faker.lorem.paragraph(),
+      interest: getManyFromArray(Object.values(IUserInterests), 5),
+      personality: getEnumRandom(IUserPersonality),
+      maritalStatus: getEnumRandom(IUserMaritalStatus),
+      lookingFor: getEnumRandom(IUserLookingFor),
+      employer: faker.company.companyName(),
+      pets: getEnumRandom(IUserPets),
+      sexualOrientation: getEnumRandom(IUserSexualOrientation),
+      degree: getEnumRandom(IUserDegree),
+      religion: getEnumRandom(IUserReligion),
+      nacionality: faker.address.country(),
+    };
 
-    return { ...user, ...sanitized };
+    return complete;
   }
 
   static basic() {
-    const firstName = faker.name.firstName();
-    const lastName = faker.name.lastName();
-    const secondLastName = faker.name.lastName();
-    const baseUserName = `${firstName}${lastName}${secondLastName}`;
-
-    const user = {
-      firstName,
-      lastName,
-      secondLastName,
-      birthday: faker.date.birthdate().toISOString(),
-      curp: TestUtils.getCurp(),
-      email: faker.internet.email(),
-      gender: TestUtils.getEnumRandom(IUserGender),
-      image: faker.internet.url(),
+    const user: User = {
+      name: faker.name.findName(),
+      userName: faker.internet.userName(),
+      birthday: faker.date.birthdate(),
+      location: faker.address.country(),
+      status: getEnumRandom(IUserStatus),
       password: faker.internet.password(),
-      phoneNumber: faker.phone.number("+52##########"),
-      userName: faker.internet.userName(baseUserName).substring(0, 16),
     };
     return user;
   }
