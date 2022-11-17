@@ -2,8 +2,8 @@ import http from "http";
 import { IPagination } from "@core/domain/interfaces";
 import TestUtils from "@core/infrastructure/utils/test.utils";
 import authUtils from "@entities/auth/application/auth.utils";
-import { User, UserModel } from "@entities/users";
-import { Types } from "mongoose";
+import { User } from "@entities/users";
+import { IUserLookingFor } from "@entities/users/domain/user.enums";
 import request from "supertest-graphql";
 import server from "../../config";
 import UserFaker from "../../fakers/user.faker";
@@ -96,32 +96,12 @@ describe("User Test", () => {
     expect(data.status).toBe("pending");
   });
 
-  it("Shouldn't create an user by repeted email", async () => {
-    const userId = TestUtils.getOneFromArray(entities.users);
-    const user = await UserModel.findById(userId);
-    const newUser = UserFaker.basic();
-
-    newUser.email = user.email;
-
-    const result = await request<{ userCreate: User }>(appServer)
-      .query(userQuerys.userCreate)
-      .variables({ data: newUser });
-
-    expect(result.data).toBeNull();
-    expect(result.errors instanceof Array).toBeTruthy();
-    const [error] = result.errors;
-    expect(error.message).toBe("User already exists");
-  });
-
   it("Should update an user", async () => {
     const userId = TestUtils.getOneFromArray(entities.users);
     const userToken = authUtils.getToken(userId);
     const authorization = `Token ${userToken}`;
-    const dataToSent = {
-      firstName: "updatedfirstname",
-      lastName: "updatedlastname",
-      secondLastName: "updatedsecondlastname",
-      curp: TestUtils.getCurp(),
+    const dataToSent: Partial<User> = {
+      lookingFor: IUserLookingFor.amigos,
     };
     const { data, errors } = await request<{ userUpdate: User }>(appServer)
       .query(userQuerys.userUpdate)
@@ -132,34 +112,10 @@ describe("User Test", () => {
     expect(data).not.toBeUndefined();
     expect(data).toHaveProperty("userUpdate");
 
-    expect(data.userUpdate.firstName).toBe(dataToSent.firstName);
-    expect(data.userUpdate.lastName).toBe(dataToSent.lastName);
-    expect(data.userUpdate.secondLastName).toBe(dataToSent.secondLastName);
-    expect(data.userUpdate.curp).toBe(dataToSent.curp);
+    expect(data.userUpdate.lookingFor).toBe(dataToSent.lookingFor);
 
     keysMandatories.forEach((key) => {
       expect(data.userUpdate).toHaveProperty(key);
     });
-  });
-
-  it("Shouldn't update an user", async () => {
-    const userId = new Types.ObjectId();
-    const userToken = authUtils.getToken(userId.toString());
-    const authorization = `Token ${userToken}`;
-    const dataToSent = {
-      firstName: "updatedfirstname",
-      lastName: "updatedlastname",
-      secondLastName: "updatedsecondlastname",
-      curp: TestUtils.getCurp(),
-    };
-    const { data, errors } = await request<{ userUpdate: User }>(appServer)
-      .query(userQuerys.userUpdate)
-      .variables({ data: dataToSent, userId })
-      .set("authorization", authorization);
-
-    expect(data).toBeNull();
-    expect(errors).not.toBeNull();
-    const [error] = errors;
-    expect(error.message).toBe("User not found");
   });
 });
