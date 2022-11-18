@@ -35,7 +35,7 @@ class User extends Entity {
   @prop({ required: false })
   public description?: string;
 
-  @Field(() => [IUserInterests])
+  @Field(() => [IUserInterests], { description: "User interest." })
   @prop({ required: false, type: () => [String], enum: IUserInterests })
   public interest?: IUserInterests[];
 
