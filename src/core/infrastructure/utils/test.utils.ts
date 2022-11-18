@@ -27,12 +27,20 @@ export const getByFormat = (format: string) => {
   return acum;
 };
 
-export const getCurp = () => {
-  return getByFormat("SSSS######SSSSSS##");
-};
-
 export const getOneFromArray = <T extends {}>(array: Array<T>) => {
   return array[getRandomNumber(array.length)];
 };
 
-export default { getEnumRandom, getByFormat, getCurp, getOneFromArray };
+export const getManyFromArray = <T extends {}>(
+  array: Array<T>,
+  size: number,
+) => {
+  return Array.from({ length: size }).map(() => getOneFromArray(array));
+};
+
+export default {
+  getEnumRandom,
+  getByFormat,
+  getManyFromArray,
+  getOneFromArray,
+};

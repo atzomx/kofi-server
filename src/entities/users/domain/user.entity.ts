@@ -70,8 +70,8 @@ class User extends Entity {
   public location!: string;
 
   @Field(() => IUserStatus, { description: "User status." })
-  @prop({ required: false, enum: IUserStatus })
-  public status?: IUserStatus;
+  @prop({ required: true, enum: IUserStatus })
+  public status!: IUserStatus;
 
   @Field(() => IUserDegree, { description: "User degree." })
   @prop({ required: false, enum: IUserDegree })
@@ -81,7 +81,7 @@ class User extends Entity {
   @prop({ required: false, enum: IUserReligion })
   public religion?: IUserReligion;
 
-  @Field({ description: "User nacionality." })
+  @Field(() => String, { description: "User nacionality." })
   @prop({ required: false })
   public nacionality?: string;
 
