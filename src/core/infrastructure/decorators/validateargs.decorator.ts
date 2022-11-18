@@ -4,7 +4,7 @@ import { ClassType, createMethodDecorator } from "type-graphql";
 
 function ValidateArgs<T extends object>(Type: ClassType<T>, key?: string) {
   return createMethodDecorator(async ({ args }, next) => {
-    const instance = Object.assign(new Type(), key ? args[key] : args);
+    const instance = Object.assign(new Type(), args[key]);
     const validationErrors = await validate(instance, {
       skipNullProperties: true,
     });

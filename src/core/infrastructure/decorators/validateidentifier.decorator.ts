@@ -7,7 +7,7 @@ function ValidateIdentifier<T extends object>(
   key?: string,
 ) {
   return createMethodDecorator(async ({ args }, next) => {
-    const instance = key ? args[key] : args;
+    const instance = args[key];
     if (Types.ObjectId.isValid(instance)) return next();
     throw new IdentifierError("Invalid Identifier");
   });
