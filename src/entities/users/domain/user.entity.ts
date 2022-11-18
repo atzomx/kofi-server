@@ -11,7 +11,6 @@ import {
   IUserSexualOrientation,
   IUserStatus,
   IUserDegree,
-  IUserNacionality,
   IUserReligion,
 } from "./user.enums";
 
@@ -28,10 +27,6 @@ class User extends Entity {
   @prop({ required: true, unique: true })
   public userName!: string;
 
-  // @Field({ description: "Medias." })
-  // @prop({ required: true })
-  // public nedias!: string;
-
   @Field({ description: "User birthday YYYY-MM-DD." })
   @prop({ required: true })
   public birthday!: Date;
@@ -40,7 +35,7 @@ class User extends Entity {
   @prop({ required: false })
   public description?: string;
 
-  @Field(() => [IUserInterests])
+  @Field(() => [IUserInterests], { description: "User interest." })
   @prop({ required: false, type: () => [String], enum: IUserInterests })
   public interest?: IUserInterests[];
 
@@ -86,9 +81,9 @@ class User extends Entity {
   @prop({ required: false, enum: IUserReligion })
   public religion?: IUserReligion;
 
-  @Field(() => IUserNacionality, { description: "User nacionality." })
-  @prop({ required: false, enum: IUserNacionality })
-  public nacionality?: IUserNacionality;
+  @Field({ description: "User nacionality." })
+  @prop({ required: false })
+  public nacionality?: string;
 
   @prop({ required: true })
   public password!: string;

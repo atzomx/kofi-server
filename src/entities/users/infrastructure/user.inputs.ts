@@ -1,5 +1,5 @@
 import { prop } from "@typegoose/typegoose";
-import { MaxLength, MinLength, IsOptional, IsArray, Length } from "class-validator";
+import { MaxLength, MinLength, IsOptional, IsArray, ArrayMinSize, ArrayMaxSize } from "class-validator";
 import { Field, InputType } from "type-graphql";
 import { 
   IUserInterests,
@@ -10,7 +10,6 @@ import {
   IUserSexualOrientation,
   IUserStatus,
   IUserDegree,
-  IUserNacionality,
   IUserReligion, 
 } from "../domain/user.enums";
 
@@ -40,9 +39,9 @@ export class UserInputCreate {
   @Field(() => [IUserInterests])
   @prop({default: []})
   @IsArray()
-  @Length(5)
+  @ArrayMinSize(0)
+  @ArrayMaxSize(5)
   public interest?: IUserInterests[];
-
 
   @Field(() => IUserMaritalStatus, { description: "User marital status." })
   public maritalStatus?: IUserMaritalStatus;
@@ -71,8 +70,9 @@ export class UserInputCreate {
   @Field(() => IUserReligion, { description: "User religion." })
   public religion?: IUserReligion;
 
-  @Field(() => IUserNacionality, { description: "User nacionality." })
-  public nacionality?: IUserNacionality;
+  @Field({ description: "User nacionality." })
+  @MaxLength(50)
+  public nacionality?: string;
 
   @Field()
   @MinLength(8)
@@ -103,55 +103,50 @@ export class UserInputUpdate {
   @IsOptional()
   public personality?: IUserPersonality;
 
-  // @Field(() => IUserInterests, { nullable: true, description: "User interests." })
-  // @IsOptional()
-  // public interest?: IUserInterests;
-
-  // @Field(() => [String])
-  // @IsOptional()
-  // public interest?: string[];
-
-  @Field(() => [IUserInterests])
+  @Field(() => [IUserInterests], { nullable: true, description: "User interest." })
   @IsOptional()
+  @IsArray()
+  @ArrayMinSize(0)
+  @ArrayMaxSize(5)
   public interest?: IUserInterests[];
 
-
-  @Field(() => IUserMaritalStatus, { description: "User marital status." })
+  @Field(() => IUserMaritalStatus, { nullable: true, description: "User marital status." })
   @IsOptional()
   public maritalStatus?: IUserMaritalStatus;
 
-  @Field(() => IUserLookingFor, { description: "Looking for." })
+  @Field(() => IUserLookingFor, { nullable: true, description: "Looking for." })
   @IsOptional()
   public lookingFor?: IUserLookingFor;
 
-  @Field({ description: "User job." })
+  @Field({ nullable: true, description: "User job." })
   @IsOptional()
   @MinLength(1)
   @MaxLength(50)
   public employer!: string;
 
-  @Field(() => IUserPets, { description: "User pets." })
+  @Field(() => IUserPets, { nullable: true, description: "User pets." })
   @IsOptional()
   public pets?: IUserPets;
 
-  @Field(() => IUserSexualOrientation, { description: "User sexual orientation." })
+  @Field(() => IUserSexualOrientation, { nullable: true, description: "User sexual orientation." })
   @IsOptional()
   public sexualOrientation?: IUserSexualOrientation;
 
-  @Field({ description: "User location." })
+  @Field({ nullable: true, description: "User location." })
   @IsOptional()
   @MaxLength(30)
   public location?: string;
 
-  @Field(() => IUserDegree, { description: "User degree." })
+  @Field(() => IUserDegree, { nullable: true, description: "User degree." })
   @IsOptional()
   public degree?: IUserDegree;
 
-  @Field(() => IUserReligion, { description: "User religion." })
+  @Field(() => IUserReligion, { nullable: true, description: "User religion." })
   @IsOptional()
   public religion?: IUserReligion;
 
-  @Field(() => IUserNacionality, { description: "User nacionality." })
+  @Field({ nullable: true, description: "User nacionality." })
   @IsOptional()
-  public nacionality?: IUserNacionality;
+  @MaxLength(50)
+  public nacionality?: string;
 }

@@ -2,90 +2,84 @@ import { registerEnumType } from "type-graphql";
 
 
 export enum IUserPersonality {
-  "INTJ" = "INTJ",
-  "INTP" = "INTP",
-  "ENTJ" = "ENTJ",
-  "ENTP" = "ENTP",
-  "INFJ" = "INFJ",
-  "INFP" = "INFP",
-  "ENFJ" = "ENFJ",
-  "ENFP" = "ENFP",
-  "ISTJ" = "ISTJ",
-  "ESTJ" = "ESTJ",
-  "ISTP" = "ISTP",
-  "ISFP" = "ISFP",
-  "ESTP" = "ESTP",
-  "ESFP" = "ESFP"
+  "intj" = "intj",
+  "intp" = "intp",
+  "entj" = "entj",
+  "entp" = "entp",
+  "infj" = "infj",
+  "infp" = "infp",
+  "enfj" = "enfj",
+  "enfp" = "enfp",
+  "istj" = "istj",
+  "estj" = "estj",
+  "istp" = "istp",
+  "isfp" = "isfp",
+  "estp" = "estp",
+  "esfp" = "esfp",
 }
 
 export enum IUserMaritalStatus {
-  "soltero" = "Soltero",
-  "casado" = "Casado",
-  "viudo" = "Viudo",
-  "divorsiado" = "Divorsiado",
-  "complicado" = "Es complicado",
+  "single"      = "single",
+  "married"     = "married",
+  "widower"     = "widower",
+  "divorced"    = "divorced",
+  "complicated" = "complicated",
 }
 
 export enum IUserLookingFor {
-  "pareja" = "Pareja",
-  "amigos" = "Amigos",
-  "casual" = "Algo casual",
+  "couple"  = "couple",
+  "friends" = "friends",
+  "casual"  = "casual",
 }
 
 export enum IUserPets {
-  "cat" = "Gato",
-  "dog" = "Perro",
-  "reptile" = "Reptile",
-  "amphibian" = "Anfibio",
-  "fish" = "Pescado",
-  "nopets" = "Sin mascotas",
-  "allpets" = "Todas las mascotas"
+  "cat"       = "cat",
+  "dog"       = "dog",
+  "reptile"   = "reptile",
+  "amphibian" = "amphibian",
+  "fish"      = "fish",
+  "nopets"    = "nopets",
+  "allpets"   = "all pets",
 }
 
 export enum IUserSexualOrientation {
-  "heterosexual" = "Heterosexual",  
-  "gay" = "Gay",
-  "lesbiana" = "Lesbiana",
-  "bisexual" = "Bisexual",
-  "asexual" = "Asexual",
-  "demisexual" = "Demisexual",
-  "pansexual" = "Pansexual",
-  "queer" = "Queer",
-  "questioning" = "Questioning"
+  "heterosexual" = "heterosexual",  
+  "gay"          = "gay",
+  "lesbian"      = "lesbian",
+  "bisexual"     = "bisexual",
+  "asexual"      = "asexual",
+  "demisexual"   = "demisexual",
+  "pansexual"    = "pansexual",
+  "queer"        = "queer",
+  "questioning"  = "questioning",
 }
 
 export enum IUserStatus {
-  "active" = "active",
-  "banned" = "banned",
+  "active"  = "active",
+  "banned"  = "banned",
   "pending" = "pending",
 }
 
 export enum IUserDegree {
-  "Primaria" = "Primaria",
-  "secundaria" = "Secundaria",
-  "Bachillerato" = "Bachillerato",
-  "Carrera" = "Carrera",
+  "elementaryschool" = "elementary school",
+  "midleschool"      = "midle school",
+  "highschool"       = "high school",
+  "bachelors"        = "bachelor's",
 }
 
 export enum IUserReligion {
-  "cristiano" = "Cristiano",
-  "catolico" = "Catolico",
-  "ateo" = "Ateo",
-}
-
-export enum IUserNacionality {
-  "mexicano" = "Mexicano",
-  "gringo" = "Gringo",
-  "canadiense" = "Canadiense",
+  "christianity" = "christianity",
+  "catholicism"  = "catholicism",
+  "atheist"      = "atheist",
 }
 
 export enum IUserInterests {
-  "run"        = "correr",
-  "food"       = "comida",
-  "videogames" = "video juegos",
-  "gym"        = "Gimnasio",
-  "series"     = "Series",
-  "music"      = "musica",
+  "run"        = "run",
+  "food"       = "food",
+  "videogames" = "video games",
+  "gym"        = "gym",
+  "series"     = "series",
+  "music"      = "music",
 }
 
 registerEnumType(IUserPersonality, {
@@ -126,11 +120,6 @@ registerEnumType(IUserDegree, {
 registerEnumType(IUserReligion, {
   name: "Religion",
   description: "User Religion.",
-});
-
-registerEnumType(IUserNacionality, {
-  name: "Nacionality",
-  description: "User Nacionality.",
 });
 
 registerEnumType(IUserInterests, {
