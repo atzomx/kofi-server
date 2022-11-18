@@ -1,10 +1,9 @@
 import Entity from "@core/domain/entity";
 import { User } from "@entities/users";
-import { Index, prop, Ref } from "@typegoose/typegoose";
+import { prop, Ref } from "@typegoose/typegoose";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 
-@Index({ participants: 1 }, { unique: true })
 @ObjectType()
 class Chat extends Entity {
   @Field(() => ID)

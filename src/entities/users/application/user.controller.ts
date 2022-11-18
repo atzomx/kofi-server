@@ -1,5 +1,5 @@
 import { IPagination } from "@core/domain/interfaces";
-import { Password } from "@core/infrastructure/utils";
+import { Password, Sanitize } from "@core/infrastructure/utils";
 import User from "../domain/user.entity";
 import {
   UserAlreadyExistsError,
@@ -33,14 +33,12 @@ class UserController {
     status,
     endDate,
     startDate,
-    gender,
   }: UserPaginationArgs): Promise<IPagination<User>> {
     const searchQuery = UserUtils.searchingQuery({
       search,
       status,
       endDate,
       startDate,
-      gender,
     });
 
     const paginator = this.repository.paginate(searchQuery, { limit, page });
@@ -64,23 +62,16 @@ class UserController {
   async create(user: UserInputCreate): Promise<User> {
     const query = {
       $or: [
-        { email: user.email },
-        { curp: user.curp },
         { userName: user.userName },
       ],
     };
     const existingUser = await this.repository.findOne(query);
     if (existingUser) throw new UserAlreadyExistsError(existingUser, user);
-
-    const sanitized = UserUtils.sanitize({
-      firstName: user.firstName,
-      lastName: user.lastName,
-      secondLastName: user.secondLastName,
-      curp: user.curp,
-    });
-
+    
+    user.name = Sanitize.clean(user.name);
+    
     const password = Password.encrypt(user.password);
-    const newUser = { ...user, ...sanitized };
+    const newUser = { ...user };
     const result = await this.repository.create({ ...newUser, password });
     return result;
   }
@@ -88,13 +79,9 @@ class UserController {
   async update(id: string, user: UserInputUpdate): Promise<User> {
     const currentUser = await this.findById(id);
 
-    const sanitized = UserUtils.sanitize({
-      firstName: user.firstName ?? currentUser.firstName,
-      lastName: user.lastName ?? currentUser.lastName,
-      secondLastName: user.secondLastName ?? currentUser.secondLastName,
-      curp: user.curp ?? currentUser.curp,
-    });
-    const dataToUpdate = { ...user, ...sanitized };
+    user.name = Sanitize.clean(user.name ?? currentUser.name);
+
+    const dataToUpdate = { ...user };
     const updatedUser = await this.repository.findByIdAndUpdate(
       id,
       dataToUpdate,

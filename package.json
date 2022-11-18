@@ -7,7 +7,7 @@
   "scripts": {
     "dev:start": "nodemon -r tsconfig-paths/register ./index.ts",
     "dev:killport": "npx kill-port 4000",
-    "dev:format": "npx prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
+    "dev:format": "npx prettier --ignore-path .gitignore --write \"**/*.{js,ts,json}\"",
     "prod:build": "rimraf ./dist && tsc -p ./tsconfig.build.json && tsc-alias -p tsconfig.json",
     "prod:start": "node ./dist/index.js",
     "test:all": "jest --detectOpenHandles --forceExit",
@@ -22,6 +22,7 @@
     "@types/jest": "28.1.6",
     "@types/jsonwebtoken": "8.5.8",
     "@types/uuid": "8.3.4",
+    "@types/ws": "^8.5.3",
     "@typescript-eslint/eslint-plugin": "5.27.1",
     "@typescript-eslint/parser": "5.27.1",
     "eslint": "8.17.0",
@@ -43,16 +44,20 @@
   "dependencies": {
     "@typegoose/typegoose": "9.8.1",
     "apollo-server-core": "3.8.1",
-    "apollo-server-express": "3.8.1",
+    "apollo-server-express": "^3.11.1",
     "bcrypt": "5.0.1",
     "chalk": "4.1.2",
     "class-validator": "0.13.2",
     "dotenv": "16.0.1",
     "express": "4.18.1",
     "graphql": "15.3.0",
+    "graphql-redis-subscriptions": "^2.5.0",
+    "graphql-ws": "^5.11.2",
+    "ioredis": "^5.2.3",
     "jsonwebtoken": "8.5.1",
     "mongoose": "6.3.5",
     "type-graphql": "1.1.1",
-    "uuid": "8.3.2"
+    "uuid": "8.3.2",
+    "ws": "^8.10.0"
   }
 }
