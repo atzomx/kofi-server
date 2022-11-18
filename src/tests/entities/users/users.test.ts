@@ -4,6 +4,7 @@ import TestUtils from "@core/infrastructure/utils/test.utils";
 import authUtils from "@entities/auth/application/auth.utils";
 import { User } from "@entities/users";
 import { IUserLookingFor } from "@entities/users/domain/user.enums";
+import { Types } from "mongoose";
 import request from "supertest-graphql";
 import server from "../../config";
 import UserFaker from "../../fakers/user.faker";
@@ -41,6 +42,14 @@ describe("User Test", () => {
       expect(data).toHaveProperty(key);
     });
   });
+  it("Shouldn't return an user with unexist id", async () => {
+    const user = new Types.ObjectId().toString();
+    const result = await request<{ userById: User }>(appServer)
+      .query(userQuerys.userById)
+      .variables({ user });
+
+    expect(result.errors).toBeTruthy();
+  });
 
   it("Should paginate users", async () => {
     const currentDate = new Date();
@@ -56,7 +65,6 @@ describe("User Test", () => {
       startDate,
       search: "a",
       status: "pending",
-      gender: "male",
     };
 
     const result = await request<{ userPaginate: IPagination<User> }>(appServer)
@@ -81,8 +89,19 @@ describe("User Test", () => {
     });
   });
 
+  it("Shouldn't create an user with bad arguments", async () => {
+    const newUser = UserFaker.create();
+    newUser.userName = "longestUserName128828282";
+    const { errors, data } = await request<{ userCreate: User }>(appServer)
+      .query(userQuerys.userCreate)
+      .variables({ data: newUser });
+
+    expect(errors).toBeTruthy();
+    expect(data).toBeNull();
+  });
   it("Should create an user", async () => {
-    const newUser = UserFaker.basic();
+    const newUser = UserFaker.create();
+
     const result = await request<{ userCreate: User }>(appServer)
       .query(userQuerys.userCreate)
       .variables({ data: newUser });
@@ -101,7 +120,7 @@ describe("User Test", () => {
     const userToken = authUtils.getToken(userId);
     const authorization = `Token ${userToken}`;
     const dataToSent: Partial<User> = {
-      lookingFor: IUserLookingFor.amigos,
+      lookingFor: IUserLookingFor.friends,
     };
     const { data, errors } = await request<{ userUpdate: User }>(appServer)
       .query(userQuerys.userUpdate)
@@ -117,5 +136,21 @@ describe("User Test", () => {
     keysMandatories.forEach((key) => {
       expect(data.userUpdate).toHaveProperty(key);
     });
+  });
+
+  it("Shouldn't update a user with a corrupted identifier", async () => {
+    const userId = TestUtils.getOneFromArray(entities.users);
+    const userToken = authUtils.getToken(userId);
+    const authorization = `Token ${userToken}`;
+    const dataToSent: Partial<User> = {
+      lookingFor: IUserLookingFor.friends,
+    };
+    const { data, errors } = await request<{ userUpdate: User }>(appServer)
+      .query(userQuerys.userUpdate)
+      .variables({ data: dataToSent, userId: `${userId}xxss` })
+      .set("authorization", authorization);
+
+    expect(errors).toBeTruthy();
+    expect(data).toBeNull();
   });
 });
