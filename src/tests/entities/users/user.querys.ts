@@ -7,7 +7,6 @@ const user = `
     birthday
     location
     status
-    password
     description
     interest
     personality
@@ -37,7 +36,6 @@ const paginate = gql`
     $status: Status, 
     $startDate: DateTime, 
     $endDate: DateTime, 
-    $gender: Gender
   ) {
     userPaginate(
       page: $page, 
@@ -46,7 +44,6 @@ const paginate = gql`
       status: $status, 
       startDate: $startDate, 
       endDate: $endDate, 
-      gender: $gender
     ) {
       info {
         page

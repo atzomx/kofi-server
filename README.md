@@ -9,7 +9,7 @@ docker-compose up -d
 ## Mongo DB URL Local
 
 ```
-mongodb://localhost:27017/exchangedb
+mongodb://localhost:27017/kofi-database
 ```
 
 ## Redis setup

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
   getEnumRandom,
   getManyFromArray,
@@ -17,12 +18,19 @@ import {
 import { faker } from "@faker-js/faker";
 
 class UserFaker {
+  static create() {
+    const { status, ...complete } = UserFaker.get();
+    return complete;
+  }
+
   static get() {
     const basic = UserFaker.basic();
 
+    const description = faker.lorem.paragraph(1).substring(0, 200);
+
     const complete: User = {
       ...basic,
-      description: faker.lorem.paragraph(),
+      description,
       interest: getManyFromArray(Object.values(IUserInterests), 5),
       personality: getEnumRandom(IUserPersonality),
       maritalStatus: getEnumRandom(IUserMaritalStatus),
@@ -39,11 +47,16 @@ class UserFaker {
   }
 
   static basic() {
+    const name = faker.name.findName();
+    const userFirst = faker.internet.userName(name);
+    const userSecond = faker.internet.userName(name);
+    const userName = `${userFirst}${userSecond}`.substring(0, 16);
+
     const user: User = {
-      name: faker.name.findName(),
-      userName: faker.internet.userName(),
+      name,
+      userName,
       birthday: faker.date.birthdate(),
-      location: faker.address.country(),
+      location: faker.address.country().substring(0, 30),
       status: getEnumRandom(IUserStatus),
       password: faker.internet.password(),
     };

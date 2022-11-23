@@ -5,14 +5,15 @@
   "author": "atzomx",
   "license": "MIT",
   "scripts": {
-    "dev:start": "nodemon -r tsconfig-paths/register ./index.ts",
-    "dev:killport": "npx kill-port 4000",
     "dev:format": "npx prettier --ignore-path .gitignore --write \"**/*.{js,ts,json}\"",
+    "dev:killport": "npx kill-port 4000",
+    "dev:start": "nodemon -r tsconfig-paths/register ./index.ts",
+    "prepare": "husky install",
     "prod:build": "rimraf ./dist && tsc -p ./tsconfig.build.json && tsc-alias -p tsconfig.json",
     "prod:start": "node ./dist/index.js",
-    "test:all": "jest --detectOpenHandles --forceExit",
+    "test:coverage": "jest --detectOpenHandles --forceExit --coverage --no-cache",
     "test:husky": "jest --onlyChanged --detectOpenHandles --forceExit",
-    "prepare": "husky install"
+    "test": "jest --detectOpenHandles --forceExit"
   },
   "devDependencies": {
     "@commitlint/cli": "17.0.3",

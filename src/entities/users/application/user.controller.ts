@@ -1,5 +1,5 @@
 import { IPagination } from "@core/domain/interfaces";
-import { Password, Sanitize } from "@core/infrastructure/utils";
+import { Password } from "@core/infrastructure/utils";
 import User from "../domain/user.entity";
 import {
   UserAlreadyExistsError,
@@ -61,15 +61,11 @@ class UserController {
 
   async create(user: UserInputCreate): Promise<User> {
     const query = {
-      $or: [
-        { userName: user.userName },
-      ],
+      $or: [{ userName: user.userName }],
     };
     const existingUser = await this.repository.findOne(query);
-    if (existingUser) throw new UserAlreadyExistsError(existingUser, user);
-    
-    user.name = Sanitize.clean(user.name);
-    
+    if (existingUser) throw new UserAlreadyExistsError();
+
     const password = Password.encrypt(user.password);
     const newUser = { ...user };
     const result = await this.repository.create({ ...newUser, password });
@@ -77,10 +73,7 @@ class UserController {
   }
 
   async update(id: string, user: UserInputUpdate): Promise<User> {
-    const currentUser = await this.findById(id);
-
-    user.name = Sanitize.clean(user.name ?? currentUser.name);
-
+    await this.findById(id);
     const dataToUpdate = { ...user };
     const updatedUser = await this.repository.findByIdAndUpdate(
       id,

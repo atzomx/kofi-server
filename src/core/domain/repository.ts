@@ -18,7 +18,9 @@ class Repository<T> {
     this.instance = instance;
   }
 
-  create(entity: T): Promise<HydratedDocument<T, T, T>> {
+  create(
+    entity: T,
+  ): Promise<HydratedDocument<T, unknown, unknown> & { _doc: T }> {
     return this.instance.create<T>(entity);
   }
 
@@ -76,7 +78,9 @@ class Repository<T> {
     return this.instance.deleteMany();
   }
 
-  insertMany(documents: T[]): Promise<T[]> {
+  insertMany(
+    documents: T[],
+  ): Promise<Array<HydratedDocument<T, unknown, unknown> & { _doc: T }>> {
     return this.instance.insertMany(documents);
   }
 

@@ -4,6 +4,7 @@ import TestUtils from "@core/infrastructure/utils/test.utils";
 import authUtils from "@entities/auth/application/auth.utils";
 import { User } from "@entities/users";
 import { IUserLookingFor } from "@entities/users/domain/user.enums";
+import { Types } from "mongoose";
 import request from "supertest-graphql";
 import server from "../../config";
 import UserFaker from "../../fakers/user.faker";
@@ -12,7 +13,7 @@ import userQuerys from "./user.querys";
 let appServer: http.Server;
 
 let entities: {
-  users: string[];
+  users: User[];
 };
 
 const keysMandatories = Object.keys(User);
@@ -30,9 +31,10 @@ describe("User Test", () => {
 
   it("Should return an user", async () => {
     const user = TestUtils.getOneFromArray(entities.users);
+    const userId = user._id.toString();
     const result = await request<{ userById: User }>(appServer)
       .query(userQuerys.userById)
-      .variables({ user });
+      .variables({ user: userId });
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("userById");
@@ -40,6 +42,15 @@ describe("User Test", () => {
     keysMandatories.forEach((key) => {
       expect(data).toHaveProperty(key);
     });
+  });
+
+  it("Shouldn't return an user with unexist id", async () => {
+    const user = new Types.ObjectId().toString();
+    const result = await request<{ userById: User }>(appServer)
+      .query(userQuerys.userById)
+      .variables({ user });
+
+    expect(result.errors).toBeTruthy();
   });
 
   it("Should paginate users", async () => {
@@ -56,7 +67,6 @@ describe("User Test", () => {
       startDate,
       search: "a",
       status: "pending",
-      gender: "male",
     };
 
     const result = await request<{ userPaginate: IPagination<User> }>(appServer)
@@ -81,8 +91,47 @@ describe("User Test", () => {
     });
   });
 
+  it("Should paginate users with out params", async () => {
+    const variables = {
+      page: 1,
+      limit: 5,
+    };
+
+    const result = await request<{ userPaginate: IPagination<User> }>(appServer)
+      .query(userQuerys.paginate)
+      .variables(variables);
+
+    expect(result.errors).toBeUndefined();
+    expect(result.data).toHaveProperty("userPaginate");
+    const data = result.data["userPaginate"];
+    expect(data).toHaveProperty("info");
+    expect(data).toHaveProperty("results");
+    const info = data["info"];
+    expect(info).toHaveProperty("page");
+    expect(info).toHaveProperty("pages");
+    expect(info).toHaveProperty("total");
+    const { results } = data;
+    expect(results instanceof Array).toBeTruthy();
+    results.forEach((user) => {
+      keysMandatories.forEach((key) => {
+        expect(user).toHaveProperty(key);
+      });
+    });
+  });
+
+  it("Shouldn't create an user with bad arguments", async () => {
+    const newUser = UserFaker.create();
+    newUser.userName = "longestUserName128828282";
+    const { errors } = await request<{ userCreate: User }>(appServer)
+      .query(userQuerys.userCreate)
+      .variables({ data: newUser });
+
+    expect(errors).toBeTruthy();
+  });
+
   it("Should create an user", async () => {
-    const newUser = UserFaker.basic();
+    const newUser = UserFaker.create();
+
     const result = await request<{ userCreate: User }>(appServer)
       .query(userQuerys.userCreate)
       .variables({ data: newUser });
@@ -97,7 +146,8 @@ describe("User Test", () => {
   });
 
   it("Should update an user", async () => {
-    const userId = TestUtils.getOneFromArray(entities.users);
+    const user = TestUtils.getOneFromArray(entities.users);
+    const userId = user._id.toString();
     const userToken = authUtils.getToken(userId);
     const authorization = `Token ${userToken}`;
     const dataToSent: Partial<User> = {
@@ -117,5 +167,33 @@ describe("User Test", () => {
     keysMandatories.forEach((key) => {
       expect(data.userUpdate).toHaveProperty(key);
     });
+  });
+
+  it("Shouldn't update a user with a corrupted identifier", async () => {
+    const user = TestUtils.getOneFromArray(entities.users);
+    const userId = user._id.toString();
+    const userToken = authUtils.getToken(userId);
+    const authorization = `Token ${userToken}`;
+    const dataToSent: Partial<User> = {
+      lookingFor: IUserLookingFor.friends,
+    };
+    const { errors } = await request<{ userUpdate: User }>(appServer)
+      .query(userQuerys.userUpdate)
+      .variables({ data: dataToSent, userId: `${userId}xxss` })
+      .set("authorization", authorization);
+
+    expect(errors).toBeTruthy();
+  });
+
+  it("Shouldn't create a user with the same userName", async () => {
+    const userExisted = TestUtils.getOneFromArray(entities.users);
+    const newUser = UserFaker.create();
+    newUser.userName = userExisted.userName;
+
+    const { errors } = await request<{ userCreate: User }>(appServer)
+      .query(userQuerys.userCreate)
+      .variables({ data: newUser });
+
+    expect(errors).toBeTruthy();
   });
 });

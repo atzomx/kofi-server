@@ -1,6 +1,5 @@
 import { registerEnumType } from "type-graphql";
 
-
 export enum IUserPersonality {
   "intj" = "intj",
   "intp" = "intp",
@@ -19,67 +18,67 @@ export enum IUserPersonality {
 }
 
 export enum IUserMaritalStatus {
-  "single"      = "single",
-  "married"     = "married",
-  "widower"     = "widower",
-  "divorced"    = "divorced",
+  "single" = "single",
+  "married" = "married",
+  "widower" = "widower",
+  "divorced" = "divorced",
   "complicated" = "complicated",
 }
 
 export enum IUserLookingFor {
-  "couple"  = "couple",
+  "couple" = "couple",
   "friends" = "friends",
-  "casual"  = "casual",
+  "casual" = "casual",
 }
 
 export enum IUserPets {
-  "cat"       = "cat",
-  "dog"       = "dog",
-  "reptile"   = "reptile",
+  "cat" = "cat",
+  "dog" = "dog",
+  "reptile" = "reptile",
   "amphibian" = "amphibian",
-  "fish"      = "fish",
-  "nopets"    = "nopets",
-  "allpets"   = "all pets",
+  "fish" = "fish",
+  "nopets" = "nopets",
+  "allpets" = "all pets",
 }
 
 export enum IUserSexualOrientation {
-  "heterosexual" = "heterosexual",  
-  "gay"          = "gay",
-  "lesbian"      = "lesbian",
-  "bisexual"     = "bisexual",
-  "asexual"      = "asexual",
-  "demisexual"   = "demisexual",
-  "pansexual"    = "pansexual",
-  "queer"        = "queer",
-  "questioning"  = "questioning",
+  "heterosexual" = "heterosexual",
+  "gay" = "gay",
+  "lesbian" = "lesbian",
+  "bisexual" = "bisexual",
+  "asexual" = "asexual",
+  "demisexual" = "demisexual",
+  "pansexual" = "pansexual",
+  "queer" = "queer",
+  "questioning" = "questioning",
 }
 
 export enum IUserStatus {
-  "active"  = "active",
-  "banned"  = "banned",
+  "active" = "active",
+  "banned" = "banned",
   "pending" = "pending",
 }
 
 export enum IUserDegree {
-  "elementaryschool" = "elementary school",
-  "midleschool"      = "midle school",
-  "highschool"       = "high school",
-  "bachelors"        = "bachelor's",
+  "elementary_school" = "elementary_school",
+  "middle_school" = "middle_school",
+  "high_school" = "high_school",
+  "bachelors" = "bachelors",
 }
 
 export enum IUserReligion {
   "christianity" = "christianity",
-  "catholicism"  = "catholicism",
-  "atheist"      = "atheist",
+  "catholicism" = "catholicism",
+  "atheist" = "atheist",
 }
 
 export enum IUserInterests {
-  "run"        = "run",
-  "food"       = "food",
-  "videogames" = "video games",
-  "gym"        = "gym",
-  "series"     = "series",
-  "music"      = "music",
+  "run" = "run",
+  "food" = "food",
+  "videogames" = "videogames",
+  "gym" = "gym",
+  "series" = "series",
+  "music" = "music",
 }
 
 registerEnumType(IUserPersonality, {

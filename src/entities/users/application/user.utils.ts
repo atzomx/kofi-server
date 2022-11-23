@@ -1,25 +1,12 @@
 /* eslint-disable indent */
-import { Sanitize, Sanitizer } from "@core/infrastructure/utils";
+import { Sanitizer } from "@core/infrastructure/utils";
 import { IUserStatus } from "../domain/user.enums";
-
-type TSanitize = {
-  name: string;
-};
 
 type TSeaching = {
   search?: string;
   endDate?: Date;
   startDate?: Date;
   status?: IUserStatus;
-};
-
-const sanitize = ({
-  name: _nm,
-}: TSanitize) => {
-  const fullName = Sanitize.clean(_nm);
-  return {
-    fullName,
-  };
 };
 
 const searchingQuery = ({
@@ -52,6 +39,5 @@ const searchingQuery = ({
 };
 
 export default {
-  sanitize,
   searchingQuery,
 };

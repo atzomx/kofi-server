@@ -16,17 +16,6 @@ export const getRandomChar = () => {
   return character;
 };
 
-export const getByFormat = (format: string) => {
-  let acum = "";
-  for (let i = 0; i < format.length; i++) {
-    const letter = format[i];
-    if (letter === "S") acum += getRandomChar();
-    else if (letter === "#") acum += getRandomNumber(9);
-    else throw Error("Invalid format");
-  }
-  return acum;
-};
-
 export const getOneFromArray = <T extends {}>(array: Array<T>) => {
   return array[getRandomNumber(array.length)];
 };
@@ -40,7 +29,6 @@ export const getManyFromArray = <T extends {}>(
 
 export default {
   getEnumRandom,
-  getByFormat,
   getManyFromArray,
   getOneFromArray,
 };

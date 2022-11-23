@@ -57,7 +57,7 @@ class MessageController {
     const created = await this.repository.create(message);
 
     // eslint-disable-next-line no-underscore-dangle
-    return { ...message, _id: created._id };
+    return created._doc;
   }
 }
 
