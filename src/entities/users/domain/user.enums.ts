@@ -38,7 +38,7 @@ export enum IUserPets {
   "amphibian" = "amphibian",
   "fish" = "fish",
   "nopets" = "nopets",
-  "allpets" = "all pets",
+  "allpets" = "allpets",
 }
 
 export enum IUserSexualOrientation {
