@@ -101,7 +101,7 @@ describe("User Test", () => {
     const userToken = authUtils.getToken(userId);
     const authorization = `Token ${userToken}`;
     const dataToSent: Partial<User> = {
-      lookingFor: IUserLookingFor.amigos,
+      lookingFor: IUserLookingFor.friends,
     };
     const { data, errors } = await request<{ userUpdate: User }>(appServer)
       .query(userQuerys.userUpdate)

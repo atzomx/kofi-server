@@ -1,3 +1,4 @@
+import { IContext } from "@core/domain/interfaces";
 import {
   ValidateArgs,
   ValidateIdentifier,
@@ -7,66 +8,84 @@ import AuthMiddleware from "@entities/auth/infrastructure/auth.middleware";
 import {
   Arg,
   Args,
+  Ctx,
   Mutation,
   Query,
   Resolver,
   UseMiddleware,
 } from "type-graphql";
-import UserController from "../application/user.controller";
-import User from "../domain/user.entity";
-import { UserPaginationArgs } from "./user.args";
-import { UserInputCreate, UserInputUpdate } from "./user.inputs";
-import { UserPaginateResponse } from "./user.response";
+import InteractionController from "../application/interaction.controller";
+import Interaction from "../domain/interaction.entity";
+import { InteractionPaginationArgs } from "./interaction.args";
+import {
+  InteractionInputCreate,
+  InteractionInputUpdate,
+} from "./interaction.inputs";
+import { InteractionPaginateResponse } from "./interaction.response";
 
-const NAMES = NamerUtils.get("user");
+const NAMES = NamerUtils.get("interaction");
 
-@Resolver(User)
-class UserResolver {
-  private controller: UserController;
+@Resolver(Interaction)
+class InteractionResolver {
+  private controller: InteractionController;
 
   constructor() {
-    this.controller = new UserController();
+    this.controller = new InteractionController();
   }
 
-  @Query(() => User, {
-    description: "Returns one user by id",
+  @Query(() => Interaction, {
+    description: "Returns one Interaction by id",
     name: NAMES.find,
   })
-  async findById(@Arg("id") id: string): Promise<User> {
-    const user = await this.controller.findById(id);
-    return user;
+  async findById(@Arg("id") id: string): Promise<Interaction> {
+    const interaction = await this.controller.findById(id);
+    return interaction;
   }
 
-  @Query(() => UserPaginateResponse, {
-    description: "Returns an array of users.",
+  @Query(() => InteractionPaginateResponse, {
+    description: "Returns an array of Interaction by user and type.",
     name: NAMES.paginate,
   })
-  async paginate(@Args() paginate: UserPaginationArgs) {
-    const results = await this.controller.paginate(paginate);
+  @UseMiddleware(AuthMiddleware.IsAuth)
+  async paginate(
+    @Args() paginate: InteractionPaginationArgs,
+    @Ctx() ctx: IContext,
+  ) {
+    const userFrom = ctx.payload.id;
+    const results = await this.controller.paginate({ userFrom, ...paginate });
     return results;
   }
 
-  @Mutation(() => User, {
-    description: "Register a new user.",
+  @Mutation(() => Interaction, {
+    description: "Register a new Interaction.",
     name: NAMES.create,
   })
-  @ValidateArgs(UserInputCreate, "data")
-  async create(@Arg("data") user: UserInputCreate) {
-    const result = await this.controller.create(user);
+  @ValidateArgs(InteractionInputCreate, "data")
+  @UseMiddleware(AuthMiddleware.IsAuth)
+  async create(
+    @Arg("data") interaction: InteractionInputCreate,
+    @Ctx() ctx: IContext,
+  ) {
+    const userFrom = ctx.payload.id;
+
+    const result = await this.controller.create(interaction, userFrom);
     return result;
   }
 
-  @Mutation(() => User, {
-    description: "Update an existing user by id.",
+  @Mutation(() => Interaction, {
+    description: "Update an existing Interaction by id.",
     name: NAMES.update,
   })
   @UseMiddleware(AuthMiddleware.IsAuth)
-  @ValidateIdentifier(UserInputUpdate, "id")
-  @ValidateArgs(UserInputUpdate, "data")
-  async update(@Arg("id") id: string, @Arg("data") user: UserInputUpdate) {
-    const result = await this.controller.update(id.toString(), user);
+  @ValidateIdentifier(InteractionInputUpdate, "id")
+  @ValidateArgs(InteractionInputUpdate, "data")
+  async update(
+    @Arg("id") id: string,
+    @Arg("data") interaction: InteractionInputUpdate,
+  ) {
+    const result = await this.controller.update(id.toString(), interaction);
     return result;
   }
 }
 
-export default UserResolver;
+export default InteractionResolver;

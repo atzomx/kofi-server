@@ -7,6 +7,6 @@ export enum IInteractionTypes {
 }
 
 registerEnumType(IInteractionTypes, {
-  name: "Interaction",
+  name: "InteractionTypes",
   description: "Types for Interaction",
 });

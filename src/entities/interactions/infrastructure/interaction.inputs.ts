@@ -4,9 +4,6 @@ import { IInteractionTypes } from "../domain/interaction.enums";
 
 @InputType()
 export class InteractionInputCreate {
-  @Field(() => String, { description: "User profile interaction from." })
-  public userFrom!: Types.ObjectId;
-
   @Field(() => String, { description: "User profile interaction to." })
   public userTo!: Types.ObjectId;
 

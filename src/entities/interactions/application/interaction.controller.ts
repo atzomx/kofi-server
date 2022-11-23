@@ -1,5 +1,6 @@
 import { IPagination } from "@core/domain/interfaces";
 import { UserController } from "@entities/users";
+import { Types } from "mongoose";
 import Interaction from "../domain/interaction.entity";
 import { InteractionNotFoundError } from "../domain/interaction.erros";
 import InteractionRepository from "../domain/interaction.repository";
@@ -8,7 +9,7 @@ import {
   InteractionInputCreate,
   InteractionInputUpdate,
 } from "../infrastructure/interaction.inputs";
-import VerificationUtils from "./interaction.utils";
+//import InteractionUtils from "./interaction.utils";
 
 class InteractionController {
   private repository: InteractionRepository;
@@ -26,11 +27,17 @@ class InteractionController {
   }
 
   async paginate({
+    userFrom,
     page,
     limit,
     type,
-  }: InteractionPaginationArgs): Promise<IPagination<Interaction>> {
-    const paginator = this.repository.paginate({ type }, { limit, page });
+  }: InteractionPaginationArgs & { userFrom: string }): Promise<
+    IPagination<Interaction>
+  > {
+    const paginator = this.repository.paginate(
+      { userFrom, type },
+      { limit, page },
+    );
 
     const [results, total] = await Promise.all([
       paginator.getResults(),
@@ -48,16 +55,27 @@ class InteractionController {
     };
   }
 
-  async create(interaction: InteractionInputCreate): Promise<Interaction> {
-    await this.userController.findById(interaction.userFrom.toString());
+  async create(
+    interaction: InteractionInputCreate,
+    userFrom: string,
+  ): Promise<Interaction> {
+    await this.userController.findById(userFrom);
     await this.userController.findById(interaction.userTo.toString());
 
     const query = {
-      $or: [{ userFrom: interaction.userFrom }],
+      $and: [
+        { userFrom: userFrom },
+        { userTo: interaction.userTo },
+        { type: interaction.type },
+      ],
     };
     const existingVerification = await this.repository.findOne(query);
+    if (existingVerification) return existingVerification;
 
-    const result = await this.repository.create(interaction);
+    const result = await this.repository.create({
+      userFrom: new Types.ObjectId(userFrom),
+      ...interaction,
+    });
     return result;
   }
 
