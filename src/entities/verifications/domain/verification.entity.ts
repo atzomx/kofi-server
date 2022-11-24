@@ -1,10 +1,11 @@
+import Entity from "@core/domain/entity";
 import { prop } from "@typegoose/typegoose";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 import { IVerificationPoses, IVerificationStatus } from "./verification.enums";
 
 @ObjectType()
-class Verification {
+class Verification extends Entity {
   @Field(() => ID, { description: "Verification identifier." })
   readonly _id?: Types.ObjectId;
 
@@ -29,14 +30,6 @@ class Verification {
   @Field(() => IVerificationPoses, { description: "Verification poses." })
   @prop({ required: true, enum: IVerificationPoses })
   public pose!: IVerificationPoses;
-
-  @Field({ description: "CreatedAt of process." })
-  @prop({ required: true })
-  public createdAt!: Date;
-
-  @Field({ description: "UpdatedAt of process." })
-  @prop({ required: true })
-  public updatedAt!: Date;
 }
 
 export default Verification;
