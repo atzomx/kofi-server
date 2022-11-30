@@ -1,8 +1,5 @@
 import { IContext } from "@core/domain/interfaces";
-import {
-  ValidateArgs,
-  ValidateIdentifier,
-} from "@core/infrastructure/decorators";
+import { ValidateArgs } from "@core/infrastructure/decorators";
 import NamerUtils from "@core/infrastructure/utils/namer.utils";
 import AuthMiddleware from "@entities/auth/infrastructure/auth.middleware";
 import {
@@ -37,6 +34,7 @@ class InteractionResolver {
     description: "Returns one Interaction by id",
     name: NAMES.find,
   })
+  @UseMiddleware(AuthMiddleware.IsAuth)
   async findById(@Arg("id") id: string): Promise<Interaction> {
     const interaction = await this.controller.findById(id);
     return interaction;
@@ -60,8 +58,8 @@ class InteractionResolver {
     description: "Register a new Interaction.",
     name: NAMES.create,
   })
-  @ValidateArgs(InteractionInputCreate, "data")
   @UseMiddleware(AuthMiddleware.IsAuth)
+  @ValidateArgs(InteractionInputCreate, "data")
   async create(
     @Arg("data") interaction: InteractionInputCreate,
     @Ctx() ctx: IContext,
@@ -77,7 +75,6 @@ class InteractionResolver {
     name: NAMES.update,
   })
   @UseMiddleware(AuthMiddleware.IsAuth)
-  @ValidateIdentifier(InteractionInputUpdate, "id")
   @ValidateArgs(InteractionInputUpdate, "data")
   async update(
     @Arg("id") id: string,

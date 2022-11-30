@@ -17,6 +17,8 @@ import {
 } from "@entities/users/domain/user.enums";
 import { faker } from "@faker-js/faker";
 
+export const DEFAULT_PASSWORD = "123456.hello";
+
 class UserFaker {
   static create() {
     const { status, ...complete } = UserFaker.get();
@@ -55,10 +57,11 @@ class UserFaker {
     const user: User = {
       name,
       userName,
+      email: faker.internet.email(userFirst, userSecond),
       birthday: faker.date.birthdate(),
       location: faker.address.country().substring(0, 30),
       status: getEnumRandom(IUserStatus),
-      password: faker.internet.password(),
+      password: DEFAULT_PASSWORD,
     };
     return user;
   }

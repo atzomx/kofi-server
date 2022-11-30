@@ -1,7 +1,7 @@
 import { Password } from "@core/infrastructure/utils";
+import AuthUtils from "@core/infrastructure/utils/token.utils";
 import { UserRepository } from "@entities/users";
 import { InvalidCredentialsError } from "../domain/auth.errors";
-import AuthUtils from "./auth.utils";
 
 class AuthController {
   private repository: UserRepository;

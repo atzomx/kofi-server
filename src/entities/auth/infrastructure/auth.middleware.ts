@@ -1,7 +1,7 @@
 import { IContext } from "@core/domain/interfaces";
+import AuthUtils from "@core/infrastructure/utils/token.utils";
 import { AuthenticationError } from "apollo-server-core";
 import { MiddlewareFn } from "type-graphql";
-import AuthUtils from "../application/auth.utils";
 
 export const IsAuth: MiddlewareFn<IContext> = ({ context }, next) => {
   const { authorization } = context.req.headers;

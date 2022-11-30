@@ -27,6 +27,10 @@ class User extends Entity {
   @prop({ required: true, unique: true })
   public userName!: string;
 
+  @Field({ description: "Email." })
+  @prop({ required: true, unique: true })
+  public email!: string;
+
   @Field({ description: "User birthday YYYY-MM-DD." })
   @prop({ required: true })
   public birthday!: Date;

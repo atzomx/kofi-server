@@ -6,6 +6,7 @@ async function start() {
 }
 
 async function finish() {
+  await mongoose.connection.close();
   await mongoose.disconnect();
 }
 
