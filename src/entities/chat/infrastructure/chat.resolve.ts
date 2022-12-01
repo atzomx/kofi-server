@@ -17,11 +17,11 @@ class ChatResolver {
     this.controller = new ChatController();
   }
 
-  @UseMiddleware(AuthMiddleware.IsAuth)
   @Query(() => ChatPaginateResponse, {
     description: "Returns an array of chats.",
     name: NAMES.paginate,
   })
+  @UseMiddleware(AuthMiddleware.IsAuth)
   async paginate(@Args() paginate: ChatPaginationArgs, @Ctx() ctx: IContext) {
     const { id } = ctx.payload;
     const results = await this.controller.paginate({ user: id, ...paginate });

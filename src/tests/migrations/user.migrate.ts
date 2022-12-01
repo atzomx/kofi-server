@@ -1,13 +1,20 @@
 /* eslint-disable no-underscore-dangle */
+import { Password } from "@core/infrastructure/utils";
 import { UserRepository } from "@entities/users";
-import UserFaker from "../fakers/user.faker";
+import UserFaker from "../fakers/user/user.faker";
 
 const TOTAL_USERS = 20;
 
 const up = async () => {
   const userRepository = new UserRepository();
-  const newUsers = Array(TOTAL_USERS).fill(null).map(UserFaker.get);
-  const usersCreated = await userRepository.insertMany(newUsers);
+  const newUsers = Array.from({ length: TOTAL_USERS }).map(UserFaker.get);
+
+  const encryptedUsers = newUsers.map((user) => ({
+    ...user,
+    password: Password.encrypt(user.password),
+  }));
+
+  const usersCreated = await userRepository.insertMany(encryptedUsers);
   const cleanUsers = usersCreated.map((user) => user._doc);
   return cleanUsers;
 };

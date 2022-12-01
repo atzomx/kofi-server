@@ -61,7 +61,7 @@ class UserController {
 
   async create(user: UserInputCreate): Promise<User> {
     const query = {
-      $or: [{ userName: user.userName }],
+      $or: [{ userName: user.userName }, { email: user.email }],
     };
     const existingUser = await this.repository.findOne(query);
     if (existingUser) throw new UserAlreadyExistsError();

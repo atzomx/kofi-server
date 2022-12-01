@@ -1,7 +1,15 @@
 import { prop } from "@typegoose/typegoose";
-import { MaxLength, MinLength, IsOptional, IsArray, ArrayMinSize, ArrayMaxSize } from "class-validator";
+import {
+  MaxLength,
+  MinLength,
+  IsOptional,
+  IsArray,
+  ArrayMinSize,
+  ArrayMaxSize,
+  IsEmail,
+} from "class-validator";
 import { Field, InputType } from "type-graphql";
-import { 
+import {
   IUserInterests,
   IUserPersonality,
   IUserMaritalStatus,
@@ -10,7 +18,7 @@ import {
   IUserSexualOrientation,
   IUserStatus,
   IUserDegree,
-  IUserReligion, 
+  IUserReligion,
 } from "../domain/user.enums";
 
 @InputType()
@@ -25,6 +33,10 @@ export class UserInputCreate {
   @MaxLength(16)
   public userName!: string;
 
+  @Field({ description: "Email." })
+  @IsEmail()
+  public email!: string;
+
   @Field({ description: "User birthday YYYY-MM-DD." })
   public birthday!: Date;
 
@@ -37,7 +49,7 @@ export class UserInputCreate {
   public personality?: IUserPersonality;
 
   @Field(() => [IUserInterests])
-  @prop({default: []})
+  @prop({ default: [] })
   @IsArray()
   @ArrayMinSize(0)
   @ArrayMaxSize(5)
@@ -57,13 +69,15 @@ export class UserInputCreate {
   @Field(() => IUserPets, { description: "User pets." })
   public pets?: IUserPets;
 
-  @Field(() => IUserSexualOrientation, { description: "User sexual orientation." })
+  @Field(() => IUserSexualOrientation, {
+    description: "User sexual orientation.",
+  })
   public sexualOrientation?: IUserSexualOrientation;
 
   @Field({ description: "User location." })
   @MaxLength(30)
   public location!: string;
-   
+
   @Field(() => IUserDegree, { description: "User degree." })
   public degree?: IUserDegree;
 
@@ -99,18 +113,27 @@ export class UserInputUpdate {
   @MaxLength(200)
   public description?: string;
 
-  @Field(() => IUserPersonality, { nullable: true, description: "User personality." })
+  @Field(() => IUserPersonality, {
+    nullable: true,
+    description: "User personality.",
+  })
   @IsOptional()
   public personality?: IUserPersonality;
 
-  @Field(() => [IUserInterests], { nullable: true, description: "User interest." })
+  @Field(() => [IUserInterests], {
+    nullable: true,
+    description: "User interest.",
+  })
   @IsOptional()
   @IsArray()
   @ArrayMinSize(0)
   @ArrayMaxSize(5)
   public interest?: IUserInterests[];
 
-  @Field(() => IUserMaritalStatus, { nullable: true, description: "User marital status." })
+  @Field(() => IUserMaritalStatus, {
+    nullable: true,
+    description: "User marital status.",
+  })
   @IsOptional()
   public maritalStatus?: IUserMaritalStatus;
 
@@ -128,7 +151,10 @@ export class UserInputUpdate {
   @IsOptional()
   public pets?: IUserPets;
 
-  @Field(() => IUserSexualOrientation, { nullable: true, description: "User sexual orientation." })
+  @Field(() => IUserSexualOrientation, {
+    nullable: true,
+    description: "User sexual orientation.",
+  })
   @IsOptional()
   public sexualOrientation?: IUserSexualOrientation;
 

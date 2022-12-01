@@ -4,6 +4,7 @@ const user = `
     _id
     name
     userName
+    email
     birthday
     location
     status

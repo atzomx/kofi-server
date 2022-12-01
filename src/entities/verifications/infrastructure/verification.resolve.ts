@@ -1,7 +1,4 @@
-import {
-  ValidateArgs,
-  ValidateIdentifier,
-} from "@core/infrastructure/decorators";
+import { ValidateArgs } from "@core/infrastructure/decorators";
 import NamerUtils from "@core/infrastructure/utils/namer.utils";
 import AuthMiddleware from "@entities/auth/infrastructure/auth.middleware";
 import {
@@ -35,6 +32,7 @@ class VerificationResolver {
     description: "Returns one Verification by id",
     name: NAMES.find,
   })
+  @UseMiddleware(AuthMiddleware.IsAuth)
   async findById(@Arg("id") id: string): Promise<Verification> {
     const verification = await this.controller.findById(id);
     return verification;
@@ -44,6 +42,7 @@ class VerificationResolver {
     description: "Returns an array of Verifications.",
     name: NAMES.paginate,
   })
+  @UseMiddleware(AuthMiddleware.IsAuth)
   async paginate(@Args() paginate: VerificationPaginationArgs) {
     const results = await this.controller.paginate(paginate);
     return results;
@@ -53,6 +52,7 @@ class VerificationResolver {
     description: "Register a new Verification.",
     name: NAMES.create,
   })
+  @UseMiddleware(AuthMiddleware.IsAuth)
   @ValidateArgs(VerificationInputCreate, "data")
   async create(@Arg("data") verification: VerificationInputCreate) {
     const result = await this.controller.create(verification);
@@ -64,7 +64,6 @@ class VerificationResolver {
     name: NAMES.update,
   })
   @UseMiddleware(AuthMiddleware.IsAuth)
-  @ValidateIdentifier(VerificationInputUpdate, "id")
   @ValidateArgs(VerificationInputUpdate, "data")
   async update(
     @Arg("id") id: string,

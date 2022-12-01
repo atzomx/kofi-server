@@ -2,7 +2,6 @@
 import { NonEmptyArray } from "type-graphql";
 import { AuthResolver } from "./auth";
 import { ChatResolver } from "./chat";
-import { DocumentResolver } from "./document";
 import { InteractionResolver } from "./interactions";
 import { MessageResolver } from "./messages";
 import { NotificationResolver } from "./notifications";
@@ -12,7 +11,6 @@ import { VerificationResolver } from "./verifications";
 export const resolvers: NonEmptyArray<Function> = [
   UserResolver,
   AuthResolver,
-  DocumentResolver,
   VerificationResolver,
   MessageResolver,
   ChatResolver,

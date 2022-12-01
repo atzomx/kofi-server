@@ -1,6 +1,7 @@
 import http from "http";
 import * as path from "path";
 import PubSub from "@core/application/PubSub";
+import { GLOBAL_SCALARS } from "@core/infrastructure/scalars";
 import { Log } from "@core/infrastructure/utils";
 import Entities from "@entities";
 import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
@@ -17,6 +18,7 @@ export async function create(port: number, dir = __dirname) {
     resolvers: Entities.resolvers,
     emitSchemaFile: path.resolve(dir, "schema.gql"),
     validate: true,
+    scalarsMap: GLOBAL_SCALARS,
     pubSub: PubSub.create(),
   });
 

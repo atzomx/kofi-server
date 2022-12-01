@@ -19,9 +19,7 @@ const searchingQuery = ({
   const textQuery = cleanSearch
     ? {
         $or: [
-          { normalizedFullName: { $regex: cleanSearch, $options: "i" } },
           { email: { $regex: cleanSearch, $options: "i" } },
-          { phoneNumber: { $regex: cleanSearch, $options: "i" } },
           { userName: { $regex: cleanSearch, $options: "i" } },
         ],
       }

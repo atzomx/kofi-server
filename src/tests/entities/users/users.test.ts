@@ -1,40 +1,25 @@
-import http from "http";
 import { IPagination } from "@core/domain/interfaces";
 import TestUtils from "@core/infrastructure/utils/test.utils";
-import authUtils from "@entities/auth/application/auth.utils";
+import authUtils from "@core/infrastructure/utils/token.utils";
 import { User } from "@entities/users";
 import { IUserLookingFor } from "@entities/users/domain/user.enums";
 import { Types } from "mongoose";
 import request from "supertest-graphql";
-import server from "../../config";
-import UserFaker from "../../fakers/user.faker";
+import { app, authorization, entities } from "../../config/setup";
+import UserFaker from "../../fakers/user/user.faker";
 import userQuerys from "./user.querys";
-
-let appServer: http.Server;
-
-let entities: {
-  users: User[];
-};
 
 const keysMandatories = Object.keys(User);
 
 describe("User Test", () => {
-  beforeAll(async () => {
-    const initServer = await server.start();
-    entities = initServer.entities;
-    appServer = initServer.app;
-  });
-
-  afterAll(async () => {
-    await server.stop();
-  });
-
   it("Should return an user", async () => {
     const user = TestUtils.getOneFromArray(entities.users);
     const userId = user._id.toString();
-    const result = await request<{ userById: User }>(appServer)
+
+    const result = await request<{ userById: User }>(app)
       .query(userQuerys.userById)
-      .variables({ user: userId });
+      .variables({ user: userId })
+      .set("authorization", authorization);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("userById");
@@ -46,11 +31,14 @@ describe("User Test", () => {
 
   it("Shouldn't return an user with unexist id", async () => {
     const user = new Types.ObjectId().toString();
-    const result = await request<{ userById: User }>(appServer)
+    const result = await request<{ userById: User }>(app)
       .query(userQuerys.userById)
-      .variables({ user });
+      .variables({ user })
+      .set("authorization", authorization);
 
     expect(result.errors).toBeTruthy();
+    const [error] = result.errors;
+    expect(error.message).toBe("User not found");
   });
 
   it("Should paginate users", async () => {
@@ -69,9 +57,10 @@ describe("User Test", () => {
       status: "pending",
     };
 
-    const result = await request<{ userPaginate: IPagination<User> }>(appServer)
+    const result = await request<{ userPaginate: IPagination<User> }>(app)
       .query(userQuerys.paginate)
-      .variables(variables);
+      .variables(variables)
+      .set("authorization", authorization);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("userPaginate");
@@ -91,15 +80,16 @@ describe("User Test", () => {
     });
   });
 
-  it("Should paginate users with out params", async () => {
+  it("Should paginate users without params", async () => {
     const variables = {
       page: 1,
       limit: 5,
     };
 
-    const result = await request<{ userPaginate: IPagination<User> }>(appServer)
+    const result = await request<{ userPaginate: IPagination<User> }>(app)
       .query(userQuerys.paginate)
-      .variables(variables);
+      .variables(variables)
+      .set("authorization", authorization);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("userPaginate");
@@ -122,7 +112,7 @@ describe("User Test", () => {
   it("Shouldn't create an user with bad arguments", async () => {
     const newUser = UserFaker.create();
     newUser.userName = "longestUserName128828282";
-    const { errors } = await request<{ userCreate: User }>(appServer)
+    const { errors } = await request<{ userCreate: User }>(app)
       .query(userQuerys.userCreate)
       .variables({ data: newUser });
 
@@ -132,7 +122,7 @@ describe("User Test", () => {
   it("Should create an user", async () => {
     const newUser = UserFaker.create();
 
-    const result = await request<{ userCreate: User }>(appServer)
+    const result = await request<{ userCreate: User }>(app)
       .query(userQuerys.userCreate)
       .variables({ data: newUser });
 
@@ -153,7 +143,7 @@ describe("User Test", () => {
     const dataToSent: Partial<User> = {
       lookingFor: IUserLookingFor.friends,
     };
-    const { data, errors } = await request<{ userUpdate: User }>(appServer)
+    const { data, errors } = await request<{ userUpdate: User }>(app)
       .query(userQuerys.userUpdate)
       .variables({ data: dataToSent, userId })
       .set("authorization", authorization);
@@ -177,7 +167,7 @@ describe("User Test", () => {
     const dataToSent: Partial<User> = {
       lookingFor: IUserLookingFor.friends,
     };
-    const { errors } = await request<{ userUpdate: User }>(appServer)
+    const { errors } = await request<{ userUpdate: User }>(app)
       .query(userQuerys.userUpdate)
       .variables({ data: dataToSent, userId: `${userId}xxss` })
       .set("authorization", authorization);
@@ -190,10 +180,42 @@ describe("User Test", () => {
     const newUser = UserFaker.create();
     newUser.userName = userExisted.userName;
 
-    const { errors } = await request<{ userCreate: User }>(appServer)
+    const { errors } = await request<{ userCreate: User }>(app)
       .query(userQuerys.userCreate)
-      .variables({ data: newUser });
+      .variables({ data: newUser })
+      .set("authorization", authorization);
 
     expect(errors).toBeTruthy();
+    const [error] = errors;
+    expect(error.message).toBe("User already exists");
+  });
+
+  it("Shouldn't access a protected resolver with no token", async () => {
+    const variables = {
+      page: 1,
+      limit: 5,
+    };
+
+    const result = await request<{ userPaginate: IPagination<User> }>(app)
+      .query(userQuerys.paginate)
+      .variables(variables);
+
+    const [error] = result.errors;
+    expect(error.message).toBe("Invalid token");
+  });
+
+  it("Shouldn't access a protected resolver by currupted token key", async () => {
+    const variables = {
+      page: 1,
+      limit: 5,
+    };
+
+    const result = await request<{ userPaginate: IPagination<User> }>(app)
+      .query(userQuerys.paginate)
+      .variables(variables)
+      .set("authorization", `Not${authorization}`);
+
+    const [error] = result.errors;
+    expect(error.message).toBe("Invalid token");
   });
 });
