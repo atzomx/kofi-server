@@ -21,7 +21,10 @@ import {
   InteractionInputCreate,
   InteractionInputUpdate,
 } from "./interaction.inputs";
-import { InteractionPaginateResponse } from "./interaction.response";
+import {
+  InteractionCreateResponse,
+  InteractionPaginateResponse,
+} from "./interaction.response";
 
 const NAMES = NamerUtils.get("interaction");
 
@@ -56,7 +59,7 @@ class InteractionResolver {
     return results;
   }
 
-  @Mutation(() => Interaction, {
+  @Mutation(() => InteractionCreateResponse, {
     description: "Register a new Interaction.",
     name: NAMES.create,
   })
