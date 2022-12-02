@@ -52,10 +52,13 @@ class MediaController {
   }
 
   async create(media: MediaInputCreate): Promise<Media> {
-
     const newMedia = { ...media };
     const result = await this.repository.create({ ...newMedia });
+    return result;
+  }
 
+  async delete(id: string): Promise<Media> {
+    const result = await this.repository.findByIdAndDelete(id);
     return result;
   }
 

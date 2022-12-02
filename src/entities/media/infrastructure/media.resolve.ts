@@ -1,13 +1,14 @@
 import { ValidateArgs } from "@core/infrastructure/decorators";
-import namerUtils from "@core/infrastructure/utils/namer.utils";
-import { Arg, Args, Mutation, Query, Resolver } from "type-graphql";
+import NamerUtils from "@core/infrastructure/utils/namer.utils";
+import AuthMiddleware from "@entities/auth/infrastructure/auth.middleware";
+import { Arg, Args, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
 import { MediaController } from "..";
 import Media from "../domain/media.entity";
 import { MediaPaginationArgs } from "./media.args";
 import { MediaInputCreate } from "./media.input";
 import { MediaPaginateResponse } from "./media.response";
 
-const NAMES = namerUtils.get("user");
+const NAMES = NamerUtils.get("media");
 
 @Resolver(Media)
 class MediaResolver {
@@ -44,6 +45,17 @@ class MediaResolver {
     const result = await this.controller.create(media);
     return result;
   }
+
+  @Mutation(() => Media, {
+    description: "Delete media file.",
+    name: NAMES.delete,
+  })
+  @UseMiddleware(AuthMiddleware.IsAuth)
+  async delete(@Arg("id") id: string) {
+    const result = await this.controller.delete(id.toString());
+    return result;
+  }
+
 }
 
 export default MediaResolver;

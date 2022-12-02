@@ -5,7 +5,7 @@ import { IMediaType } from "../domain/media.enum";
 
 @InputType()
 export class MediaInputCreate {
-  @Field({ description: "Media Type." })
+  @Field(() => IMediaType, { description: "Media Type." })
   public mediaType!: IMediaType;
 
   @Field({ description: "Media URL" })
