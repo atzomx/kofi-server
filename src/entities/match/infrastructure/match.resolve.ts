@@ -1,8 +1,5 @@
 import { IContext } from "@core/domain/interfaces";
-import {
-  ValidateArgs,
-  ValidateIdentifier,
-} from "@core/infrastructure/decorators";
+import { ValidateArgs } from "@core/infrastructure/decorators";
 import NamerUtils from "@core/infrastructure/utils/namer.utils";
 import AuthMiddleware from "@entities/auth/infrastructure/auth.middleware";
 import {
@@ -55,7 +52,6 @@ class MatchResolver {
     name: NAMES.update,
   })
   @UseMiddleware(AuthMiddleware.IsAuth)
-  @ValidateIdentifier(MatchInputUpdate, "id")
   @ValidateArgs(MatchInputUpdate, "data")
   async update(@Arg("id") id: string, @Arg("data") match: MatchInputUpdate) {
     const result = await this.controller.update(id.toString(), match);

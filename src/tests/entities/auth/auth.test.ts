@@ -1,7 +1,8 @@
+import "reflect-metadata";
 import { getOneFromArray } from "@core/infrastructure/utils/test.utils";
 import request from "supertest-graphql";
-import { app, entities } from "../../config/setup";
 import { DEFAULT_PASSWORD } from "../../fakers/user/user.faker";
+import { app, entities } from "../../setup";
 import authQuerys from "./auth.querys";
 
 describe("Login Test", () => {

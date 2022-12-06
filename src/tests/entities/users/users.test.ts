@@ -5,8 +5,8 @@ import { User } from "@entities/users";
 import { IUserLookingFor } from "@entities/users/domain/user.enums";
 import { Types } from "mongoose";
 import request from "supertest-graphql";
-import { app, authorization, entities } from "../../config/setup";
 import UserFaker from "../../fakers/user/user.faker";
+import { app, authorization, entities } from "../../setup";
 import userQuerys from "./user.querys";
 
 const keysMandatories = Object.keys(User);

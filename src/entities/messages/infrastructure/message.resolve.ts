@@ -80,9 +80,12 @@ class MessageResolver {
       return isFromMyChat && isForMe;
     },
   })
-  @UseMiddleware(AuthMiddleware.IsAuth)
   newMessage(@Root() message: Message, @Arg("chat") _chat: string): Message {
-    return message;
+    return {
+      ...message,
+      createdAt: new Date(message.createdAt),
+      updatedAt: new Date(message.updatedAt),
+    };
   }
 }
 
