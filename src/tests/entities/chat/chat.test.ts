@@ -1,7 +1,7 @@
 import { IPagination } from "@core/domain/interfaces";
 import { Chat } from "@entities/chat";
 import request from "supertest-graphql";
-import { app, authorization } from "../../config/setup";
+import { app, authorization } from "../../setup";
 import chatQuerys from "./chat.querys";
 
 const keysMandatories = ["createdAt", "updatedAt", "_id", "participants"];
