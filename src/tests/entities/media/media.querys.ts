@@ -1,0 +1,62 @@
+import { gql } from "apollo-server-core";
+
+const media = `
+    _id
+    mediaType
+    mediaUrl
+`;
+
+const mediaById = gql `
+  query MediaById($media: String!) {
+    mediaById(id: $media) {
+      ${media}
+    }
+  }
+`;
+
+const paginate = gql`
+  query MediaPaginate(
+    $page: Int, 
+    $limit: Int, 
+    $search: String, 
+    $status: Status, 
+    $startDate: DateTime, 
+    $endDate: DateTime, 
+  ) {
+    mediaPaginate(
+      page: $page, 
+      limit: $limit, 
+      search: $search, 
+      status: $status, 
+      startDate: $startDate, 
+      endDate: $endDate, 
+    ) {
+      info {
+        page
+        pages
+        total
+      }
+      results {
+        ${media}
+      }
+    }
+  }
+`;
+
+const mediaCreate = gql`
+  mutation MediaCreate($data: MediaInputCreate!) {
+    mediaCreate(data: $data) {
+      ${media}
+    }
+  }
+`;
+
+const mediaDelete = gql`
+  mutation MediaDelete($data: Media) {
+    userDelete(data: $data, id: $mediaId) {
+      ${media}
+    }
+  }
+`;
+
+export default { mediaById, paginate, mediaCreate, mediaDelete };
