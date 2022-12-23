@@ -18,16 +18,14 @@ const paginate = gql`
   query MediaPaginate(
     $page: Int, 
     $limit: Int, 
-    $search: String, 
-    $status: Status, 
+    $search: String,
     $startDate: DateTime, 
     $endDate: DateTime, 
   ) {
     mediaPaginate(
       page: $page, 
       limit: $limit, 
-      search: $search, 
-      status: $status, 
+      search: $search,
       startDate: $startDate, 
       endDate: $endDate, 
     ) {
@@ -52,8 +50,8 @@ const mediaCreate = gql`
 `;
 
 const mediaDelete = gql`
-  mutation MediaDelete($data: Media) {
-    userDelete(data: $data, id: $mediaId) {
+  mutation MediaDelete($mediaId: String!) {
+    mediaDelete(id: $mediaId) {
       ${media}
     }
   }

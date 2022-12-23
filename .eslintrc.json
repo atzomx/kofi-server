@@ -22,7 +22,7 @@
     "semi": ["error", "always"],
     "strict": [2, "never"],
     "brace-style": "off",
-    "no-underscore-dangle": ["error", { "allow": ["_id"] }],
+    "no-underscore-dangle": ["error", { "allow": ["_id", "_doc"] }],
     "exhaustive-deps": "off",
     "max-len": ["error", 150, { "ignoreComments": true }],
     "comma-dangle": ["error", "always-multiline"],

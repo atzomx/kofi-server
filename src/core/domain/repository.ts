@@ -78,6 +78,10 @@ class Repository<T> {
     return this.instance.findByIdAndDelete<T>(id);
   }
 
+  deleteMany(){
+    return this.instance.deleteMany();
+  }
+
   insertMany(
     documents: T[],
   ): Promise<Array<HydratedDocument<T, unknown, unknown> & { _doc: T }>> {

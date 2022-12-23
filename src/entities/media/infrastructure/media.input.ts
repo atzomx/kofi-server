@@ -1,4 +1,4 @@
-import { IsOptional, MaxLength } from "class-validator";
+import { IsOptional, MaxLength, IsUrl } from "class-validator";
 import { Field, InputType } from "type-graphql";
 import { IMediaType } from "../domain/media.enum";
 
@@ -10,6 +10,7 @@ export class MediaInputCreate {
 
   @Field({ description: "Media URL" })
   @MaxLength(100)
+  @IsUrl()
   public mediaUrl!: string;
 }
 
@@ -22,5 +23,6 @@ export class MediaInputUpdate {
   @Field({nullable: true, description: "Media URL" })
   @IsOptional()
   @MaxLength(100)
+  @IsUrl()
   public mediaUrl?: string;
 }
