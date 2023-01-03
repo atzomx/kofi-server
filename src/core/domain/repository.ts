@@ -74,7 +74,11 @@ class Repository<T> {
     };
   }
 
-  deleteMany() {
+  findByIdAndDelete(id: string | Types.ObjectId){
+    return this.instance.findByIdAndDelete<T>(id);
+  }
+
+  deleteMany(){
     return this.instance.deleteMany();
   }
 

@@ -3,6 +3,7 @@ import PubSub from "@core/application/PubSub";
 import TestUtils from "@core/infrastructure/utils/test.utils";
 import authUtils from "@core/infrastructure/utils/token.utils";
 import { Chat } from "@entities/chat";
+import { Media } from "@entities/media";
 import { Message } from "@entities/messages";
 import { User } from "@entities/users";
 import server from "../config";
@@ -16,6 +17,7 @@ let entities: {
   users: User[];
   chats: Chat[];
   messages: Message[];
+  medias: Media[];
 };
 
 let authorization = "";
