@@ -31,13 +31,13 @@ class VerificationController {
   async paginate({
     page,
     limit,
-    search,
+    userId,
     status,
     pose,
     createdAt,
   }: VerificationPaginationArgs): Promise<IPagination<Verification>> {
     const searchQuery = VerificationUtils.searchingQuery({
-      search,
+      userId,
       status,
       pose,
       createdAt,
