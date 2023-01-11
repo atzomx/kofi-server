@@ -1,6 +1,5 @@
 import { ICustomError } from "@core/domain/interfaces";
 import { UserInputError } from "apollo-server-core";
-import Verification from "./verification.entity";
 
 export class VerificationNotFoundError extends UserInputError {
   constructor() {
@@ -12,22 +11,13 @@ export class VerificationNotFoundError extends UserInputError {
 }
 
 export class VerificationAlreadyExistsError extends UserInputError {
-  constructor(
-    existingVerification: Verification,
-    inputVerification: Verification,
-  ) {
-    const uniqueValues = ["userId"];
-    const errors = uniqueValues.reduce((acc, current) => {
-      if (existingVerification[current] !== inputVerification[current])
-        return acc;
-      return [
-        ...acc,
-        {
-          constrains: `Verification ${current} already exists for this user`,
-          property: current,
-        },
-      ];
-    }, [] as Array<ICustomError>);
+  constructor() {
+    const errors: Array<ICustomError> = [
+      {
+        constrains: "Verification already exists for this user",
+        property: "userId",
+      },
+    ];
     super("Verification already exists for this user", { errors });
   }
 }

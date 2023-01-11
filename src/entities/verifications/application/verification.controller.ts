@@ -67,11 +67,7 @@ class VerificationController {
       $or: [{ userId: verification.userId }],
     };
     const existingVerification = await this.repository.findOne(query);
-    if (existingVerification)
-      throw new VerificationAlreadyExistsError(
-        existingVerification,
-        verification,
-      );
+    if (existingVerification) throw new VerificationAlreadyExistsError();
 
     const result = await this.repository.create(verification);
     return result;

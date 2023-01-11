@@ -152,8 +152,8 @@ describe("Verification Test", () => {
   });
 
   it("Should try create exits verification", async () => {
-    const userExist = TestUtils.getOneFromArray(entities.users);
-    const userExistId = userExist._id.toString();
+    const verificationExist = TestUtils.getOneFromArray(entities.verifications);
+    const userExistId = verificationExist.userId.toString();
     const newVerification = VerificationFaker.create(
       new Types.ObjectId(userExistId),
     );
