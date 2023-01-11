@@ -3,11 +3,17 @@ import { Field, ObjectType } from "type-graphql";
 
 @ObjectType()
 class Entity {
-  @Field(() => Date, { nullable: true, description: "Creation YYYY-MM-DD." })
+  @Field(() => Date, {
+    nullable: true,
+    description: "Creation YYYY-MM-DD.",
+  })
   @prop({ required: false })
   public createdAt?: Date;
 
-  @Field(() => Date, { nullable: true, description: "Update YYYY-MM-DD." })
+  @Field(() => Date, {
+    nullable: true,
+    description: "Update YYYY-MM-DD.",
+  })
   @prop({ required: false })
   public updatedAt?: Date;
 }

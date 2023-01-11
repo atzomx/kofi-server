@@ -18,8 +18,8 @@ export const start = async () => {
 };
 
 export const stop = async () => {
-  await migrations.down();
   await server.stop();
+  await migrations.down();
 };
 
 export default { start, stop };

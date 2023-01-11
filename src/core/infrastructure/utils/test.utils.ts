@@ -20,6 +20,10 @@ export const getOneFromArray = <T extends {}>(array: Array<T>) => {
   return array[getRandomNumber(array.length)];
 };
 
+export const notInArray = (a: string[], b: string[]) => {
+  return a.filter((value) => b.indexOf(value) === -1);
+};
+
 export const getManyFromArray = <T extends {}>(
   array: Array<T>,
   size: number,
