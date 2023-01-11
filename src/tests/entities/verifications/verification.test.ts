@@ -9,9 +9,9 @@ import {
 } from "@entities/verifications/domain/verification.enums";
 import { Types } from "mongoose";
 import request from "supertest-graphql";
-import { app, authorization, entities } from "../../config/setup";
 import UserFaker from "../../fakers/user/user.faker";
 import VerificationFaker from "../../fakers/verifications/verification.faker";
+import { app, authorization, entities } from "../../setup";
 import userQuerys from "../users/user.querys";
 import verificationQuerys from "./verification.query";
 
