@@ -31,13 +31,13 @@ class VerificationController {
   async paginate({
     page,
     limit,
-    search,
+    userId,
     status,
     pose,
     createdAt,
   }: VerificationPaginationArgs): Promise<IPagination<Verification>> {
     const searchQuery = VerificationUtils.searchingQuery({
-      search,
+      userId,
       status,
       pose,
       createdAt,
@@ -67,11 +67,7 @@ class VerificationController {
       $or: [{ userId: verification.userId }],
     };
     const existingVerification = await this.repository.findOne(query);
-    if (existingVerification)
-      throw new VerificationAlreadyExistsError(
-        existingVerification,
-        verification,
-      );
+    if (existingVerification) throw new VerificationAlreadyExistsError();
 
     const result = await this.repository.create(verification);
     return result;

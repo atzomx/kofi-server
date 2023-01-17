@@ -6,6 +6,7 @@ import { Chat } from "@entities/chat";
 import { Media } from "@entities/media";
 import { Message } from "@entities/messages";
 import { User } from "@entities/users";
+import { Verification } from "@entities/verifications";
 import server from "../config";
 import RedisPubSubMock from "../config/pubsub.mock";
 
@@ -18,6 +19,7 @@ let entities: {
   chats: Chat[];
   messages: Message[];
   medias: Media[];
+  verifications: Verification[];
 };
 
 let authorization = "";

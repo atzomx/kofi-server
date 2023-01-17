@@ -7,12 +7,6 @@ import {
 
 @ArgsType()
 export class VerificationPaginationArgs extends PaginateArgs {
-  @Field(() => String, {
-    nullable: true,
-    description: "Verification search text.",
-  })
-  public search?: string;
-
   @Field(() => IVerificationPoses, {
     nullable: true,
     description: "Verification pose.",
