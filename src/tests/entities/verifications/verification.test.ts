@@ -1,6 +1,7 @@
 import { IPagination } from "@core/domain/interfaces";
-import TestUtils from "@core/infrastructure/utils/test.utils";
-import { getEnumRandom } from "@core/infrastructure/utils/test.utils";
+import TestUtils, {
+  getEnumRandom,
+} from "@core/infrastructure/utils/test.utils";
 import { User } from "@entities/users";
 import { Verification } from "@entities/verifications";
 import {
