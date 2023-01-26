@@ -62,8 +62,8 @@ class InteractionController {
   async create(
     interaction: InteractionInputCreate,
     userFrom: string,
-  ): Promise<Interaction & { generatedMatch: boolean }> {
-    await this.userController.findById(userFrom);
+  ): Promise<Interaction & { generatedMatch: boolean; name: string }> {
+    const { name } = await this.userController.findById(userFrom);
     await this.userController.findById(interaction.userTo.toString());
 
     const queryReverse = {
@@ -93,14 +93,14 @@ class InteractionController {
     };
     const existingInteraccion = await this.repository.findOne(query).lean();
     if (existingInteraccion) {
-      return { ...existingInteraccion, generatedMatch };
+      return { ...existingInteraccion, generatedMatch, name };
     }
 
     const result = await this.repository.create({
       userFrom: new Types.ObjectId(userFrom),
       ...interaction,
     });
-    return { ...result._doc, generatedMatch };
+    return { ...result._doc, generatedMatch, name };
   }
 
   async update(
