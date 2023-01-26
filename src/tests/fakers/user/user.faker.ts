@@ -50,8 +50,8 @@ class UserFaker {
 
   static basic() {
     const name = faker.name.findName();
-    const userFirst = faker.internet.userName(name);
-    const userSecond = faker.internet.userName(name);
+    const userFirst = faker.internet.userName(faker.name.findName());
+    const userSecond = faker.internet.userName(faker.name.findName());
     const userName = `${userFirst}${userSecond}`.substring(0, 16);
 
     const user: User = {
