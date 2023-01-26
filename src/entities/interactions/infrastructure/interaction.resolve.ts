@@ -1,18 +1,27 @@
+import { ISubscriptionsTypes } from "@core/domain/enums";
 import { IContext } from "@core/domain/interfaces";
 import { ValidateArgs } from "@core/infrastructure/decorators";
 import NamerUtils from "@core/infrastructure/utils/namer.utils";
 import AuthMiddleware from "@entities/auth/infrastructure/auth.middleware";
+import { Notification } from "@entities/notifications";
+import NotificationFactory from "@entities/notifications/application/notifications.factory";
+import { INotificationType } from "@entities/notifications/domain/notification.enum";
 import {
   Arg,
   Args,
   Ctx,
   Mutation,
+  PubSub,
+  Publisher,
   Query,
   Resolver,
   UseMiddleware,
+  Subscription,
+  Root,
 } from "type-graphql";
 import InteractionController from "../application/interaction.controller";
 import Interaction from "../domain/interaction.entity";
+import { IInteractionTypes } from "../domain/interaction.enums";
 import { InteractionPaginationArgs } from "./interaction.args";
 import {
   InteractionInputCreate,
@@ -66,10 +75,32 @@ class InteractionResolver {
   async create(
     @Arg("data") interaction: InteractionInputCreate,
     @Ctx() ctx: IContext,
+    @PubSub(ISubscriptionsTypes.INTERACTIONS) publish: Publisher<Notification>,
   ) {
     const userFrom = ctx.payload.id;
 
     const result = await this.controller.create(interaction, userFrom);
+
+    const { generatedMatch, type, name } = result;
+
+    if (IInteractionTypes.rejected !== type && !generatedMatch) {
+      const notificationLike = NotificationFactory.create(
+        INotificationType.like,
+      );
+      notificationLike.owner = interaction.userTo;
+      notificationLike.from = name;
+
+      await publish(notificationLike);
+    }
+    if (generatedMatch) {
+      const notificationMatch = NotificationFactory.create(
+        INotificationType.match,
+      );
+      notificationMatch.owner = interaction.userTo;
+      notificationMatch.from = name;
+      await publish(notificationMatch);
+    }
+
     return result;
   }
 
@@ -85,6 +116,25 @@ class InteractionResolver {
   ) {
     const result = await this.controller.update(id.toString(), interaction);
     return result;
+  }
+
+  @Subscription({
+    description: "Subscription for interaction notifications.",
+    name: NAMES.new,
+    topics: ISubscriptionsTypes.INTERACTIONS,
+    filter: ({
+      payload,
+      context,
+    }: {
+      payload: Notification;
+      context: IContext;
+    }) => {
+      const isForMe = `${payload.owner}` === context.payload.id;
+      return isForMe;
+    },
+  })
+  newNotification(@Root() notification: Notification): Notification {
+    return notification;
   }
 }
 
