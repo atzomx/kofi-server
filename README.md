@@ -30,3 +30,10 @@ yarn dev:start
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+
+## Tests Coverage
+How to run tests with coverage?
+`yarn test:coverage`
+
+See folder `coverage/Icov-report/index.html`
