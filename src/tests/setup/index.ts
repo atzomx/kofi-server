@@ -4,6 +4,7 @@ import TestUtils from "@core/infrastructure/utils/test.utils";
 import authUtils from "@core/infrastructure/utils/token.utils";
 import { Chat } from "@entities/chat";
 import { Interaction } from "@entities/interactions";
+import { Match } from "@entities/match";
 import { Media } from "@entities/media";
 import { Message } from "@entities/messages";
 import { User } from "@entities/users";
@@ -22,6 +23,7 @@ let entities: {
   medias: Media[];
   verifications: Verification[];
   interactions: Interaction[];
+  matchs: Match[];
 };
 
 let authorization = "";
