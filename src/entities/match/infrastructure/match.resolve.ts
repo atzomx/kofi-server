@@ -37,7 +37,7 @@ class MatchResolver {
   }
 
   @Query(() => MatchPaginateResponse, {
-    description: "Returns an array of Match by user and type.",
+    description: "Returns an array of Match by user and status.",
     name: NAMES.paginate,
   })
   @UseMiddleware(AuthMiddleware.IsAuth)
