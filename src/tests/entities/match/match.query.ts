@@ -9,14 +9,6 @@ const match = `
     }
     status
 `;
-const simpleInteraction = `
-    createdAt
-    updatedAt
-    _id
-    userFrom
-    userTo
-    type 
-`;
 
 const matchById = gql`
   query MatchById($matchByIdId: String!) {
@@ -26,43 +18,29 @@ const matchById = gql`
   }
 `;
 
-const interactionCreate = gql`
-  mutation InteractionCreate($data: InteractionInputCreate!) {
-    interactionCreate(data: $data) {
+const matchUpdate = gql`
+mutation MatchUpdate($data: MatchInputUpdate!, $matchUpdateId: String!) {
+  matchUpdate(data: $data, id: $matchUpdateId) {
+   ${match}
+  }
+}
+`;
+const matchPagination = gql`
+query MatchPaginate($page: Int, $limit: Int, $status: MatchStatus) {
+  matchPaginate(page: $page, limit: $limit, status: $status) {
+    info {
+      page
+      pages
+      total
+    }
+    results {
     ${match}
     }
   }
+}
 `;
-
-const interactionUpdate = gql`
-  mutation InteractionUpdate(
-    $data: InteractionInputUpdate!
-    $interactionUpdateId: String!
-  ) {
-    interactionUpdate(data: $data, id: $interactionUpdateId) {
-      ${simpleInteraction}
-    }
-  }
-`;
-
-const interactionPaginate = gql`
-  query InteractionPaginate($page: Int, $limit: Int, $type: InteractionTypes) {
-    interactionPaginate(page: $page, limit: $limit, type: $type) {
-      info {
-        page
-        pages
-        total
-      }
-      results {
-        ${simpleInteraction}
-      }
-    }
-  }
-`;
-
 export default {
   matchById,
-  interactionCreate,
-  interactionUpdate,
-  interactionPaginate,
+  matchUpdate,
+  matchPagination,
 };
