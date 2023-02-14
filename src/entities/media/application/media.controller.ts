@@ -6,7 +6,6 @@ import { MediaPaginationArgs } from "../infrastructure/media.args";
 import { MediaInputCreate } from "../infrastructure/media.input";
 import mediaUtils from "./media.utils";
 
-
 class MediaController {
   private repository: MediaRepository;
 
@@ -20,35 +19,20 @@ class MediaController {
     return currentMedia;
   }
 
-  async paginate({
+  paginate({
     page,
     limit,
     search,
     endDate,
     startDate,
-  }: MediaPaginationArgs): Promise<IPagination<Media>>{
+  }: MediaPaginationArgs): Promise<IPagination<Media>> {
     const searchQuery = mediaUtils.searchingQuery({
       search,
       endDate,
       startDate,
     });
 
-    const paginator = this.repository.paginate(searchQuery, { limit, page});
-
-    const [results, total] = await Promise.all([
-      paginator.getResults(),
-      paginator.getTotal(),
-    ]);
-
-    const pages = Math.ceil(total / limit);
-    return {
-      results: results,
-      info:{
-        total,
-        page,
-        pages,
-      },
-    };
+    return this.repository.paginate(searchQuery, { limit, page });
   }
 
   async create(media: MediaInputCreate): Promise<Media> {
@@ -61,7 +45,6 @@ class MediaController {
     const result = await this.repository.findByIdAndDelete(id);
     return result;
   }
-
 }
 
 export default MediaController;

@@ -30,7 +30,7 @@ class InteractionController {
     return currentInteraction;
   }
 
-  async paginate({
+  paginate({
     userFrom,
     page,
     limit,
@@ -38,25 +38,7 @@ class InteractionController {
   }: InteractionPaginationArgs & { userFrom: string }): Promise<
     IPagination<Interaction>
   > {
-    const paginator = this.repository.paginate(
-      { userFrom, type },
-      { limit, page },
-    );
-
-    const [results, total] = await Promise.all([
-      paginator.getResults(),
-      paginator.getTotal(),
-    ]);
-
-    const pages = Math.ceil(total / limit);
-    return {
-      results: results,
-      info: {
-        total,
-        page,
-        pages,
-      },
-    };
+    return this.repository.paginate({ userFrom, type }, { limit, page });
   }
 
   async create(

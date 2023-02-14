@@ -128,10 +128,7 @@ class InteractionResolver {
     }: {
       payload: Notification;
       context: IContext;
-    }) => {
-      const isForMe = `${payload.owner}` === context.payload.id;
-      return isForMe;
-    },
+    }) => payload.owner.toString() === context.payload.id,
   })
   newNotification(@Root() notification: Notification): Notification {
     return notification;

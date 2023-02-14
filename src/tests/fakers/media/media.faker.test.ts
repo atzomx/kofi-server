@@ -1,10 +1,7 @@
 import "reflect-metadata";
 import MediaFaker from "./media.faker";
 
-const keysRequired = [
-  "mediaType",
-  "mediaUrl",
-];
+const keysRequired = ["type", "url"];
 
 describe("Media faker", () => {
   it("Should return a meida random", () => {
@@ -12,8 +9,8 @@ describe("Media faker", () => {
     [...keysRequired].forEach((key) => {
       expect(media).toHaveProperty(key);
     });
-    
-    expect(media).toHaveProperty("mediaType");
-    expect(media).toHaveProperty("mediaUrl");
+
+    expect(media).toHaveProperty("type");
+    expect(media).toHaveProperty("url");
   });
 });
