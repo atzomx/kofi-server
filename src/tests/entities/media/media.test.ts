@@ -9,12 +9,8 @@ import MediaFaker from "../../fakers/media/media.faker";
 import { app, authorization, entities } from "../../setup";
 import mediaQuerys from "./media.querys";
 
-const keysRequired = [
-  "_id",
-  "mediaType",
-  "mediaUrl",
-];
-  
+const keysRequired = ["_id", "type", "url"];
+
 describe("Media Test", () => {
   it("Should return a media", async () => {
     const media = testUtils.getOneFromArray(entities.medias);
@@ -24,7 +20,7 @@ describe("Media Test", () => {
       .query(mediaQuerys.mediaById)
       .variables({ media: mediaId })
       .set("authorization", authorization);
-    
+
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("mediaById");
     const data = result.data.mediaById;
@@ -115,7 +111,7 @@ describe("Media Test", () => {
 
   it("Shouldn't create a media with bad arguments", async () => {
     const newMedia = MediaFaker.get();
-    newMedia.mediaUrl = "badUrlMedia";
+    newMedia.url = "badUrlMedia";
     const { errors } = await request<{ mediaCreate: Media }>(app)
       .query(mediaQuerys.mediaCreate)
       .variables({ data: newMedia });
@@ -143,7 +139,7 @@ describe("Media Test", () => {
     const mediaId = media._id.toString();
     const mediaToken = authUtils.getToken(mediaId);
     const authorization = `Token ${mediaToken}`;
-    
+
     const result = await request<{ mediaDelete: Media }>(app)
       .query(mediaQuerys.mediaDelete)
       .variables({ mediaId })
