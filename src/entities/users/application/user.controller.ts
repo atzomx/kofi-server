@@ -26,7 +26,7 @@ class UserController {
     return currentUser;
   }
 
-  async paginate({
+  paginate({
     page,
     limit,
     search,
@@ -40,23 +40,7 @@ class UserController {
       endDate,
       startDate,
     });
-
-    const paginator = this.repository.paginate(searchQuery, { limit, page });
-
-    const [results, total] = await Promise.all([
-      paginator.getResults(),
-      paginator.getTotal(),
-    ]);
-
-    const pages = Math.ceil(total / limit);
-    return {
-      results: results,
-      info: {
-        total,
-        page,
-        pages,
-      },
-    };
+    return this.repository.paginate(searchQuery, { limit, page });
   }
 
   async create(user: UserInputCreate): Promise<User> {

@@ -18,31 +18,16 @@ class MatchController {
     return currentMatch;
   }
 
-  async paginate({
+  paginate({
     user,
     page,
     limit,
     status,
   }: MatchPaginationArgs & { user: string }): Promise<IPagination<Match>> {
-    const paginator = this.repository.paginate(
+    return this.repository.paginate(
       { participants: user, status },
       { limit, page },
     );
-
-    const [results, total] = await Promise.all([
-      paginator.getResults(),
-      paginator.getTotal(),
-    ]);
-
-    const pages = Math.ceil(total / limit);
-    return {
-      results: results,
-      info: {
-        total,
-        page,
-        pages,
-      },
-    };
   }
 
   async update(id: string, match: MatchInputUpdate): Promise<Match> {
