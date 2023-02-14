@@ -2,11 +2,11 @@ import { gql } from "apollo-server-core";
 
 const media = `
     _id
-    mediaType
-    mediaUrl
+    type
+    url
 `;
 
-const mediaById = gql `
+const mediaById = gql`
   query MediaById($media: String!) {
     mediaById(id: $media) {
       ${media}

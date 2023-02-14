@@ -7,6 +7,7 @@ import { Interaction } from "@entities/interactions";
 import { Match } from "@entities/match";
 import { Media } from "@entities/media";
 import { Message } from "@entities/messages";
+import { Notification } from "@entities/notifications";
 import { User } from "@entities/users";
 import { Verification } from "@entities/verifications";
 import server from "../config";
@@ -24,6 +25,7 @@ let entities: {
   verifications: Verification[];
   interactions: Interaction[];
   matchs: Match[];
+  notifications: Notification[];
 };
 
 let authorization = "";

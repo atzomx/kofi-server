@@ -11,11 +11,11 @@ class Media extends Entity {
 
   @Field(() => IMediaType, { description: "Media Type." })
   @prop({ required: false, enum: IMediaType })
-  public mediaType!: IMediaType;
+  public type!: IMediaType;
 
-  @Field({ description: "Media URL."})
-  @prop({ required: true})
-  public mediaUrl!: string;
+  @Field({ description: "Media URL." })
+  @prop({ required: true })
+  public url!: string;
 }
 
 export default Media;

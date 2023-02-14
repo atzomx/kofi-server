@@ -10,7 +10,10 @@ const create = gql`
       owner
       message
       status
-      media
+      media {
+        type
+        url
+      }
     }
   }
 `;
@@ -31,7 +34,10 @@ const paginate = gql`
         owner
         message
         status
-        media
+        media {
+          type
+          url
+        }
       }
     }
   }
@@ -47,7 +53,10 @@ const subscription = gql`
       owner
       message
       status
-      media
+      media {
+        type
+        url
+      }
     }
   }
 `;

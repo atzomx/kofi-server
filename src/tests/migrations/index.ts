@@ -4,6 +4,7 @@ import InteractionMigrate from "./interaction.migrate";
 import MatchMigrate from "./match.migrate";
 import MediaMigrate from "./media.migrate";
 import MessageMigrate from "./message.migrate";
+import NotificationMigrate from "./notification.migrate";
 import UserMigrate from "./user.migrate";
 import VerificationMigrate from "./verification.migrate";
 
@@ -16,6 +17,8 @@ const up = async () => {
   const interactions = await InteractionMigrate.up(users);
   const matchs = await MatchMigrate.up(users);
   const medias = await MediaMigrate.up();
+  const notifications = await NotificationMigrate.up(users);
+
   return {
     users,
     chats,
@@ -24,6 +27,7 @@ const up = async () => {
     verifications,
     interactions,
     matchs,
+    notifications,
   };
 };
 
@@ -35,6 +39,7 @@ const down = async () => {
   await MediaMigrate.down();
   await InteractionMigrate.down();
   await MatchMigrate.down();
+  await NotificationMigrate.down();
   await mongodb.finish();
 };
 

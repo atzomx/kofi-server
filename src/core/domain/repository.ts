@@ -46,7 +46,7 @@ class Repository<T> {
     });
   }
 
-  paginate(
+  async paginate(
     query: FilterQuery<T>,
     {
       page = 1,
@@ -59,26 +59,34 @@ class Repository<T> {
     populate?: string | string[],
   ) {
     const skip = Paginate.getSkip({ page, limit });
-    const documents = this.instance
+    const documentsPromise = this.instance
       .find(query)
       .skip(skip)
       .limit(limit)
       .sort(sort)
       .populate(populate)
       .lean<T[]>();
-    const total = this.instance.find().countDocuments();
-
+    const totalPromise = this.instance.find(query).countDocuments();
+    const [results, total] = await Promise.all([
+      documentsPromise,
+      totalPromise,
+    ]);
+    const pages = Math.ceil(total / limit);
     return {
-      getResults: () => documents,
-      getTotal: () => total,
+      results,
+      info: {
+        page,
+        total,
+        pages,
+      },
     };
   }
 
-  findByIdAndDelete(id: string | Types.ObjectId){
+  findByIdAndDelete(id: string | Types.ObjectId) {
     return this.instance.findByIdAndDelete<T>(id);
   }
 
-  deleteMany(){
+  deleteMany() {
     return this.instance.deleteMany();
   }
 
