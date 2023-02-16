@@ -14,8 +14,8 @@ const up = async () => {
   const chats = await ChatMigrate.up(users);
   const messages = await MessageMigrate.up(chats);
   const verifications = await VerificationMigrate.up(users);
-  const interactions = await InteractionMigrate.up(users);
   const matchs = await MatchMigrate.up(users);
+  const interactions = await InteractionMigrate.up(matchs);
   const medias = await MediaMigrate.up();
   const notifications = await NotificationMigrate.up(users);
 
