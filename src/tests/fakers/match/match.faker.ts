@@ -9,6 +9,12 @@ class MatchFaker {
       status: getEnumRandom(IMatchStatus),
     };
   }
+  static getEspecific(users: string[], status: IMatchStatus): Match {
+    return {
+      participants: users,
+      status: status,
+    };
+  }
 }
 
 export default MatchFaker;
