@@ -3,14 +3,16 @@ import { IContext } from "@core/domain/interfaces";
 import { ValidateArgs } from "@core/infrastructure/decorators";
 import namerUtils from "@core/infrastructure/utils/namer.utils";
 import AuthMiddleware from "@entities/auth/infrastructure/auth.middleware";
+import NotificationFactory from "@entities/notifications/application/notifications.factory";
+import { INotificationType } from "@entities/notifications/domain/notification.enum";
 import { Types } from "mongoose";
 import {
   Arg,
   Args,
   Ctx,
   Mutation,
-  Publisher,
   PubSub,
+  PubSubEngine,
   Query,
   Resolver,
   Root,
@@ -53,12 +55,22 @@ class MessageResolver {
   async create(
     @Arg("data") message: MessageInputCreate,
     @Ctx() ctx: IContext,
-    @PubSub(ISubscriptionsTypes.MESSAGES) publish: Publisher<IMessageExtra>,
+    @PubSub() pubsub: PubSubEngine,
   ) {
     const { id } = ctx.payload;
     const remitent = new Types.ObjectId(id);
     const result = await this.controller.create({ remitent, ...message });
-    await publish({ destinatary: message.destinatary, ...result });
+
+    await pubsub.publish(ISubscriptionsTypes.MESSAGES, {
+      destinatary: message.destinatary,
+      ...result,
+    });
+
+    const notification = await NotificationFactory.create(
+      INotificationType.message,
+      { owner: message.destinatary, idReference: result.chat.toString() },
+    );
+    await pubsub.publish(ISubscriptionsTypes.NOTIFICATIONS, notification);
     return result;
   }
 
