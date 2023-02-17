@@ -11,7 +11,6 @@ const paginate = gql`
         type
         owner
         from
-        leyend
         message
         idReference
       }
@@ -24,4 +23,18 @@ const paginate = gql`
   }
 `;
 
-export default { paginate };
+const subscription = gql`
+  subscription Subscription {
+    notificationNew {
+      _id
+      status
+      type
+      owner
+      from
+      message
+      idReference
+    }
+  }
+`;
+
+export default { paginate, subscription };
