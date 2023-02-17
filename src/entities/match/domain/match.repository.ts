@@ -19,7 +19,7 @@ class MatchRepository extends Repository<Match> {
     });
     if (macthByIds) return macthByIds;
 
-    const macthCreated = await this.instance.create<Match>({
+    const macthCreated = await this.create({
       participants: ids,
       status: IMatchStatus.actived,
     });
