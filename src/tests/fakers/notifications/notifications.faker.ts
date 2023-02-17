@@ -11,7 +11,6 @@ class NotificationFaker {
   static get(user: string): Notification {
     return {
       from: faker.name.firstName(),
-      leyend: faker.random.word(),
       status: getEnumRandom(INotificationStatus),
       type: getEnumRandom(INotificationType),
       message: faker.random.word(),
