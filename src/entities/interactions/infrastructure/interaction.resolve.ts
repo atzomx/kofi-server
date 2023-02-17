@@ -19,6 +19,7 @@ import {
 } from "type-graphql";
 import InteractionController from "../application/interaction.controller";
 import Interaction from "../domain/interaction.entity";
+import { IInteractionTypes } from "../domain/interaction.enums";
 import { InteractionPaginationArgs } from "./interaction.args";
 import {
   InteractionInputCreate,
@@ -76,19 +77,25 @@ class InteractionResolver {
   ) {
     const userFrom = ctx.payload.id;
 
-    const result = await this.controller.create(interaction, userFrom);
-
-    const { generatedMatch, name } = result;
+    const { generatedMatch, name, ...result } = await this.controller.create(
+      interaction,
+      userFrom,
+    );
 
     if (generatedMatch) {
       const notificationMatch = await NotificationFactory.create(
         INotificationType.match,
-        {
-          from: name,
-          owner: interaction.userTo,
-        },
+        { from: name, owner: interaction.userTo },
       );
       await publish(notificationMatch);
+    }
+
+    if (!generatedMatch && result.type !== IInteractionTypes.rejected) {
+      const notificationLike = await NotificationFactory.create(
+        INotificationType.like,
+        { from: name, owner: interaction.userTo },
+      );
+      await publish(notificationLike);
     }
 
     return result;
