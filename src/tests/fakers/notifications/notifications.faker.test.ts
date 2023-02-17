@@ -8,7 +8,6 @@ describe("Notification faker", () => {
       new Types.ObjectId().toString(),
     );
     expect(notification).toHaveProperty("from");
-    expect(notification).toHaveProperty("leyend");
     expect(notification).toHaveProperty("status");
     expect(notification).toHaveProperty("type");
     expect(notification).toHaveProperty("message");

@@ -111,7 +111,7 @@ describe("Chat Test", () => {
     expect(data).toHaveProperty("status");
   });
 
-  it("Should subscript to a messages channal", async () => {
+  it("Should subscribe to a messages channel", async () => {
     const destinatary = getOneFromArray(entities.users)._id.toString();
     const message = {
       destinatary,
