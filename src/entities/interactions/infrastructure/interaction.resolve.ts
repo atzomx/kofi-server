@@ -81,11 +81,13 @@ class InteractionResolver {
     const { generatedMatch, name } = result;
 
     if (generatedMatch) {
-      const notificationMatch = NotificationFactory.create(
+      const notificationMatch = await NotificationFactory.create(
         INotificationType.match,
+        {
+          from: name,
+          owner: interaction.userTo,
+        },
       );
-      notificationMatch.owner = interaction.userTo;
-      notificationMatch.from = name;
       await publish(notificationMatch);
     }
 
