@@ -10,8 +10,8 @@ class Notification extends Entity {
   readonly _id?: Types.ObjectId;
 
   @Field(() => INotificationStatus, { description: "Notification is readed" })
-  @prop({ required: false })
-  public status?: INotificationStatus;
+  @prop({ required: true })
+  public status!: INotificationStatus;
 
   @Field(() => INotificationType, { description: "Notification type" })
   @prop({ required: true })
@@ -22,20 +22,16 @@ class Notification extends Entity {
   public owner!: Types.ObjectId;
 
   @Field(() => String, { description: "Notification from origin" })
-  @prop({ required: true })
-  public from!: string;
-
-  @Field(() => String, { description: "Notification leyend" })
-  @prop({ required: true })
-  public leyend!: string;
+  @prop({ required: false, default: "" })
+  public from?: string;
 
   @Field(() => String, { description: "Notification message" })
-  @prop({ required: true })
-  public message!: string;
+  @prop({ required: false, default: "" })
+  public message?: string;
 
   @Field(() => String, { description: "Notification reference" })
-  @prop({ required: true })
-  public idReference!: string;
+  @prop({ required: false, default: "" })
+  public idReference?: string;
 }
 
 export default Notification;

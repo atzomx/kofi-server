@@ -8,19 +8,19 @@ import NotificationRepository from "../domain/notification.repository";
 
 type TNotificationBase = {
   message?: string;
-  from: string;
+  from?: string;
   owner: Types.ObjectId;
-  idReference?: Types.ObjectId;
+  idReference?: string;
 };
 
 class BaseNotification extends Notification {
-  constructor({ message = "", from, owner, idReference }: TNotificationBase) {
+  constructor({ message, from, owner, idReference }: TNotificationBase) {
     super();
     this.message = message;
     this.from = from;
     this.owner = owner;
     this.status = INotificationStatus.unread;
-    this.idReference = idReference.toString();
+    this.idReference = idReference;
   }
 }
 
