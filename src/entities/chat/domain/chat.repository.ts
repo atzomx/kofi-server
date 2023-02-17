@@ -19,7 +19,7 @@ class ChatRepository extends Repository<Chat> {
     });
     if (chatByIds) return chatByIds;
 
-    const chatCreated = await this.instance.create<Chat>({
+    const chatCreated = await this.create({
       participants: ids,
     });
     return chatCreated;

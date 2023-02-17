@@ -18,10 +18,9 @@ class Repository<T> {
     this.instance = instance;
   }
 
-  create(
-    entity: T,
-  ): Promise<HydratedDocument<T, unknown, unknown> & { _doc: T }> {
-    return this.instance.create<T>(entity);
+  async create(entity: T): Promise<T> {
+    const result = await this.instance.create<T>(entity);
+    return result._doc as T;
   }
 
   find(filter: FilterQuery<T>) {

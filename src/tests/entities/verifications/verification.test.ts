@@ -133,7 +133,7 @@ describe("Verification Test", () => {
       .query(userQuerys.userCreate)
       .variables({ data: newUser });
 
-    const dataUser = resultUser.data["userCreate"] as User;
+    const dataUser = resultUser.data.userCreate;
     const userExistId = dataUser._id.toString();
     const newVerification = VerificationFaker.create(
       new Types.ObjectId(userExistId),

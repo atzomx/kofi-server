@@ -82,7 +82,7 @@ class InteractionController {
       userFrom: new Types.ObjectId(userFrom),
       ...interaction,
     });
-    return { ...result._doc, generatedMatch, name };
+    return { ...result, generatedMatch, name };
   }
 
   async update(
