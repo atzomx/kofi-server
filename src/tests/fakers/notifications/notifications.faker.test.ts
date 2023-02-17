@@ -9,7 +9,7 @@ describe("Notification faker", () => {
     );
     expect(notification).toHaveProperty("from");
     expect(notification).toHaveProperty("leyend");
-    expect(notification).toHaveProperty("seen");
+    expect(notification).toHaveProperty("status");
     expect(notification).toHaveProperty("type");
     expect(notification).toHaveProperty("message");
     expect(notification).toHaveProperty("owner");

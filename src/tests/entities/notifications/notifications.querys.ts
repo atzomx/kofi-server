@@ -7,7 +7,7 @@ const paginate = gql`
         createdAt
         updatedAt
         _id
-        seen
+        status
         type
         owner
         from
