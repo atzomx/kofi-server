@@ -7,7 +7,6 @@ const interaction = `
     userFrom
     userTo
     type
-    generatedMatch
 `;
 const simpleInteraction = `
     createdAt

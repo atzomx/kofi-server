@@ -44,7 +44,7 @@ class MessageController {
       owner: inputMessage.remitent,
       status: IMessageType.sent,
     });
-    return created._doc;
+    return created;
   }
 }
 

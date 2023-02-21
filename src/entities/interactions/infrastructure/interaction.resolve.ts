@@ -11,13 +11,11 @@ import {
   Args,
   Ctx,
   Mutation,
-  PubSub,
   Publisher,
+  PubSub,
   Query,
   Resolver,
   UseMiddleware,
-  Subscription,
-  Root,
 } from "type-graphql";
 import InteractionController from "../application/interaction.controller";
 import Interaction from "../domain/interaction.entity";
@@ -75,30 +73,29 @@ class InteractionResolver {
   async create(
     @Arg("data") interaction: InteractionInputCreate,
     @Ctx() ctx: IContext,
-    @PubSub(ISubscriptionsTypes.INTERACTIONS) publish: Publisher<Notification>,
+    @PubSub(ISubscriptionsTypes.NOTIFICATIONS) publish: Publisher<Notification>,
   ) {
     const userFrom = ctx.payload.id;
 
-    const result = await this.controller.create(interaction, userFrom);
+    const { generatedMatch, name, ...result } = await this.controller.create(
+      interaction,
+      userFrom,
+    );
 
-    const { generatedMatch, type, name } = result;
-
-    if (IInteractionTypes.rejected !== type && !generatedMatch) {
-      const notificationLike = NotificationFactory.create(
-        INotificationType.like,
-      );
-      notificationLike.owner = interaction.userTo;
-      notificationLike.from = name;
-
-      await publish(notificationLike);
-    }
     if (generatedMatch) {
-      const notificationMatch = NotificationFactory.create(
+      const notificationMatch = await NotificationFactory.create(
         INotificationType.match,
+        { from: name, owner: interaction.userTo },
       );
-      notificationMatch.owner = interaction.userTo;
-      notificationMatch.from = name;
       await publish(notificationMatch);
+    }
+
+    if (!generatedMatch && result.type !== IInteractionTypes.rejected) {
+      const notificationLike = await NotificationFactory.create(
+        INotificationType.like,
+        { from: name, owner: interaction.userTo },
+      );
+      await publish(notificationLike);
     }
 
     return result;
@@ -116,22 +113,6 @@ class InteractionResolver {
   ) {
     const result = await this.controller.update(id.toString(), interaction);
     return result;
-  }
-
-  @Subscription({
-    description: "Subscription for interaction notifications.",
-    name: NAMES.new,
-    topics: ISubscriptionsTypes.INTERACTIONS,
-    filter: ({
-      payload,
-      context,
-    }: {
-      payload: Notification;
-      context: IContext;
-    }) => payload.owner.toString() === context.payload.id,
-  })
-  newNotification(@Root() notification: Notification): Notification {
-    return notification;
   }
 }
 

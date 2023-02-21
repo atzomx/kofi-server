@@ -21,7 +21,7 @@ const up = async (users: User[]) => {
 
   const matchCreated = await matchRepository.insertMany(newMatch);
 
-  const cleanMacth = matchCreated.map((interaction) => interaction._doc);
+  const cleanMacth = matchCreated.map((match) => match._doc);
   return cleanMacth;
 };
 
