@@ -15,10 +15,10 @@ class AuthResolver {
     name: "userLogin",
   })
   async userLogin(
-    @Arg("userName") userName: string,
+    @Arg("user") user: string,
     @Arg("password") password: string,
   ): Promise<LoginResponse> {
-    const token = await this.controller.getToken(userName, password);
+    const token = await this.controller.getToken(user, password);
     return { token };
   }
 }
