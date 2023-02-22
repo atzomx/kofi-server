@@ -232,7 +232,7 @@ describe("User Test", () => {
     expect(error.message).toBe("Invalid token");
   });
 
-  it("Should update by user", async () => {
+  it("Should update by user token", async () => {
     const dataToSent: Partial<User> = {
       lookingFor: IUserLookingFor.friends,
     };

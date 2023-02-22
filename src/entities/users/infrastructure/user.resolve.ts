@@ -80,7 +80,7 @@ class UserResolver {
   }
 
   @Mutation(() => User, {
-    description: "Update an existing user by id.",
+    description: "Update current user by token.",
     name: "userUpdateMe",
   })
   @UseMiddleware(AuthMiddleware.IsAuth)
