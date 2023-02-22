@@ -29,6 +29,14 @@ const userById = gql`
   }
 `;
 
+const userMe = gql`
+  query UserMe {
+    userMe {
+      ${user}
+    }
+  }
+`;
+
 const paginate = gql`
   query UserPaginate(
     $page: Int, 
@@ -74,4 +82,4 @@ const userUpdate = gql`
   }
 `;
 
-export default { userById, paginate, userCreate, userUpdate };
+export default { userById, paginate, userCreate, userUpdate, userMe };

@@ -29,6 +29,19 @@ describe("User Test", () => {
     });
   });
 
+  it("Should return an user from token", async () => {
+    const result = await request<{ userMe: User }>(app)
+      .query(userQuerys.userMe)
+      .set("authorization", authorization);
+
+    expect(result.errors).toBeUndefined();
+    expect(result.data).toHaveProperty("userMe");
+    const data = result.data.userMe;
+    keysMandatories.forEach((key) => {
+      expect(data).toHaveProperty(key);
+    });
+  });
+
   it("Shouldn't return an user with unexist id", async () => {
     const user = new Types.ObjectId().toString();
     const result = await request<{ userById: User }>(app)
