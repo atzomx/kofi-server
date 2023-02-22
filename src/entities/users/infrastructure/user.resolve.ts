@@ -78,6 +78,18 @@ class UserResolver {
     const result = await this.controller.update(id.toString(), user);
     return result;
   }
+
+  @Mutation(() => User, {
+    description: "Update current user by token.",
+    name: "userUpdateMe",
+  })
+  @UseMiddleware(AuthMiddleware.IsAuth)
+  @ValidateArgs(UserInputUpdate, "data")
+  async userUpdateMe(@Ctx() ctx: IContext, @Arg("data") user: UserInputUpdate) {
+    const userId = ctx.payload.id;
+    const result = await this.controller.update(userId, user);
+    return result;
+  }
 }
 
 export default UserResolver;
