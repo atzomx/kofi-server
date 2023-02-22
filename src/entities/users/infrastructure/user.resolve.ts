@@ -1,9 +1,11 @@
+import { IContext } from "@core/domain/interfaces";
 import { ValidateArgs } from "@core/infrastructure/decorators";
 import NamerUtils from "@core/infrastructure/utils/namer.utils";
 import AuthMiddleware from "@entities/auth/infrastructure/auth.middleware";
 import {
   Arg,
   Args,
+  Ctx,
   Mutation,
   Query,
   Resolver,
@@ -32,6 +34,17 @@ class UserResolver {
   @UseMiddleware(AuthMiddleware.IsAuth)
   async findById(@Arg("id") id: string): Promise<User> {
     const user = await this.controller.findById(id);
+    return user;
+  }
+
+  @Query(() => User, {
+    description: "Returns one user by token",
+    name: NAMES.me,
+  })
+  @UseMiddleware(AuthMiddleware.IsAuth)
+  async userMe(@Ctx() ctx: IContext) {
+    const userId = ctx.payload.id;
+    const user = await this.controller.findById(userId);
     return user;
   }
 
