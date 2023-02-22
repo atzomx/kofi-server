@@ -82,4 +82,12 @@ const userUpdate = gql`
   }
 `;
 
-export default { userById, paginate, userCreate, userUpdate, userMe };
+const userUpdateMe = gql`
+  mutation Mutation($data: UserInputUpdate!) {
+    userUpdateMe(data: $data) {
+      ${user}
+    }
+  }
+`;
+
+export default { userById, paginate, userCreate, userUpdate, userMe, userUpdateMe };

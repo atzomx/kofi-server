@@ -231,4 +231,24 @@ describe("User Test", () => {
     const [error] = result.errors;
     expect(error.message).toBe("Invalid token");
   });
+
+  it("Should update by user", async () => {
+    const dataToSent: Partial<User> = {
+      lookingFor: IUserLookingFor.friends,
+    };
+    const { data, errors } = await request<{ userUpdateMe: User }>(app)
+      .query(userQuerys.userUpdateMe)
+      .variables({ data: dataToSent })
+      .set("authorization", authorization);
+
+    expect(errors).toBeUndefined();
+    expect(data).not.toBeUndefined();
+    expect(data).toHaveProperty("userUpdateMe");
+
+    expect(data.userUpdateMe.lookingFor).toBe(dataToSent.lookingFor);
+
+    keysMandatories.forEach((key) => {
+      expect(data.userUpdateMe).toHaveProperty(key);
+    });
+  });
 });
