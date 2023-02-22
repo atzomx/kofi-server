@@ -6,6 +6,7 @@ const get = (base: string) => {
     find: `${base}ById`,
     new: `${base}New`,
     delete: `${base}Delete`,
+    me: `${base}Me`,
   };
 };
 
