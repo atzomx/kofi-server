@@ -2,20 +2,19 @@ import { ISubscriptionsTypes } from "@core/domain/enums";
 import { IContext } from "@core/domain/interfaces";
 import { ValidateArgs } from "@core/infrastructure/decorators";
 import NamerUtils from "@core/infrastructure/utils/namer.utils";
-import AuthMiddleware from "@entities/auth/infrastructure/auth.middleware";
 import { Notification } from "@entities/notifications";
 import NotificationFactory from "@entities/notifications/application/notifications.factory";
 import { INotificationType } from "@entities/notifications/domain/notification.enum";
 import {
   Arg,
   Args,
+  Authorized,
   Ctx,
   Mutation,
   Publisher,
   PubSub,
   Query,
   Resolver,
-  UseMiddleware,
 } from "type-graphql";
 import InteractionController from "../application/interaction.controller";
 import Interaction from "../domain/interaction.entity";
@@ -44,7 +43,7 @@ class InteractionResolver {
     description: "Returns one Interaction by id",
     name: NAMES.find,
   })
-  @UseMiddleware(AuthMiddleware.IsAuth)
+  @Authorized()
   async findById(@Arg("id") id: string): Promise<Interaction> {
     const interaction = await this.controller.findById(id);
     return interaction;
@@ -54,7 +53,7 @@ class InteractionResolver {
     description: "Returns an array of Interaction by user and type.",
     name: NAMES.paginate,
   })
-  @UseMiddleware(AuthMiddleware.IsAuth)
+  @Authorized()
   async paginate(
     @Args() paginate: InteractionPaginationArgs,
     @Ctx() ctx: IContext,
@@ -68,7 +67,7 @@ class InteractionResolver {
     description: "Register a new Interaction.",
     name: NAMES.create,
   })
-  @UseMiddleware(AuthMiddleware.IsAuth)
+  @Authorized()
   @ValidateArgs(InteractionInputCreate, "data")
   async create(
     @Arg("data") interaction: InteractionInputCreate,
@@ -105,7 +104,7 @@ class InteractionResolver {
     description: "Update an existing Interaction by id.",
     name: NAMES.update,
   })
-  @UseMiddleware(AuthMiddleware.IsAuth)
+  @Authorized()
   @ValidateArgs(InteractionInputUpdate, "data")
   async update(
     @Arg("id") id: string,

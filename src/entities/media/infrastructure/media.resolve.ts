@@ -1,7 +1,6 @@
 import { ValidateArgs } from "@core/infrastructure/decorators";
 import NamerUtils from "@core/infrastructure/utils/namer.utils";
-import AuthMiddleware from "@entities/auth/infrastructure/auth.middleware";
-import { Arg, Args, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
+import { Arg, Args, Authorized, Mutation, Query, Resolver } from "type-graphql";
 import { MediaController } from "..";
 import Media from "../domain/media.entity";
 import { MediaPaginationArgs } from "./media.args";
@@ -22,7 +21,7 @@ class MediaResolver {
     description: "Returns one media by id",
     name: NAMES.find,
   })
-  async findById(@Arg("id") id: string): Promise<Media>{
+  async findById(@Arg("id") id: string): Promise<Media> {
     const media = await this.controller.findById(id);
     return media;
   }
@@ -50,12 +49,11 @@ class MediaResolver {
     description: "Delete media file.",
     name: NAMES.delete,
   })
-  @UseMiddleware(AuthMiddleware.IsAuth)
+  @Authorized()
   async delete(@Arg("id") id: string) {
     const result = await this.controller.delete(id.toString());
     return result;
   }
-
 }
 
 export default MediaResolver;

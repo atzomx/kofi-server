@@ -1,15 +1,14 @@
 import { IContext } from "@core/domain/interfaces";
 import { ValidateArgs } from "@core/infrastructure/decorators";
 import NamerUtils from "@core/infrastructure/utils/namer.utils";
-import AuthMiddleware from "@entities/auth/infrastructure/auth.middleware";
 import {
   Arg,
   Args,
+  Authorized,
   Ctx,
   Mutation,
   Query,
   Resolver,
-  UseMiddleware,
 } from "type-graphql";
 import VerificationController from "../application/verification.controller";
 import Verification from "../domain/verification.entity";
@@ -34,7 +33,7 @@ class VerificationResolver {
     description: "Returns one Verification by id",
     name: NAMES.find,
   })
-  @UseMiddleware(AuthMiddleware.IsAuth)
+  @Authorized()
   async findById(@Arg("id") id: string): Promise<Verification> {
     const verification = await this.controller.findById(id);
     return verification;
@@ -44,7 +43,7 @@ class VerificationResolver {
     description: "Returns one Verification by id in token",
     name: NAMES.me,
   })
-  @UseMiddleware(AuthMiddleware.IsAuth)
+  @Authorized()
   async verificationMe(@Ctx() ctx: IContext) {
     const userId = ctx.payload.id;
     const user = await this.controller.findByUserId(userId);
@@ -55,7 +54,7 @@ class VerificationResolver {
     description: "Returns an array of Verifications.",
     name: NAMES.paginate,
   })
-  @UseMiddleware(AuthMiddleware.IsAuth)
+  @Authorized()
   async paginate(@Args() paginate: VerificationPaginationArgs) {
     const results = await this.controller.paginate(paginate);
     return results;
@@ -65,7 +64,7 @@ class VerificationResolver {
     description: "Register a new Verification.",
     name: NAMES.create,
   })
-  @UseMiddleware(AuthMiddleware.IsAuth)
+  @Authorized()
   @ValidateArgs(VerificationInputCreate, "data")
   async create(@Arg("data") verification: VerificationInputCreate) {
     const result = await this.controller.create(verification);
@@ -76,7 +75,7 @@ class VerificationResolver {
     description: "Update an existing Verification by id.",
     name: NAMES.update,
   })
-  @UseMiddleware(AuthMiddleware.IsAuth)
+  @Authorized()
   @ValidateArgs(VerificationInputUpdate, "data")
   async update(
     @Arg("id") id: string,
