@@ -2,6 +2,7 @@ import { IPagination } from "@core/domain/interfaces";
 import TestUtils, {
   getEnumRandom,
 } from "@core/infrastructure/utils/test.utils";
+import authUtils from "@core/infrastructure/utils/token.utils";
 import { User } from "@entities/users";
 import { Verification } from "@entities/verifications";
 import {
@@ -31,6 +32,23 @@ describe("Verification Test", () => {
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("verificationById");
     const data = result.data.verificationById;
+    keysMandatories.forEach((key) => {
+      expect(data).toHaveProperty(key);
+    });
+  });
+
+  it("Should return an verification from id token", async () => {
+    const verification = TestUtils.getOneFromArray(entities.verifications);
+    const userToken = authUtils.getToken(verification.userId.toString());
+    const authorization = `Token ${userToken}`;
+
+    const result = await request<{ verificationMe: Verification }>(app)
+      .query(verificationQuerys.verificationMe)
+      .set("authorization", authorization);
+
+    expect(result.errors).toBeUndefined();
+    expect(result.data).toHaveProperty("verificationMe");
+    const data = result.data.verificationMe;
     keysMandatories.forEach((key) => {
       expect(data).toHaveProperty(key);
     });

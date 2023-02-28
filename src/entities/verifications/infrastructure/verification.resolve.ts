@@ -1,9 +1,11 @@
+import { IContext } from "@core/domain/interfaces";
 import { ValidateArgs } from "@core/infrastructure/decorators";
 import NamerUtils from "@core/infrastructure/utils/namer.utils";
 import AuthMiddleware from "@entities/auth/infrastructure/auth.middleware";
 import {
   Arg,
   Args,
+  Ctx,
   Mutation,
   Query,
   Resolver,
@@ -36,6 +38,17 @@ class VerificationResolver {
   async findById(@Arg("id") id: string): Promise<Verification> {
     const verification = await this.controller.findById(id);
     return verification;
+  }
+
+  @Query(() => Verification, {
+    description: "Returns one Verification by id in token",
+    name: NAMES.me,
+  })
+  @UseMiddleware(AuthMiddleware.IsAuth)
+  async verificationMe(@Ctx() ctx: IContext) {
+    const userId = ctx.payload.id;
+    const user = await this.controller.findByUserId(userId);
+    return user;
   }
 
   @Query(() => VerificationPaginateResponse, {

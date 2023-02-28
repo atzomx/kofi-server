@@ -19,6 +19,14 @@ const verificationById = gql`
 }
 `;
 
+const verificationMe = gql`
+  query VerificationMe {
+  verificationMe {
+    ${verification}
+  }
+}
+`;
+
 const verificationPaginate = gql`
   query VerificationPaginate(
     $page: Int
@@ -71,4 +79,5 @@ export default {
   verificationPaginate,
   verificationCreate,
   verificationUpdate,
+  verificationMe,
 };

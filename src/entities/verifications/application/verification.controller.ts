@@ -22,6 +22,12 @@ class VerificationController {
     this.userController = new UserController();
   }
 
+  async findByUserId(id: string) {
+    const query = { userId: id };
+    const userVerification = await this.repository.findOne(query);
+    return userVerification;
+  }
+
   async findById(id: string) {
     const currentVerification = await this.repository.findById(id);
     if (!currentVerification) throw new VerificationNotFoundError();
