@@ -47,7 +47,7 @@ class VerificationResolver {
   @UseMiddleware(AuthMiddleware.IsAuth)
   async verificationMe(@Ctx() ctx: IContext) {
     const userId = ctx.payload.id;
-    const user = await this.controller.findById(userId);
+    const user = await this.controller.findByUserId(userId);
     return user;
   }
 
