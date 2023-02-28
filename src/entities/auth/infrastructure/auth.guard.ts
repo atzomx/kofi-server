@@ -1,16 +1,14 @@
 import { IContext } from "@core/domain/interfaces";
 import AuthUtils from "@core/infrastructure/utils/token.utils";
-import { AuthenticationError } from "apollo-server-core";
 import { AuthChecker } from "type-graphql";
 
 const authChecker: AuthChecker<IContext> = ({ context }) => {
   try {
     const { authorization } = context.req.headers;
-    if (!authorization) throw new AuthenticationError("Invalid token");
+    if (!authorization) return false;
 
     const [typo, token] = authorization.split(" ");
-    if (!["Token", "Bearer"].includes(typo))
-      throw new AuthenticationError("Invalid token");
+    if (!["Token", "Bearer"].includes(typo)) return false;
 
     const payload = AuthUtils.verify(token);
 

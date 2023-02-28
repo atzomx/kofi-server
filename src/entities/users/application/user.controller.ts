@@ -44,9 +44,7 @@ class UserController {
   }
 
   async create(user: UserInputCreate): Promise<User> {
-    const query = {
-      $or: [{ userName: user.userName }, { email: user.email }],
-    };
+    const query = { email: user.email };
     const existingUser = await this.repository.findOne(query);
     if (existingUser) throw new UserAlreadyExistsError();
 
@@ -58,11 +56,7 @@ class UserController {
 
   async update(id: string, user: UserInputUpdate): Promise<User> {
     await this.findById(id);
-    const dataToUpdate = { ...user };
-    const updatedUser = await this.repository.findByIdAndUpdate(
-      id,
-      dataToUpdate,
-    );
+    const updatedUser = await this.repository.findByIdAndUpdate(id, user);
     return updatedUser;
   }
 }

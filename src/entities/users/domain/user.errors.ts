@@ -13,7 +13,7 @@ export class UserNotFoundError extends UserInputError {
 export class UserAlreadyExistsError extends UserInputError {
   constructor() {
     const errors: Array<ICustomError> = [
-      { constrains: "User already register", property: "userName" },
+      { constrains: "User already register", property: "user" },
       { constrains: "User already register", property: "email" },
     ];
     super("User already exists", { errors });
