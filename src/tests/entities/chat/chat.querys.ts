@@ -13,26 +13,10 @@ const paginate = gql`
         updatedAt
         _id
         participants {
-          createdAt
-          updatedAt
           _id
           name
-          userName
           email
-          birthday
-          description
-          interest
-          personality
-          maritalStatus
-          lookingFor
-          employer
-          pets
-          sexualOrientation
-          location
           status
-          degree
-          religion
-          nacionality
         }
       }
     }

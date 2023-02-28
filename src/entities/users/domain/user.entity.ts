@@ -2,17 +2,7 @@ import Entity from "@core/domain/entity";
 import { prop } from "@typegoose/typegoose";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
-import {
-  IUserInterests,
-  IUserPersonality,
-  IUserMaritalStatus,
-  IUserLookingFor,
-  IUserPets,
-  IUserSexualOrientation,
-  IUserStatus,
-  IUserDegree,
-  IUserReligion,
-} from "./user.enums";
+import { IUserRole, IUserStatus } from "./user.enums";
 
 @ObjectType()
 class User extends Entity {
@@ -23,71 +13,16 @@ class User extends Entity {
   @prop({ required: true })
   public name!: string;
 
-  @Field({ description: "UserName." })
-  @prop({ required: true, unique: true })
-  public userName!: string;
-
   @Field({ description: "Email." })
   @prop({ required: true, unique: true })
   public email!: string;
-
-  @Field({ description: "User birthday YYYY-MM-DD." })
-  @prop({ required: true })
-  public birthday!: Date;
-
-  @Field({ description: "User description." })
-  @prop({ required: false })
-  public description?: string;
-
-  @Field(() => [IUserInterests], { description: "User interest." })
-  @prop({ required: false, type: () => [String], enum: IUserInterests })
-  public interest?: IUserInterests[];
-
-  @Field(() => IUserPersonality, { description: "User personality." })
-  @prop({ required: false, enum: IUserPersonality })
-  public personality?: IUserPersonality;
-
-  @Field(() => IUserMaritalStatus, { description: "User marital status." })
-  @prop({ required: false, enum: IUserMaritalStatus })
-  public maritalStatus?: IUserMaritalStatus;
-
-  @Field(() => IUserLookingFor, { description: "Looking for." })
-  @prop({ required: false, enum: IUserLookingFor })
-  public lookingFor?: IUserLookingFor;
-
-  @Field({ description: "User job." })
-  @prop({ required: false })
-  public employer?: string;
-
-  @Field(() => IUserPets, { description: "User pets." })
-  @prop({ required: false, enum: IUserPets })
-  public pets?: IUserPets;
-
-  @Field(() => IUserSexualOrientation, {
-    description: "User sexual orientation.",
-  })
-  @prop({ required: false, enum: IUserSexualOrientation })
-  public sexualOrientation?: IUserSexualOrientation;
-
-  @Field({ description: "User location." })
-  @prop({ required: true })
-  public location!: string;
 
   @Field(() => IUserStatus, { description: "User status." })
   @prop({ required: true, enum: IUserStatus })
   public status!: IUserStatus;
 
-  @Field(() => IUserDegree, { description: "User degree." })
-  @prop({ required: false, enum: IUserDegree })
-  public degree?: IUserDegree;
-
-  @Field(() => IUserReligion, { description: "User religion." })
-  @prop({ required: false, enum: IUserReligion })
-  public religion?: IUserReligion;
-
-  @Field(() => String, { description: "User nacionality." })
-  @prop({ required: false })
-  public nacionality?: string;
+  @prop({ required: true, enum: IUserRole, default: IUserRole.LOVER })
+  public role!: IUserRole;
 
   @prop({ required: true })
   public password!: string;

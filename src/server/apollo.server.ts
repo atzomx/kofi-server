@@ -4,6 +4,7 @@ import PubSub from "@core/application/PubSub";
 import { GLOBAL_SCALARS } from "@core/infrastructure/scalars";
 import { Log } from "@core/infrastructure/utils";
 import Entities from "@entities";
+import { AuthChecker } from "@entities/auth";
 import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
 import { ApolloServer } from "apollo-server-express";
 import express from "express";
@@ -20,6 +21,7 @@ export async function create(port: number, dir = __dirname) {
     validate: true,
     scalarsMap: GLOBAL_SCALARS,
     pubSub: PubSub.create(),
+    authChecker: AuthChecker,
   });
 
   const socketServer = await SocketServer.create(httpServer, schema);

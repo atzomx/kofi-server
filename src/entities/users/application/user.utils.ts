@@ -20,7 +20,7 @@ const searchingQuery = ({
     ? {
         $or: [
           { email: { $regex: cleanSearch, $options: "i" } },
-          { userName: { $regex: cleanSearch, $options: "i" } },
+          { name: { $regex: cleanSearch, $options: "i" } },
         ],
       }
     : null;

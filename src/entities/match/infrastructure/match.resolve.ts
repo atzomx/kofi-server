@@ -1,15 +1,14 @@
 import { IContext } from "@core/domain/interfaces";
 import { ValidateArgs } from "@core/infrastructure/decorators";
 import NamerUtils from "@core/infrastructure/utils/namer.utils";
-import AuthMiddleware from "@entities/auth/infrastructure/auth.middleware";
 import {
   Arg,
   Args,
+  Authorized,
   Ctx,
   Mutation,
   Query,
   Resolver,
-  UseMiddleware,
 } from "type-graphql";
 import MatchController from "../application/match.controller";
 import Match from "../domain/match.entity";
@@ -40,7 +39,7 @@ class MatchResolver {
     description: "Returns an array of Match by user and status.",
     name: NAMES.paginate,
   })
-  @UseMiddleware(AuthMiddleware.IsAuth)
+  @Authorized()
   async paginate(@Args() paginate: MatchPaginationArgs, @Ctx() ctx: IContext) {
     const user = ctx.payload.id;
     const results = await this.controller.paginate({ user, ...paginate });
@@ -51,7 +50,7 @@ class MatchResolver {
     description: "Update an existing Match by id.",
     name: NAMES.update,
   })
-  @UseMiddleware(AuthMiddleware.IsAuth)
+  @Authorized()
   @ValidateArgs(MatchInputUpdate, "data")
   async update(@Arg("id") id: string, @Arg("data") match: MatchInputUpdate) {
     const result = await this.controller.update(id.toString(), match);

@@ -1,15 +1,14 @@
 import { ISubscriptionsTypes } from "@core/domain/enums";
 import { IContext } from "@core/domain/interfaces";
 import namerUtils from "@core/infrastructure/utils/namer.utils";
-import { AuthMiddleware } from "@entities/auth";
 import {
   Args,
+  Authorized,
   Ctx,
   Query,
   Resolver,
   Root,
   Subscription,
-  UseMiddleware,
 } from "type-graphql";
 import NotificationController from "../application/notification.controller";
 import Notification from "../domain/notification.entity";
@@ -30,7 +29,7 @@ class NotificationResolver {
     description: "Returns an array of Notification by user.",
     name: NAMES.paginate,
   })
-  @UseMiddleware(AuthMiddleware.IsAuth)
+  @Authorized()
   async paginate(
     @Args() paginate: NotificationPaginationArgs,
     @Ctx() ctx: IContext,

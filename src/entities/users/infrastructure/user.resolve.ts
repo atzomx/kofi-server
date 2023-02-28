@@ -1,15 +1,14 @@
 import { IContext } from "@core/domain/interfaces";
 import { ValidateArgs } from "@core/infrastructure/decorators";
 import NamerUtils from "@core/infrastructure/utils/namer.utils";
-import AuthMiddleware from "@entities/auth/infrastructure/auth.middleware";
 import {
   Arg,
   Args,
+  Authorized,
   Ctx,
   Mutation,
   Query,
   Resolver,
-  UseMiddleware,
 } from "type-graphql";
 import UserController from "../application/user.controller";
 import User from "../domain/user.entity";
@@ -31,7 +30,7 @@ class UserResolver {
     description: "Returns one user by id",
     name: NAMES.find,
   })
-  @UseMiddleware(AuthMiddleware.IsAuth)
+  @Authorized()
   async findById(@Arg("id") id: string): Promise<User> {
     const user = await this.controller.findById(id);
     return user;
@@ -41,7 +40,7 @@ class UserResolver {
     description: "Returns one user by token",
     name: NAMES.me,
   })
-  @UseMiddleware(AuthMiddleware.IsAuth)
+  @Authorized()
   async userMe(@Ctx() ctx: IContext) {
     const userId = ctx.payload.id;
     const user = await this.controller.findById(userId);
@@ -52,7 +51,7 @@ class UserResolver {
     description: "Returns an array of users.",
     name: NAMES.paginate,
   })
-  @UseMiddleware(AuthMiddleware.IsAuth)
+  @Authorized()
   async paginate(@Args() paginate: UserPaginationArgs) {
     const results = await this.controller.paginate(paginate);
     return results;
@@ -72,7 +71,7 @@ class UserResolver {
     description: "Update an existing user by id.",
     name: NAMES.update,
   })
-  @UseMiddleware(AuthMiddleware.IsAuth)
+  @Authorized()
   @ValidateArgs(UserInputUpdate, "data")
   async update(@Arg("id") id: string, @Arg("data") user: UserInputUpdate) {
     const result = await this.controller.update(id.toString(), user);
@@ -83,7 +82,7 @@ class UserResolver {
     description: "Update current user by token.",
     name: "userUpdateMe",
   })
-  @UseMiddleware(AuthMiddleware.IsAuth)
+  @Authorized()
   @ValidateArgs(UserInputUpdate, "data")
   async userUpdateMe(@Ctx() ctx: IContext, @Arg("data") user: UserInputUpdate) {
     const userId = ctx.payload.id;

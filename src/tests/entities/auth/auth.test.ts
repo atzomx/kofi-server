@@ -6,18 +6,6 @@ import { app, entities } from "../../setup";
 import authQuerys from "./auth.querys";
 
 describe("Login Test", () => {
-  it("Should login an user with userName", async () => {
-    const user = getOneFromArray(entities.users);
-
-    const result = await request<{ userLogin: { token: string } }>(app)
-      .query(authQuerys.userLogin)
-      .variables({ password: DEFAULT_PASSWORD, user: user.userName });
-
-    expect(result.errors).toBeUndefined();
-    expect(result.data).toHaveProperty("userLogin");
-    expect(result.data.userLogin).toHaveProperty("token");
-  });
-
   it("Should login an user with email", async () => {
     const user = getOneFromArray(entities.users);
 
@@ -33,7 +21,7 @@ describe("Login Test", () => {
   it("Shouldn't login an unexist user", async () => {
     const result = await request<{ userLogin: { token: string } }>(app)
       .query(authQuerys.userLogin)
-      .variables({ password: DEFAULT_PASSWORD, user: "example@mail.com" });
+      .variables({ password: DEFAULT_PASSWORD, user: "example_9_3@mail.com" });
 
     expect(result.errors).toHaveLength(1);
     const [error] = result.errors;

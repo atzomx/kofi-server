@@ -11,9 +11,7 @@ class AuthController {
   }
 
   async getToken(userName: string, password: string): Promise<string> {
-    const user = await this.repository.findOne({
-      $or: [{ userName }, { email: userName }],
-    });
+    const user = await this.repository.findOne({ email: userName });
     if (!user) throw new InvalidCredentialsError();
     const isValid = Password.compare(user.password, password);
 

@@ -145,7 +145,7 @@ describe("Verification Test", () => {
   });
 
   it("Should create an verification", async () => {
-    const newUser = UserFaker.create();
+    const newUser = UserFaker.basic();
 
     const resultUser = await request<{ userCreate: User }>(app)
       .query(userQuerys.userCreate)

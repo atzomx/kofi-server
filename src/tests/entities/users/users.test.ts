@@ -2,7 +2,7 @@ import { IPagination } from "@core/domain/interfaces";
 import TestUtils from "@core/infrastructure/utils/test.utils";
 import authUtils from "@core/infrastructure/utils/token.utils";
 import { User } from "@entities/users";
-import { IUserLookingFor } from "@entities/users/domain/user.enums";
+import { IUserRole } from "@entities/users/domain/user.enums";
 import { Types } from "mongoose";
 import request from "supertest-graphql";
 import UserFaker from "../../fakers/user/user.faker";
@@ -124,7 +124,7 @@ describe("User Test", () => {
 
   it("Shouldn't create an user with bad arguments", async () => {
     const newUser = UserFaker.create();
-    newUser.userName = "longestUserName128828282";
+    newUser.name = "longestUserName128828282";
     const { errors } = await request<{ userCreate: User }>(app)
       .query(userQuerys.userCreate)
       .variables({ data: newUser });
@@ -133,7 +133,7 @@ describe("User Test", () => {
   });
 
   it("Should create an user", async () => {
-    const newUser = UserFaker.create();
+    const newUser = UserFaker.basic();
 
     const result = await request<{ userCreate: User }>(app)
       .query(userQuerys.userCreate)
@@ -148,28 +148,20 @@ describe("User Test", () => {
     expect(data.status).toBe("pending");
   });
 
-  it("Should update an user", async () => {
+  it("Should update an user with another role", async () => {
     const user = TestUtils.getOneFromArray(entities.users);
     const userId = user._id.toString();
     const userToken = authUtils.getToken(userId);
     const authorization = `Token ${userToken}`;
     const dataToSent: Partial<User> = {
-      lookingFor: IUserLookingFor.friends,
+      role: IUserRole.ADMIN,
     };
-    const { data, errors } = await request<{ userUpdate: User }>(app)
+    const { errors } = await request<{ userUpdate: User }>(app)
       .query(userQuerys.userUpdate)
       .variables({ data: dataToSent, userId })
       .set("authorization", authorization);
 
-    expect(errors).toBeUndefined();
-    expect(data).not.toBeUndefined();
-    expect(data).toHaveProperty("userUpdate");
-
-    expect(data.userUpdate.lookingFor).toBe(dataToSent.lookingFor);
-
-    keysMandatories.forEach((key) => {
-      expect(data.userUpdate).toHaveProperty(key);
-    });
+    expect(errors).toBeTruthy();
   });
 
   it("Shouldn't update a user with a corrupted identifier", async () => {
@@ -178,7 +170,7 @@ describe("User Test", () => {
     const userToken = authUtils.getToken(userId);
     const authorization = `Token ${userToken}`;
     const dataToSent: Partial<User> = {
-      lookingFor: IUserLookingFor.friends,
+      name: "AlteredName",
     };
     const { errors } = await request<{ userUpdate: User }>(app)
       .query(userQuerys.userUpdate)
@@ -188,10 +180,10 @@ describe("User Test", () => {
     expect(errors).toBeTruthy();
   });
 
-  it("Shouldn't create a user with the same userName", async () => {
+  it("Shouldn't create a user with the same email", async () => {
     const userExisted = TestUtils.getOneFromArray(entities.users);
-    const newUser = UserFaker.create();
-    newUser.userName = userExisted.userName;
+    const newUser = UserFaker.basic();
+    newUser.email = userExisted.email;
 
     const { errors } = await request<{ userCreate: User }>(app)
       .query(userQuerys.userCreate)
@@ -214,7 +206,9 @@ describe("User Test", () => {
       .variables(variables);
 
     const [error] = result.errors;
-    expect(error.message).toBe("Invalid token");
+    expect(error.message).toBe(
+      "Access denied! You need to be authorized to perform this action!",
+    );
   });
 
   it("Shouldn't access a protected resolver by currupted token key", async () => {
@@ -229,12 +223,14 @@ describe("User Test", () => {
       .set("authorization", `Not${authorization}`);
 
     const [error] = result.errors;
-    expect(error.message).toBe("Invalid token");
+    expect(error.message).toBe(
+      "Access denied! You need to be authorized to perform this action!",
+    );
   });
 
   it("Should update by user token", async () => {
     const dataToSent: Partial<User> = {
-      lookingFor: IUserLookingFor.friends,
+      name: "AlteredName",
     };
     const { data, errors } = await request<{ userUpdateMe: User }>(app)
       .query(userQuerys.userUpdateMe)
@@ -245,7 +241,7 @@ describe("User Test", () => {
     expect(data).not.toBeUndefined();
     expect(data).toHaveProperty("userUpdateMe");
 
-    expect(data.userUpdateMe.lookingFor).toBe(dataToSent.lookingFor);
+    expect(data.userUpdateMe.name).toBe(dataToSent.name);
 
     keysMandatories.forEach((key) => {
       expect(data.userUpdateMe).toHaveProperty(key);

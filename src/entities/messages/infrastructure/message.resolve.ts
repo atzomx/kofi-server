@@ -2,13 +2,13 @@ import { ISubscriptionsTypes } from "@core/domain/enums";
 import { IContext } from "@core/domain/interfaces";
 import { ValidateArgs } from "@core/infrastructure/decorators";
 import namerUtils from "@core/infrastructure/utils/namer.utils";
-import AuthMiddleware from "@entities/auth/infrastructure/auth.middleware";
 import NotificationFactory from "@entities/notifications/application/notifications.factory";
 import { INotificationType } from "@entities/notifications/domain/notification.enum";
 import { Types } from "mongoose";
 import {
   Arg,
   Args,
+  Authorized,
   Ctx,
   Mutation,
   PubSub,
@@ -17,7 +17,6 @@ import {
   Resolver,
   Root,
   Subscription,
-  UseMiddleware,
 } from "type-graphql";
 import MessageController from "../application/message.controller";
 import { IMessageExtra } from "../domain/interfaces";
@@ -40,7 +39,7 @@ class MessageResolver {
     description: "Returns an array of message by chat.",
     name: NAMES.paginate,
   })
-  @UseMiddleware(AuthMiddleware.IsAuth)
+  @Authorized()
   async paginate(@Args() paginate: MessagePaginationArgs) {
     const results = await this.controller.paginate(paginate);
     return results;
@@ -50,7 +49,7 @@ class MessageResolver {
     description: "Create a new message.",
     name: NAMES.create,
   })
-  @UseMiddleware(AuthMiddleware.IsAuth)
+  @Authorized()
   @ValidateArgs(MessageInputCreate, "data")
   async create(
     @Arg("data") message: MessageInputCreate,

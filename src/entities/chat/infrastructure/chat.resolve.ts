@@ -1,7 +1,6 @@
 import { IContext } from "@core/domain/interfaces";
 import namerUtils from "@core/infrastructure/utils/namer.utils";
-import { AuthMiddleware } from "@entities/auth";
-import { Args, Ctx, Query, Resolver, UseMiddleware } from "type-graphql";
+import { Args, Authorized, Ctx, Query, Resolver } from "type-graphql";
 import ChatController from "../application/chat.controller";
 import Chat from "../domain/chat.entity";
 import { ChatPaginationArgs } from "./chat.args";
@@ -21,7 +20,7 @@ class ChatResolver {
     description: "Returns an array of chats.",
     name: NAMES.paginate,
   })
-  @UseMiddleware(AuthMiddleware.IsAuth)
+  @Authorized()
   async paginate(@Args() paginate: ChatPaginationArgs, @Ctx() ctx: IContext) {
     const { id } = ctx.payload;
     const results = await this.controller.paginate({ user: id, ...paginate });

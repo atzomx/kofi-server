@@ -1,5 +1,11 @@
 import { registerEnumType } from "type-graphql";
 
+export enum IUserRole {
+  "ADMIN" = "ADMIN",
+  "MODERATOR" = "MODERATOR",
+  "LOVER" = "LOVER",
+}
+
 export enum IUserPersonality {
   "intj" = "intj",
   "intp" = "intp",
@@ -80,6 +86,11 @@ export enum IUserInterests {
   "series" = "series",
   "music" = "music",
 }
+
+registerEnumType(IUserRole, {
+  name: "Role",
+  description: "User Role.",
+});
 
 registerEnumType(IUserPersonality, {
   name: "Personality",

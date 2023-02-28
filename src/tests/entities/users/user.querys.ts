@@ -1,24 +1,10 @@
 import { gql } from "apollo-server-core";
 
 const user = `
-    _id
-    name
-    userName
-    email
-    birthday
-    location
-    status
-    description
-    interest
-    personality
-    maritalStatus
-    lookingFor
-    employer
-    pets
-    sexualOrientation
-    degree
-    religion
-    nacionality
+  _id
+  name
+  email
+  status
 `;
 
 const userById = gql`
@@ -90,4 +76,11 @@ const userUpdateMe = gql`
   }
 `;
 
-export default { userById, paginate, userCreate, userUpdate, userMe, userUpdateMe };
+export default {
+  userById,
+  paginate,
+  userCreate,
+  userUpdate,
+  userMe,
+  userUpdateMe,
+};
