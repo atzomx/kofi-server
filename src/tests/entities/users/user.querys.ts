@@ -23,6 +23,21 @@ const userMe = gql`
   }
 `;
 
+const userQueue = gql`
+  query UserQueue($limit: Int, $page: Int) {
+    userQueue(limit: $limit, page: $page) {
+      results {
+        ${user}
+      }
+      info {
+        page
+        pages
+        total
+      }
+    }
+  }
+`;
+
 const paginate = gql`
   query UserPaginate(
     $page: Int, 
@@ -83,4 +98,5 @@ export default {
   userUpdate,
   userMe,
   userUpdateMe,
+  userQueue,
 };

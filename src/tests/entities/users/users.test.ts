@@ -247,4 +247,33 @@ describe("User Test", () => {
       expect(data.userUpdateMe).toHaveProperty(key);
     });
   });
+
+  it("Should return queue of users", async () => {
+    const variables = {
+      page: 1,
+      limit: 5,
+    };
+
+    const result = await request<{ userQueue: IPagination<User> }>(app)
+      .query(userQuerys.userQueue)
+      .variables(variables)
+      .set("authorization", authorization);
+
+    expect(result.errors).toBeUndefined();
+    expect(result.data).toHaveProperty("userQueue");
+    const data = result.data["userQueue"];
+    expect(data).toHaveProperty("info");
+    expect(data).toHaveProperty("results");
+    const info = data["info"];
+    expect(info).toHaveProperty("page");
+    expect(info).toHaveProperty("pages");
+    expect(info).toHaveProperty("total");
+    const { results } = data;
+    expect(results instanceof Array).toBeTruthy();
+    results.forEach((user) => {
+      keysMandatories.forEach((key) => {
+        expect(user).toHaveProperty(key);
+      });
+    });
+  });
 });
