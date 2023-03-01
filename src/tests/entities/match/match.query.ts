@@ -6,6 +6,8 @@ const match = `
     _id
     participants {
       _id
+      name
+      email
     }
     status
 `;

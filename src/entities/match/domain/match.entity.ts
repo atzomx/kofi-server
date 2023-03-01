@@ -13,7 +13,7 @@ class Match extends Entity {
   @Field(() => [User], { description: "Match participants." })
   @prop({
     type: () => [Types.ObjectId],
-    ref: User,
+    ref: "User",
     default: [],
   })
   public participants?: Ref<User, string>[];
