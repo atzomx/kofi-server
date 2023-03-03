@@ -11,10 +11,10 @@ const up = async () => {
   const cleanMedias = mediaCreated.map((media) => media._doc);
   return cleanMedias;
 };
-  
+
 const down = async () => {
   const mediaRepository = new MediaRepository();
   await mediaRepository.deleteMany();
 };
-  
+
 export default { up, down };

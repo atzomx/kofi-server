@@ -5,6 +5,19 @@ const user = `
   name
   email
   status
+  preferences {
+    personality
+    maritalStatus
+    lookingFor
+    pets
+    sexualPreference
+    degree
+    religion
+    ageRange {
+      min
+      max
+    }
+  }
 `;
 
 const userById = gql`
