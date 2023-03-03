@@ -3,9 +3,14 @@ import {
   getEnumRandom,
   getRandomNumber,
 } from "@core/infrastructure/utils/test.utils";
-import User, { UserPreference } from "@entities/users/domain/user.entity";
+import { Media } from "@entities/media";
+import User, {
+  UserInformation,
+  UserPreference,
+} from "@entities/users/domain/user.entity";
 import {
   IUserDegree,
+  IUserInterests,
   IUserLookingFor,
   IUserMaritalStatus,
   IUserPersonality,
@@ -41,15 +46,44 @@ class UserFaker {
     } as UserPreference;
   }
 
-  static get(role = IUserRole.LOVER) {
+  static getInformation(_medias: Media[] = []): UserInformation {
+    const mediasId = _medias.map(({ _id }) => _id.toString());
+    const medias = faker.helpers.arrayElements(mediasId, 3);
+
+    return {
+      location: {
+        latitude: +faker.address.latitude(),
+        longitude: +faker.address.longitude(),
+      },
+      birthday: faker.date.birthdate(),
+      degree: getEnumRandom(IUserDegree),
+      description: faker.lorem.paragraph(),
+      employer: faker.company.companyName(),
+      interest: getEnumRandom(IUserInterests),
+      lookingFor: getEnumRandom(IUserLookingFor),
+      maritalStatus: getEnumRandom(IUserMaritalStatus),
+      nacionality: faker.address.countryCode(),
+      personality: getEnumRandom(IUserPersonality),
+      pets: getEnumRandom(IUserPets),
+      religion: getEnumRandom(IUserReligion),
+      sexualOrientation: getEnumRandom(IUserSexualOrientation),
+      medias,
+    };
+  }
+
+  static get(role = IUserRole.LOVER, medias: Media[] = []) {
     const basic = UserFaker.basic();
+
     const preferences =
       role === IUserRole.LOVER ? UserFaker.getPreferences() : null;
+    const information =
+      role === IUserRole.LOVER ? UserFaker.getInformation(medias) : null;
     const complete: User = {
       ...basic,
       status: IUserStatus.active,
       role,
       preferences,
+      information,
     };
 
     return complete;
@@ -61,7 +95,6 @@ class UserFaker {
     const userSecond = faker.internet.userName(faker.name.findName());
     const email = faker.internet.email(userFirst, userSecond);
     const password = DEFAULT_PASSWORD;
-
     const user = { name, email, password };
     return user;
   }

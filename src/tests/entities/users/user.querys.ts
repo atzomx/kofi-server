@@ -18,6 +18,29 @@ const user = `
       max
     }
   }
+  information {
+    medias {
+      _id
+      type
+      url
+    }
+    birthday
+    description
+    interest
+    personality
+    maritalStatus
+    lookingFor
+    employer
+    pets
+    sexualOrientation
+    location {
+      latitude
+      longitude
+    }
+    degree
+    religion
+    nacionality
+  }
 `;
 
 const userById = gql`

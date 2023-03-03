@@ -254,9 +254,11 @@ describe("User Test", () => {
 
   it("Should update by user token", async () => {
     const preferencesNew = UserFaker.getPreferences();
+    const informationNew = UserFaker.getInformation(entities.medias);
     const dataToSent = {
       name: "AlteredName",
       preferences: preferencesNew,
+      information: informationNew,
     };
     const { data, errors } = await request<{ userUpdateMe: User }>(app)
       .query(userQuerys.userUpdateMe)
@@ -269,7 +271,7 @@ describe("User Test", () => {
 
     expect(data.userUpdateMe.name).toBe(dataToSent.name);
 
-    const { preferences } = data.userUpdateMe;
+    const { preferences, information } = data.userUpdateMe;
 
     expect(preferences.degree).toBe(preferencesNew.degree);
     expect(preferences.lookingFor).toBe(preferencesNew.lookingFor);
@@ -280,5 +282,26 @@ describe("User Test", () => {
     expect(preferences.sexualPreference).toBe(preferencesNew.sexualPreference);
     expect(preferences.ageRange.min).toBe(preferencesNew.ageRange.min);
     expect(preferences.ageRange.max).toBe(preferencesNew.ageRange.max);
+
+    expect(information.degree).toBe(informationNew.degree);
+    expect(information.lookingFor).toBe(informationNew.lookingFor);
+    expect(information.maritalStatus).toBe(informationNew.maritalStatus);
+    expect(information.personality).toBe(informationNew.personality);
+    expect(information.pets).toBe(informationNew.pets);
+    expect(information.religion).toBe(informationNew.religion);
+    expect(information.sexualOrientation).toBe(
+      informationNew.sexualOrientation,
+    );
+    expect(information.location.latitude).toBe(
+      informationNew.location.latitude,
+    );
+    expect(information.location.longitude).toBe(
+      informationNew.location.longitude,
+    );
+    information.medias.forEach((media) => {
+      expect(media).toHaveProperty("type");
+      expect(media).toHaveProperty("url");
+      expect(media).toHaveProperty("_id");
+    });
   });
 });
