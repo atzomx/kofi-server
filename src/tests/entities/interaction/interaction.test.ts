@@ -6,11 +6,11 @@ import TestUtils, {
 import authUtils from "@core/infrastructure/utils/token.utils";
 import { Interaction } from "@entities/interactions";
 import { IInteractionTypes } from "@entities/interactions/domain/interaction.enums";
+import { entities, app, authorization } from "@test/setup";
 import { map } from "lodash";
 import { Types } from "mongoose";
 import request from "supertest-graphql";
 import InteractionFaker from "../../fakers/interaction/interaction.faker";
-import { entities, app, authorization } from "../../setup";
 import interactionQuerys from "./interaction.query";
 
 const keysMandatories = Object.keys(Interaction);
@@ -22,7 +22,7 @@ describe("Interaction Test", () => {
     const result = await request<{ interactionById: Interaction }>(app)
       .query(interactionQuerys.interactionById)
       .variables({ interactionByIdId: interactionId })
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("interactionById");
@@ -37,7 +37,7 @@ describe("Interaction Test", () => {
     const result = await request<{ interactionById: Interaction }>(app)
       .query(interactionQuerys.interactionById)
       .variables({ interactionByIdId: interactionId })
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(result.errors).toBeTruthy();
     const [error] = result.errors;
@@ -51,7 +51,7 @@ describe("Interaction Test", () => {
     const result = await request<{ interactionCreate: Interaction }>(app)
       .query(interactionQuerys.interactionCreate)
       .variables({ data: { userTo, type } })
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("interactionCreate");
@@ -95,12 +95,12 @@ describe("Interaction Test", () => {
     await request<{ interactionCreate: Interaction }>(app)
       .query(interactionQuerys.interactionCreate)
       .variables({ data: { userTo, type } })
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     const result = await request<{ interactionCreate: Interaction }>(app)
       .query(interactionQuerys.interactionCreate)
       .variables({ data: { userTo, type } })
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("interactionCreate");
@@ -123,7 +123,7 @@ describe("Interaction Test", () => {
         data: dataToSent,
         interactionUpdateId: interactionExist._id.toString(),
       })
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("interactionUpdate");
@@ -146,7 +146,7 @@ describe("Interaction Test", () => {
         data: dataToSent,
         interactionUpdateId: interactionExistId,
       })
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(errors).toBeTruthy();
     const [error] = errors;
@@ -165,7 +165,7 @@ describe("Interaction Test", () => {
     }>(app)
       .query(interactionQuerys.interactionPaginate)
       .variables(variables)
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("interactionPaginate");

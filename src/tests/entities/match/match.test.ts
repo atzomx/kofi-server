@@ -8,9 +8,9 @@ import { Interaction } from "@entities/interactions";
 import { IInteractionTypes } from "@entities/interactions/domain/interaction.enums";
 import { Match } from "@entities/match";
 import { IMatchStatus } from "@entities/match/domain/match.enums";
+import { entities, app, authorization } from "@test/setup";
 import { Types } from "mongoose";
 import request from "supertest-graphql";
-import { entities, app, authorization } from "../../setup";
 import interactionQuerys from "../interaction/interaction.query";
 import matchQuerys from "./match.query";
 
@@ -23,7 +23,7 @@ describe("Match Test", () => {
     const result = await request<{ matchById: Match }>(app)
       .query(matchQuerys.matchById)
       .variables({ matchByIdId: matchId })
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("matchById");
@@ -39,7 +39,7 @@ describe("Match Test", () => {
     const result = await request<{ matchById: Match }>(app)
       .query(matchQuerys.matchById)
       .variables({ matchByIdId: matchId })
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(result.errors).toBeTruthy();
     const [error] = result.errors;
@@ -59,7 +59,7 @@ describe("Match Test", () => {
         data: dataToSent,
         matchUpdateId: matchExist._id.toString(),
       })
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("matchUpdate");
@@ -81,7 +81,7 @@ describe("Match Test", () => {
         data: dataToSent,
         matchUpdateId: matchExistId,
       })
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(errors).toBeTruthy();
     const [error] = errors;
@@ -119,7 +119,7 @@ describe("Match Test", () => {
     }>(app)
       .query(matchQuerys.matchPagination)
       .variables(variables)
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("matchPaginate");
