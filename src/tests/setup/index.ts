@@ -1,6 +1,5 @@
 import http from "http";
 import PubSub from "@core/application/PubSub";
-import TestUtils from "@core/infrastructure/utils/test.utils";
 import authUtils from "@core/infrastructure/utils/token.utils";
 import { Chat } from "@entities/chat";
 import { Interaction } from "@entities/interactions";
@@ -9,6 +8,7 @@ import { Media } from "@entities/media";
 import { Message } from "@entities/messages";
 import { Notification } from "@entities/notifications";
 import { User } from "@entities/users";
+import { IUserRole } from "@entities/users/domain/user.enums";
 import { Verification } from "@entities/verifications";
 import server from "../config";
 import RedisPubSubMock from "../config/pubsub.mock";
@@ -28,8 +28,11 @@ let entities: {
   notifications: Notification[];
 };
 
-let authorization = "";
-let authId = "";
+const authorization = {
+  LOVER: "",
+  ADMIN: "",
+  MODERATOR: "",
+};
 
 beforeAll(async () => {
   //* WE MOCK REDIS PUBSUB */
@@ -40,15 +43,23 @@ beforeAll(async () => {
   entities = initServer.entities;
   app = initServer.app;
 
-  const user = TestUtils.getOneFromArray(entities.users);
-  authId = user._id.toString();
+  const userLover = entities.users.find(({ role }) => role === IUserRole.LOVER);
+  const userLoverToken = authUtils.getToken(userLover._id.toString());
+  authorization.LOVER = `Token ${userLoverToken}`;
 
-  const userToken = authUtils.getToken(authId);
-  authorization = `Token ${userToken}`;
+  const userAdmin = entities.users.find(({ role }) => role === IUserRole.ADMIN);
+  const userAdminToken = authUtils.getToken(userAdmin._id.toString());
+  authorization.ADMIN = `Token ${userAdminToken}`;
+
+  const userModerator = entities.users.find(
+    ({ role }) => role === IUserRole.ADMIN,
+  );
+  const userModeratorToken = authUtils.getToken(userModerator._id.toString());
+  authorization.MODERATOR = `Token ${userModeratorToken}`;
 });
 
 afterAll(async () => {
   await server.stop();
 });
 
-export { app, entities, authorization, authId };
+export { app, entities, authorization };

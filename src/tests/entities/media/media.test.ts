@@ -1,12 +1,11 @@
 import "reflect-metadata";
 import { IPagination } from "@core/domain/interfaces";
 import testUtils from "@core/infrastructure/utils/test.utils";
-import authUtils from "@core/infrastructure/utils/token.utils";
 import { Media } from "@entities/media";
+import MediaFaker from "@test/fakers/media/media.faker";
+import { app, authorization, entities } from "@test/setup";
 import { Types } from "mongoose";
 import request from "supertest-graphql";
-import MediaFaker from "../../fakers/media/media.faker";
-import { app, authorization, entities } from "../../setup";
 import mediaQuerys from "./media.querys";
 
 const keysRequired = ["_id", "type", "url"];
@@ -19,7 +18,7 @@ describe("Media Test", () => {
     const result = await request<{ mediaById: Media }>(app)
       .query(mediaQuerys.mediaById)
       .variables({ media: mediaId })
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("mediaById");
@@ -35,7 +34,7 @@ describe("Media Test", () => {
     const result = await request<{ mediaById: Media }>(app)
       .query(mediaQuerys.mediaById)
       .variables({ media })
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(result.errors).toBeTruthy();
     const [error] = result.errors;
@@ -60,7 +59,7 @@ describe("Media Test", () => {
     const result = await request<{ mediaPaginate: IPagination<Media> }>(app)
       .query(mediaQuerys.paginate)
       .variables(variables)
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("mediaPaginate");
@@ -89,7 +88,7 @@ describe("Media Test", () => {
     const result = await request<{ mediaPaginate: IPagination<Media> }>(app)
       .query(mediaQuerys.paginate)
       .variables(variables)
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("mediaPaginate");
@@ -137,13 +136,11 @@ describe("Media Test", () => {
   it("Should delete a media", async () => {
     const media = testUtils.getOneFromArray(entities.medias);
     const mediaId = media._id.toString();
-    const mediaToken = authUtils.getToken(mediaId);
-    const authorization = `Token ${mediaToken}`;
 
     const result = await request<{ mediaDelete: Media }>(app)
       .query(mediaQuerys.mediaDelete)
       .variables({ mediaId })
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
   });

@@ -1,7 +1,8 @@
+import "reflect-metadata";
 import { IPagination } from "@core/domain/interfaces";
 import { Chat } from "@entities/chat";
+import { app, authorization } from "@test/setup";
 import request from "supertest-graphql";
-import { app, authorization } from "../../setup";
 import chatQuerys from "./chat.querys";
 
 const keysMandatories = ["createdAt", "updatedAt", "_id", "participants"];
@@ -16,7 +17,7 @@ describe("Chat test", () => {
     const result = await request<{ chatPaginate: IPagination<Chat> }>(app)
       .query(chatQuerys.paginate)
       .variables(variables)
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
 
@@ -42,7 +43,7 @@ describe("Chat test", () => {
   it("Should paginate chats without params", async () => {
     const result = await request<{ chatPaginate: IPagination<Chat> }>(app)
       .query(chatQuerys.paginate)
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
 

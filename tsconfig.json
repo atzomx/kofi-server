@@ -30,7 +30,9 @@
       "@server/*": ["./src/server/*"],
       "@server": ["./src/server"],
       "@database/*": ["./src/database/*"],
-      "@database": ["./src/database"]
+      "@database": ["./src/database"],
+      "@test/*": ["./src/tests/*"],
+      "@test": ["./src/tests"]
     }
   },
   "exclude": ["node_modules"]

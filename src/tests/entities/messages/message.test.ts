@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { IPagination } from "@core/domain/interfaces";
 import {
   getOneFromArray,
@@ -5,8 +6,8 @@ import {
 } from "@core/infrastructure/utils/test.utils";
 import authUtils from "@core/infrastructure/utils/token.utils";
 import { Message } from "@entities/messages";
+import { app, authorization, entities } from "@test/setup";
 import supertest, { supertestWs } from "supertest-graphql";
-import { app, authorization, entities } from "../../setup";
 import messageQuerys from "./message.querys";
 
 describe("Chat Test", () => {
@@ -25,7 +26,7 @@ describe("Chat Test", () => {
     )
       .query(messageQuerys.paginate)
       .variables(variables)
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("messagePaginate");
@@ -51,7 +52,7 @@ describe("Chat Test", () => {
     )
       .query(messageQuerys.paginate)
       .variables(variables)
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("messagePaginate");
@@ -84,7 +85,7 @@ describe("Chat Test", () => {
     const result = await supertest<{ messageCreate: Message }>(app)
       .query(messageQuerys.create)
       .variables({ data: message })
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("messageCreate");
@@ -102,7 +103,7 @@ describe("Chat Test", () => {
     const result = await supertest<{ messageCreate: Message }>(app)
       .query(messageQuerys.create)
       .variables({ data: message })
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("messageCreate");
@@ -124,7 +125,7 @@ describe("Chat Test", () => {
     const response = await supertest<{ messageCreate: Message }>(app)
       .query(messageQuerys.create)
       .variables({ data: message })
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     const chat = response.data.messageCreate.chat.toString();
 
@@ -138,7 +139,7 @@ describe("Chat Test", () => {
     await supertest<{ messageCreate: Message }>(app)
       .query(messageQuerys.create)
       .variables({ data: message })
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     const { data, errors } = await sub.next();
     expect(errors).toBeUndefined();

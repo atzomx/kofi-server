@@ -11,7 +11,7 @@ export const socket = async (context: IContext) => {
   const payload = tokenUtils.verify(token);
 
   const { id } = payload as { id: string };
-  context.payload = { id };
+  context.payload = { id, user: null };
 
   return true;
 };

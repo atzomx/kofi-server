@@ -1,12 +1,11 @@
 import { IPagination } from "@core/domain/interfaces";
 import TestUtils from "@core/infrastructure/utils/test.utils";
-import authUtils from "@core/infrastructure/utils/token.utils";
 import { User } from "@entities/users";
 import { IUserRole } from "@entities/users/domain/user.enums";
+import { app, authorization, entities } from "@test/setup";
 import { Types } from "mongoose";
 import request from "supertest-graphql";
 import UserFaker from "../../fakers/user/user.faker";
-import { app, authorization, entities } from "../../setup";
 import userQuerys from "./user.querys";
 
 const keysMandatories = Object.keys(User);
@@ -19,7 +18,7 @@ describe("User Test", () => {
     const result = await request<{ userById: User }>(app)
       .query(userQuerys.userById)
       .variables({ user: userId })
-      .set("authorization", authorization);
+      .set("authorization", authorization.MODERATOR);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("userById");
@@ -29,10 +28,22 @@ describe("User Test", () => {
     });
   });
 
+  it("Shouldn't return an user with unexist id", async () => {
+    const userId = new Types.ObjectId().toString();
+    const result = await request<{ userById: User }>(app)
+      .query(userQuerys.userById)
+      .variables({ user: userId })
+      .set("authorization", authorization.MODERATOR);
+
+    expect(result.errors).toBeTruthy();
+    const [error] = result.errors;
+    expect(error.message).toBe("User not found");
+  });
+
   it("Should return an user from token", async () => {
     const result = await request<{ userMe: User }>(app)
       .query(userQuerys.userMe)
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("userMe");
@@ -47,11 +58,13 @@ describe("User Test", () => {
     const result = await request<{ userById: User }>(app)
       .query(userQuerys.userById)
       .variables({ user })
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(result.errors).toBeTruthy();
     const [error] = result.errors;
-    expect(error.message).toBe("User not found");
+    expect(error.message).toBe(
+      "Access denied! You don't have permission for this action!",
+    );
   });
 
   it("Should paginate users", async () => {
@@ -73,7 +86,7 @@ describe("User Test", () => {
     const result = await request<{ userPaginate: IPagination<User> }>(app)
       .query(userQuerys.paginate)
       .variables(variables)
-      .set("authorization", authorization);
+      .set("authorization", authorization.MODERATOR);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("userPaginate");
@@ -102,7 +115,7 @@ describe("User Test", () => {
     const result = await request<{ userPaginate: IPagination<User> }>(app)
       .query(userQuerys.paginate)
       .variables(variables)
-      .set("authorization", authorization);
+      .set("authorization", authorization.MODERATOR);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("userPaginate");
@@ -148,18 +161,33 @@ describe("User Test", () => {
     expect(data.status).toBe("pending");
   });
 
-  it("Should update an user with another role", async () => {
+  it("Should update an user with MODERATOR role", async () => {
     const user = TestUtils.getOneFromArray(entities.users);
     const userId = user._id.toString();
-    const userToken = authUtils.getToken(userId);
-    const authorization = `Token ${userToken}`;
+
+    const dataToSent: Partial<User> = {
+      name: "ModifyName",
+    };
+    const { errors, data } = await request<{ userUpdate: User }>(app)
+      .query(userQuerys.userUpdate)
+      .variables({ data: dataToSent, userId })
+      .set("authorization", authorization.MODERATOR);
+
+    expect(errors).toBeUndefined();
+    expect(data.userUpdate.name).toBe(dataToSent.name);
+  });
+
+  it("Shouldn't update an user role", async () => {
+    const user = TestUtils.getOneFromArray(entities.users);
+    const userId = user._id.toString();
+
     const dataToSent: Partial<User> = {
       role: IUserRole.ADMIN,
     };
     const { errors } = await request<{ userUpdate: User }>(app)
       .query(userQuerys.userUpdate)
       .variables({ data: dataToSent, userId })
-      .set("authorization", authorization);
+      .set("authorization", authorization.MODERATOR);
 
     expect(errors).toBeTruthy();
   });
@@ -167,15 +195,13 @@ describe("User Test", () => {
   it("Shouldn't update a user with a corrupted identifier", async () => {
     const user = TestUtils.getOneFromArray(entities.users);
     const userId = user._id.toString();
-    const userToken = authUtils.getToken(userId);
-    const authorization = `Token ${userToken}`;
     const dataToSent: Partial<User> = {
       name: "AlteredName",
     };
     const { errors } = await request<{ userUpdate: User }>(app)
       .query(userQuerys.userUpdate)
       .variables({ data: dataToSent, userId: `${userId}xxss` })
-      .set("authorization", authorization);
+      .set("authorization", authorization.MODERATOR);
 
     expect(errors).toBeTruthy();
   });
@@ -188,7 +214,7 @@ describe("User Test", () => {
     const { errors } = await request<{ userCreate: User }>(app)
       .query(userQuerys.userCreate)
       .variables({ data: newUser })
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(errors).toBeTruthy();
     const [error] = errors;
@@ -207,7 +233,7 @@ describe("User Test", () => {
 
     const [error] = result.errors;
     expect(error.message).toBe(
-      "Access denied! You need to be authorized to perform this action!",
+      "Access denied! You don't have permission for this action!",
     );
   });
 
@@ -223,19 +249,21 @@ describe("User Test", () => {
       .set("authorization", `Not${authorization}`);
 
     const [error] = result.errors;
-    expect(error.message).toBe(
-      "Access denied! You need to be authorized to perform this action!",
-    );
+    expect(error.message).toBe("Context creation failed: Invalid Credentials");
   });
 
   it("Should update by user token", async () => {
-    const dataToSent: Partial<User> = {
+    const preferencesNew = UserFaker.getPreferences();
+    const informationNew = UserFaker.getInformation(entities.medias);
+    const dataToSent = {
       name: "AlteredName",
+      preferences: preferencesNew,
+      information: informationNew,
     };
     const { data, errors } = await request<{ userUpdateMe: User }>(app)
       .query(userQuerys.userUpdateMe)
       .variables({ data: dataToSent })
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(errors).toBeUndefined();
     expect(data).not.toBeUndefined();
@@ -243,8 +271,37 @@ describe("User Test", () => {
 
     expect(data.userUpdateMe.name).toBe(dataToSent.name);
 
-    keysMandatories.forEach((key) => {
-      expect(data.userUpdateMe).toHaveProperty(key);
+    const { preferences, information } = data.userUpdateMe;
+
+    expect(preferences.degree).toBe(preferencesNew.degree);
+    expect(preferences.lookingFor).toBe(preferencesNew.lookingFor);
+    expect(preferences.maritalStatus).toBe(preferencesNew.maritalStatus);
+    expect(preferences.personality).toBe(preferencesNew.personality);
+    expect(preferences.pets).toBe(preferencesNew.pets);
+    expect(preferences.religion).toBe(preferencesNew.religion);
+    expect(preferences.sexualPreference).toBe(preferencesNew.sexualPreference);
+    expect(preferences.ageRange.min).toBe(preferencesNew.ageRange.min);
+    expect(preferences.ageRange.max).toBe(preferencesNew.ageRange.max);
+
+    expect(information.degree).toBe(informationNew.degree);
+    expect(information.lookingFor).toBe(informationNew.lookingFor);
+    expect(information.maritalStatus).toBe(informationNew.maritalStatus);
+    expect(information.personality).toBe(informationNew.personality);
+    expect(information.pets).toBe(informationNew.pets);
+    expect(information.religion).toBe(informationNew.religion);
+    expect(information.sexualOrientation).toBe(
+      informationNew.sexualOrientation,
+    );
+    expect(information.location.latitude).toBe(
+      informationNew.location.latitude,
+    );
+    expect(information.location.longitude).toBe(
+      informationNew.location.longitude,
+    );
+    information.medias.forEach((media) => {
+      expect(media).toHaveProperty("type");
+      expect(media).toHaveProperty("url");
+      expect(media).toHaveProperty("_id");
     });
   });
 });

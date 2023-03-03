@@ -1,10 +1,11 @@
+import "reflect-metadata";
 import { IPagination } from "@core/domain/interfaces";
 import { getOneFromArray } from "@core/infrastructure/utils/test.utils";
 import { getToken } from "@core/infrastructure/utils/token.utils";
 import { Message } from "@entities/messages";
 import { Notification } from "@entities/notifications";
+import { app, authorization, entities } from "@test/setup";
 import supertest, { supertestWs } from "supertest-graphql";
-import { app, authorization, entities } from "../../setup";
 import messageQuerys from "../messages/message.querys";
 import notificationsQuerys from "./notifications.querys";
 
@@ -51,7 +52,7 @@ describe("Chat Test", () => {
     await supertest<{ messageCreate: Message }>(app)
       .query(messageQuerys.create)
       .variables({ data: message })
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     const sub = await supertestWs<{ notificationNew: Notification }>(app)
       .subscribe(notificationsQuerys.subscription)
@@ -62,7 +63,7 @@ describe("Chat Test", () => {
     await supertest<{ messageCreate: Message }>(app)
       .query(messageQuerys.create)
       .variables({ data: message })
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     const { data, errors } = await sub.next();
     expect(errors).toBeUndefined();
