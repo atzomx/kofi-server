@@ -314,7 +314,7 @@ describe("User Test", () => {
     const result = await request<{ userQueue: IPagination<User> }>(app)
       .query(userQuerys.userQueue)
       .variables(variables)
-      .set("authorization", authorization);
+      .set("authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("userQueue");

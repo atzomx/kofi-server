@@ -38,7 +38,9 @@ class UserRepository extends Repository<User> {
       ],
     };
 
-    return this.paginate(searchQuery, { limit, page });
+    return this.paginate(searchQuery, { limit, page }, { updatedAt: -1 }, [
+      "information.medias",
+    ]);
   }
 }
 
