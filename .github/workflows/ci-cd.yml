@@ -24,7 +24,7 @@ jobs:
         run: yarn install
 
       - name: Run Test
-        run: yarn yarn test:coverage
+        run: yarn test:coverage
 
       - uses: ArtiomTr/jest-coverage-report-action@v2
         with:
