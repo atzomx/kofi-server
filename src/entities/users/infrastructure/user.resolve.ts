@@ -12,6 +12,7 @@ import {
 } from "type-graphql";
 import UserController from "../application/user.controller";
 import User from "../domain/user.entity";
+import { IUserRole } from "../domain/user.enums";
 import { UserPaginationArgs } from "./user.args";
 import { UserInputCreate, UserInputUpdate } from "./user.inputs";
 import { UserPaginateResponse } from "./user.response";
@@ -30,7 +31,7 @@ class UserResolver {
     description: "Returns one user by id",
     name: NAMES.find,
   })
-  @Authorized()
+  @Authorized(IUserRole.ADMIN, IUserRole.MODERATOR)
   async findById(@Arg("id") id: string): Promise<User> {
     const user = await this.controller.findById(id);
     return user;
@@ -51,7 +52,7 @@ class UserResolver {
     description: "Returns an array of users.",
     name: NAMES.paginate,
   })
-  @Authorized()
+  @Authorized(IUserRole.ADMIN, IUserRole.MODERATOR)
   async paginate(@Args() paginate: UserPaginationArgs) {
     const results = await this.controller.paginate(paginate);
     return results;
@@ -82,7 +83,7 @@ class UserResolver {
     description: "Update an existing user by id.",
     name: NAMES.update,
   })
-  @Authorized()
+  @Authorized(IUserRole.ADMIN, IUserRole.MODERATOR)
   @ValidateArgs(UserInputUpdate, "data")
   async update(@Arg("id") id: string, @Arg("data") user: UserInputUpdate) {
     const result = await this.controller.update(id.toString(), user);
@@ -91,13 +92,12 @@ class UserResolver {
 
   @Mutation(() => User, {
     description: "Update current user by token.",
-    name: "userUpdateMe",
+    name: `${NAMES.update}Me`,
   })
   @Authorized()
   @ValidateArgs(UserInputUpdate, "data")
-  async userUpdateMe(@Ctx() ctx: IContext, @Arg("data") user: UserInputUpdate) {
-    const userId = ctx.payload.id;
-    const result = await this.controller.update(userId, user);
+  async updateMe(@Ctx() ctx: IContext, @Arg("data") user: UserInputUpdate) {
+    const result = await this.controller.update(ctx.payload.id, user);
     return result;
   }
 }

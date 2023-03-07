@@ -21,7 +21,9 @@ class UserController {
   }
 
   async findById(id: string) {
-    const currentUser = await this.repository.findById(id);
+    const currentUser = await this.repository
+      .findById(id)
+      .populate(["information.medias"]);
     if (!currentUser) throw new UserNotFoundError();
     return currentUser;
   }
@@ -40,7 +42,12 @@ class UserController {
       endDate,
       startDate,
     });
-    return this.repository.paginate(searchQuery, { limit, page });
+    return this.repository.paginate(
+      searchQuery,
+      { limit, page },
+      { updatedAt: -1 },
+      ["information.medias"],
+    );
   }
 
   async userQueue(
@@ -63,7 +70,9 @@ class UserController {
 
   async update(id: string, user: UserInputUpdate): Promise<User> {
     await this.findById(id);
-    const updatedUser = await this.repository.findByIdAndUpdate(id, user);
+    const updatedUser = await this.repository
+      .findByIdAndUpdate(id, user)
+      .populate(["information.medias"]);
     return updatedUser;
   }
 }
