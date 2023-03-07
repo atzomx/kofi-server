@@ -50,6 +50,13 @@ class UserController {
     );
   }
 
+  async userQueue(
+    { page, limit }: UserPaginationArgs,
+    idUser: string,
+  ): Promise<IPagination<User>> {
+    return this.repository.userQueue({ limit, page }, idUser);
+  }
+
   async create(user: UserInputCreate): Promise<User> {
     const query = { email: user.email };
     const existingUser = await this.repository.findOne(query);

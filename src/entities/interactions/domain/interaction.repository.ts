@@ -7,10 +7,8 @@ import { IInteractionTypes } from "./interaction.enums";
 import InteractionModel from "./interaction.model";
 
 class InteractionRepository extends Repository<Interaction> {
-  private readonly matchRepository: MatchRepository;
   constructor() {
     super(InteractionModel);
-    this.matchRepository = new MatchRepository();
   }
 
   async findOrCreateInteraction(
@@ -18,6 +16,7 @@ class InteractionRepository extends Repository<Interaction> {
     userFrom: string,
     name: string,
   ): Promise<Interaction & { generatedMatch: boolean; name: string }> {
+    const matchRepository = new MatchRepository();
     const queryReverse = {
       $and: [
         { userFrom: interaction.userTo },
@@ -30,7 +29,7 @@ class InteractionRepository extends Repository<Interaction> {
 
     const reverseInteraccion = await this.instance.findOne(queryReverse);
     if (reverseInteraccion) {
-      generatedMatch = !!(await this.matchRepository.findOrCreateMatch([
+      generatedMatch = !!(await matchRepository.findOrCreateMatch([
         userFrom,
         interaction.userTo.toString(),
       ]));

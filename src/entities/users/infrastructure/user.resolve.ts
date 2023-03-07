@@ -58,6 +58,17 @@ class UserResolver {
     return results;
   }
 
+  @Query(() => UserPaginateResponse, {
+    description: "Returns an array of available users.",
+    name: "userQueue",
+  })
+  @Authorized()
+  async userQueue(@Ctx() ctx: IContext, @Args() paginate: UserPaginationArgs) {
+    const userId = ctx.payload.id;
+    const results = await this.controller.userQueue(paginate, userId);
+    return results;
+  }
+
   @Mutation(() => User, {
     description: "Register a new user.",
     name: NAMES.create,

@@ -13,7 +13,9 @@ class MatchController {
   }
 
   async findById(id: string) {
-    const currentMatch = await this.repository.findById(id);
+    const currentMatch = await this.repository
+      .findById(id)
+      .populate("participants");
     if (!currentMatch) throw new MatchNotFoundError();
     return currentMatch;
   }
@@ -31,7 +33,9 @@ class MatchController {
   }
 
   async update(id: string, match: MatchInputUpdate): Promise<Match> {
-    const updatedMatch = await this.repository.findByIdAndUpdate(id, match);
+    const updatedMatch = await this.repository
+      .findByIdAndUpdate(id, match)
+      .populate("participants");
     if (!updatedMatch) throw new MatchNotFoundError();
     return updatedMatch;
   }
