@@ -33,3 +33,4 @@ jobs:
           package-manager: yarn
           coverage-file: ../../coverage/coverage-final.json
           output: comment
+          skip-step: all
