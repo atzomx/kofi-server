@@ -19,8 +19,7 @@ class NotificationController {
   > {
     return this.repository.paginate(
       { to: user },
-      { limit, page },
-      { createdAt: -1 },
+      { limit, page, sort: { createdAt: -1 } },
     );
   }
 }

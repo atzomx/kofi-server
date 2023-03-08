@@ -42,19 +42,19 @@ class UserController {
       endDate,
       startDate,
     });
-    return this.repository.paginate(
-      searchQuery,
-      { limit, page },
-      { updatedAt: -1 },
-      ["information.medias"],
-    );
+    return this.repository.paginate(searchQuery, {
+      limit,
+      page,
+      sort: { updatedAt: -1 },
+      populate: "information.medias",
+    });
   }
 
   async userQueue(
     { page, limit }: UserPaginationArgs,
-    idUser: string,
+    user: User,
   ): Promise<IPagination<User>> {
-    return this.repository.userQueue({ limit, page }, idUser);
+    return this.repository.userQueue({ limit, page }, user);
   }
 
   async create(user: UserInputCreate): Promise<User> {
