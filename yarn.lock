@@ -4636,11 +4636,6 @@ mongodb@~4.7.0:
   optionalDependencies:
     saslprep "^1.0.3"
 
-mongoose-geojson-schema@^2.2.4:
-  version "2.2.4"
-  resolved "https://registry.yarnpkg.com/mongoose-geojson-schema/-/mongoose-geojson-schema-2.2.4.tgz#0b642b9c37a993fc28105a5797c0897a7a443606"
-  integrity sha512-y91QqplEh/SFQPb7qxmICDwfrD+NW2mfhLJKMb1z24wE74DhqcoiFpGR4vf5TTfvAZrQfF/tLgcRbic6aPAWOw==
-
 mongoose@6.3.5:
   version "6.3.5"
   resolved "https://registry.npmjs.org/mongoose/-/mongoose-6.3.5.tgz"
