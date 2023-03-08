@@ -52,8 +52,8 @@ class UserFaker {
 
     return {
       location: {
-        latitude: +faker.address.latitude(),
-        longitude: +faker.address.longitude(),
+        type: "Point",
+        coordinates: [+faker.address.latitude(), +faker.address.longitude()],
       },
       birthday: faker.date.birthdate(),
       degree: getEnumRandom(IUserDegree),

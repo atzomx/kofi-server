@@ -34,8 +34,8 @@ const user = `
     pets
     sexualOrientation
     location {
-      latitude
-      longitude
+      type
+      coordinates
     }
     degree
     religion

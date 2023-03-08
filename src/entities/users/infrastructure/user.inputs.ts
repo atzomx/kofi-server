@@ -1,4 +1,4 @@
-import { IsEmail, MaxLength, MinLength } from "class-validator";
+import { IsEmail, IsOptional, MaxLength, MinLength } from "class-validator";
 import { Types } from "mongoose";
 import { Field, InputType } from "type-graphql";
 import {
@@ -45,11 +45,10 @@ export class AgeRangeInputUpdatePreference {
 
 @InputType()
 export class LocationInputUpdateInformation {
-  @Field(() => Number, { description: "User location latitude" })
-  public latitude: number;
+  public type = "Point";
 
-  @Field(() => Number, { description: "User location longitude" })
-  public longitude: number;
+  @Field(() => [Number, Number], { description: "User location coordinates" })
+  public coordinates!: [number, number];
 }
 
 @InputType()
@@ -83,61 +82,94 @@ export class UserInputUpdatePreference {
 
 @InputType()
 export class UserInputUpdateInformation {
-  @Field(() => [Types.ObjectId], { description: "Medias images" })
+  @Field(() => [Types.ObjectId], {
+    description: "Medias images",
+    nullable: true,
+  })
+  @IsOptional()
   public medias?: Types.ObjectId[];
 
-  @Field({ description: "User birthday YYYY-MM-DD" })
+  @Field({ description: "User birthday YYYY-MM-DD", nullable: true })
+  @IsOptional()
   public birthday?: Date;
 
-  @Field({ description: "User description" })
+  @Field({ description: "User description", nullable: true })
+  @IsOptional()
   public description?: string;
 
-  @Field(() => IUserInterests, { description: "User interest" })
+  @Field(() => [IUserInterests], {
+    description: "User interest",
+    nullable: true,
+  })
+  @IsOptional()
   public interest?: IUserInterests[];
 
-  @Field(() => IUserPersonality, { description: "User personality" })
+  @Field(() => IUserPersonality, {
+    description: "User personality",
+    nullable: true,
+  })
+  @IsOptional()
   public personality?: IUserPersonality;
 
-  @Field(() => IUserMaritalStatus, { description: "User marital status" })
+  @Field(() => IUserMaritalStatus, {
+    description: "User marital status",
+    nullable: true,
+  })
+  @IsOptional()
   public maritalStatus?: IUserMaritalStatus;
 
-  @Field(() => IUserLookingFor, { description: "Looking for" })
+  @Field(() => IUserLookingFor, { description: "Looking for", nullable: true })
+  @IsOptional()
   public lookingFor?: IUserLookingFor;
 
-  @Field({ description: "User job" })
+  @Field({ description: "User job", nullable: true })
+  @IsOptional()
   public employer?: string;
 
-  @Field(() => IUserPets, { description: "User pets" })
+  @Field(() => IUserPets, { description: "User pets", nullable: true })
+  @IsOptional()
   public pets?: IUserPets;
 
   @Field(() => IUserSexualOrientation, {
     description: "User sexual orientation",
+    nullable: true,
   })
+  @IsOptional()
   public sexualOrientation?: IUserSexualOrientation;
 
-  @Field(() => LocationInputUpdateInformation, { description: "User location" })
+  @Field(() => LocationInputUpdateInformation, {
+    description: "User location",
+    nullable: true,
+  })
+  @IsOptional()
   public location?: LocationInputUpdateInformation;
 
-  @Field(() => IUserDegree, { description: "User degree" })
+  @Field(() => IUserDegree, { description: "User degree", nullable: true })
+  @IsOptional()
   public degree?: IUserDegree;
 
-  @Field(() => IUserReligion, { description: "User religion" })
+  @Field(() => IUserReligion, { description: "User religion", nullable: true })
+  @IsOptional()
   public religion?: IUserReligion;
 
-  @Field({ description: "User nacionality" })
+  @Field({ description: "User nacionality", nullable: true })
+  @IsOptional()
   public nacionality?: string;
 }
 
 @InputType()
 export class UserInputUpdate {
   @Field({ nullable: true, description: "User name" })
+  @IsOptional()
   @MinLength(1)
   @MaxLength(50)
   public name?: string;
 
   @Field({ nullable: true, description: "User preferences" })
+  @IsOptional()
   public preferences?: UserInputUpdatePreference;
 
   @Field({ nullable: true, description: "User information" })
+  @IsOptional()
   public information?: UserInputUpdateInformation;
 }

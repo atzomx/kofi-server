@@ -1,7 +1,8 @@
 import { Repository } from "@core/domain";
 import { IPagination } from "@core/domain/interfaces";
+import { Paginate } from "@core/infrastructure/utils";
 import { InteractionRepository } from "@entities/interactions";
-import { Types } from "mongoose";
+import { PipelineStage } from "mongoose";
 import { UserPaginationArgs } from "../infrastructure/user.args";
 import User from "./user.entity";
 import { IUserRole } from "./user.enums";
@@ -14,33 +15,69 @@ class UserRepository extends Repository<User> {
 
   async userQueue(
     { page, limit }: UserPaginationArgs,
-    idUser: string,
-  ): Promise<IPagination<User>> {
+    user: User,
+  ): Promise<IPagination<User & { distance: number }>> {
     const interactionRepository = new InteractionRepository();
 
-    const searchQuery2 = { userFrom: idUser };
+    const searchQuery2 = { userFrom: user._id.toString() };
     const interactionOfThisUser = await interactionRepository
       .find(searchQuery2)
       .select("userTo");
 
+    const noInUsers = [...interactionOfThisUser]
+      .map(({ userTo }) => userTo)
+      .concat([user._id]);
+
     const searchQuery = {
-      $and: [
-        {
-          _id: {
-            $nin: [...interactionOfThisUser]
-              .map(({ userTo }) => userTo)
-              .concat([new Types.ObjectId(idUser)]),
-          },
-        },
-        {
-          role: IUserRole.LOVER,
-        },
-      ],
+      $and: [{ _id: { $nin: noInUsers } }, { role: IUserRole.LOVER }],
     };
 
-    return this.paginate(searchQuery, { limit, page }, { updatedAt: -1 }, [
-      "information.medias",
+    const maxDistance = 10000; // 100 km
+    const minDistance = 1000; // 1 km
+
+    const { coordinates } = user.information.location;
+
+    const skip = Paginate.getSkip({ page, limit });
+
+    const pointQuery: PipelineStage.GeoNear = {
+      $geoNear: {
+        near: {
+          type: "Point",
+          coordinates: coordinates,
+        },
+        distanceField: "distance",
+        maxDistance: maxDistance,
+        minDistance: minDistance,
+        spherical: true,
+        distanceMultiplier: 0.001,
+        key: "information.location",
+      },
+    };
+    const totalPromise = this.instance.aggregate<{ total: number }>([
+      pointQuery,
+      { $match: searchQuery },
+      { $count: "total" },
     ]);
+
+    const resultsPromise = this.instance.aggregate<User & { distance: number }>(
+      [pointQuery, { $match: searchQuery }, { $skip: skip }, { $limit: limit }],
+    );
+
+    const [[{ total }], results] = await Promise.all([
+      totalPromise,
+      resultsPromise,
+    ]);
+
+    const pages = Math.ceil(total / limit);
+
+    return {
+      info: {
+        page,
+        total,
+        pages,
+      },
+      results,
+    };
   }
 }
 

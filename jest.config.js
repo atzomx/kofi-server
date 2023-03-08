@@ -17,6 +17,7 @@ module.exports = {
   },
   collectCoverageFrom: [
     "**/src/entities/**",
+    "**/src/tests/fakers/**",
     "!**/src/entities/**/index.ts",
     "!**/dist/**",
   ],

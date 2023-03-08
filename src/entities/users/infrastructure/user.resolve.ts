@@ -15,7 +15,10 @@ import User from "../domain/user.entity";
 import { IUserRole } from "../domain/user.enums";
 import { UserPaginationArgs } from "./user.args";
 import { UserInputCreate, UserInputUpdate } from "./user.inputs";
-import { UserPaginateResponse } from "./user.response";
+import {
+  UserPaginateResponse,
+  UserPaginateResponseQueue,
+} from "./user.response";
 
 const NAMES = NamerUtils.get("user");
 
@@ -58,14 +61,14 @@ class UserResolver {
     return results;
   }
 
-  @Query(() => UserPaginateResponse, {
+  @Query(() => UserPaginateResponseQueue, {
     description: "Returns an array of available users.",
     name: "userQueue",
   })
   @Authorized()
   async userQueue(@Ctx() ctx: IContext, @Args() paginate: UserPaginationArgs) {
-    const userId = ctx.payload.id;
-    const results = await this.controller.userQueue(paginate, userId);
+    const { user } = ctx.payload;
+    const results = await this.controller.userQueue(paginate, user);
     return results;
   }
 
