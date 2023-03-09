@@ -3,7 +3,7 @@ import { IPagination } from "@core/domain/interfaces";
 import TestUtils, {
   getEnumRandom,
 } from "@core/infrastructure/utils/test.utils";
-import authUtils from "@core/infrastructure/utils/token.utils";
+import TokenUtils from "@core/infrastructure/utils/token.utils";
 import { Interaction } from "@entities/interactions";
 import { IInteractionTypes } from "@entities/interactions/domain/interaction.enums";
 import { Match } from "@entities/match";
@@ -96,7 +96,7 @@ describe("Match Test", () => {
 
     const type = IInteractionTypes.like;
 
-    const userFromToken = authUtils.getToken(userFrom.toString());
+    const userFromToken = TokenUtils.getToken(userFrom.toString());
 
     const result = await request<{ interactionCreate: Interaction }>(app)
       .query(interactionQuerys.interactionCreate)
@@ -114,12 +114,16 @@ describe("Match Test", () => {
       status: getEnumRandom(IMatchStatus),
     };
 
+    const matchUser = entities.matchs[0].participants[0];
+    const userId = matchUser.toString();
+    const token = `Token ${TokenUtils.getToken(userId)}`;
+
     const result = await request<{
       matchPaginate: IPagination<Match>;
     }>(app)
       .query(matchQuerys.matchPagination)
       .variables(variables)
-      .set("authorization", authorization.LOVER);
+      .set("authorization", token);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("matchPaginate");

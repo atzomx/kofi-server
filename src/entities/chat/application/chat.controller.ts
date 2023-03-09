@@ -17,9 +17,7 @@ class ChatController {
   }: PaginateArgs & { user: string }): Promise<IPagination<Chat>> {
     return this.repository.paginate(
       { participants: user },
-      { limit, page },
-      { updatedAt: -1 },
-      "participants",
+      { limit, page, sort: { updatedAt: -1 }, populate: "participants" },
     );
   }
 }

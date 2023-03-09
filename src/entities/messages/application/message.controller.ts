@@ -21,9 +21,7 @@ class MessageController {
   }: MessagePaginationArgs): Promise<IPagination<Message>> {
     return this.repository.paginate(
       { chat },
-      { limit, page },
-      { createdAt: -1 },
-      "media",
+      { limit, page, sort: { createdAt: -1 }, populate: "media" },
     );
   }
 

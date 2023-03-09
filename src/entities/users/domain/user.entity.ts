@@ -1,6 +1,6 @@
 import Entity from "@core/domain/entity";
 import { Media } from "@entities/media";
-import { prop, Ref } from "@typegoose/typegoose";
+import { index, prop, Ref } from "@typegoose/typegoose";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 import {
@@ -18,16 +18,17 @@ import {
 
 @ObjectType("location")
 export class LocationInformation {
-  @Field(() => Number, { description: "User location latitude" })
-  @prop({ required: true })
-  public latitude: number;
+  @Field(() => String, { description: "User location geo type" })
+  @prop({ required: false, default: "Point" })
+  public type: string;
 
-  @Field(() => Number, { description: "User location longitude" })
-  @prop({ required: true })
-  public longitude: number;
+  @Field(() => [Number, Number], { description: "User location coordinates" })
+  @prop({ required: true, type: [Number, Number] })
+  public coordinates: [number, number];
 }
 
 @ObjectType("information")
+@index({ location: "2dsphere" })
 export class UserInformation {
   @Field(() => [Media], { description: "Chat participants." })
   @prop({
@@ -38,7 +39,7 @@ export class UserInformation {
   public medias?: Ref<Media, string>[];
 
   @Field({ description: "User birthday YYYY-MM-DD." })
-  @prop({ required: true })
+  @prop({ required: false })
   public birthday?: Date;
 
   @Field({ description: "User description." })
@@ -75,9 +76,9 @@ export class UserInformation {
   @prop({ required: false, enum: IUserSexualOrientation })
   public sexualOrientation?: IUserSexualOrientation;
 
-  @Field({ description: "User location." })
-  @prop({ required: true })
-  public location!: LocationInformation;
+  @Field(() => LocationInformation, { description: "User location." })
+  @prop({ required: false })
+  public location?: LocationInformation;
 
   @Field(() => IUserDegree, { description: "User degree." })
   @prop({ required: false, enum: IUserDegree })
