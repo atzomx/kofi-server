@@ -254,7 +254,7 @@ describe("User Test", () => {
 
   it("Should update by user token", async () => {
     const preferencesNew = UserFaker.getPreferences();
-    const informationNew = UserFaker.getInformation(entities.medias);
+    const informationNew = UserFaker.getInformation(entities.medias, true);
     const dataToSent = {
       name: "AlteredName",
       preferences: preferencesNew,

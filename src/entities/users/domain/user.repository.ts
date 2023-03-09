@@ -36,7 +36,6 @@ class UserRepository extends Repository<User> {
     const minDistance = 1000; // 1 km
 
     const { coordinates } = user.information.location;
-
     const skip = Paginate.getSkip({ page, limit });
 
     const pointQuery: PipelineStage.GeoNear = {
@@ -53,6 +52,7 @@ class UserRepository extends Repository<User> {
         key: "information.location",
       },
     };
+
     const totalPromise = this.instance.aggregate<{ total: number }>([
       pointQuery,
       { $match: searchQuery },
@@ -63,11 +63,11 @@ class UserRepository extends Repository<User> {
       [pointQuery, { $match: searchQuery }, { $skip: skip }, { $limit: limit }],
     );
 
-    const [[{ total }], results] = await Promise.all([
+    const [[count], results] = await Promise.all([
       totalPromise,
       resultsPromise,
     ]);
-
+    const { total = 0 } = count || {};
     const pages = Math.ceil(total / limit);
 
     return {

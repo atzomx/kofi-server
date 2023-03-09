@@ -4,6 +4,22 @@ import UserFaker from "./user.faker";
 
 const keysOptionals = ["status", "role"];
 const keysRequired = ["name", "email", "password"];
+const keysInformation = [
+  "location",
+  "birthday",
+  "degree",
+  "description",
+  "employer",
+  "interest",
+  "lookingFor",
+  "maritalStatus",
+  "nacionality",
+  "personality",
+  "pets",
+  "religion",
+  "sexualOrientation",
+  "medias",
+];
 
 describe("User faker", () => {
   it("Should return a user random", () => {
@@ -21,6 +37,13 @@ describe("User faker", () => {
     const user = UserFaker.basic();
     keysRequired.forEach((key) => {
       expect(user).toHaveProperty(key);
+    });
+  });
+
+  it("Should return a user information ", () => {
+    const info = UserFaker.getInformation([], true);
+    keysInformation.forEach((key) => {
+      expect(info).toHaveProperty(key);
     });
   });
 });
