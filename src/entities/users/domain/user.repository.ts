@@ -18,15 +18,7 @@ class UserRepository extends Repository<User> {
     user: User,
   ): Promise<IPagination<User & { distance: number }>> {
     const interactionRepository = new InteractionRepository();
-
-    const searchQuery2 = { userFrom: user._id.toString() };
-    const interactionOfThisUser = await interactionRepository
-      .find(searchQuery2)
-      .select("userTo");
-
-    const noInUsers = [...interactionOfThisUser]
-      .map(({ userTo }) => userTo)
-      .concat([user._id]);
+    const noInUsers = await interactionRepository.unavailableUsers(user);
 
     const searchQuery = {
       $and: [{ _id: { $nin: noInUsers } }, { role: IUserRole.LOVER }],
