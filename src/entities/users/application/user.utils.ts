@@ -1,5 +1,6 @@
 /* eslint-disable indent */
 import { Sanitizer } from "@core/infrastructure/utils";
+import { PipelineStage } from "mongoose";
 import { IUserStatus } from "../domain/user.enums";
 
 type TSeaching = {
@@ -36,6 +37,35 @@ const searchingQuery = ({
   };
 };
 
+type TPointQuery = {
+  coordinates?: [number, number];
+  maxDistance?: number;
+  minDistance?: number;
+};
+
+const pointQuery = ({
+  coordinates,
+  maxDistance,
+  minDistance,
+}: TPointQuery): PipelineStage.GeoNear => {
+  const pointQuery: PipelineStage.GeoNear = {
+    $geoNear: {
+      near: {
+        type: "Point",
+        coordinates: coordinates,
+      },
+      distanceField: "distance",
+      maxDistance: maxDistance,
+      minDistance: minDistance,
+      spherical: true,
+      distanceMultiplier: 0.001,
+      key: "information.location",
+    },
+  };
+  return pointQuery;
+};
+
 export default {
   searchingQuery,
+  pointQuery,
 };

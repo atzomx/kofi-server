@@ -11,6 +11,7 @@ import {
   UserInputCreate,
   UserInputUpdate,
 } from "../infrastructure/user.inputs";
+import userQueue from "./use-cases/user-queue.use-case";
 import UserUtils from "./user.utils";
 
 class UserController {
@@ -54,7 +55,7 @@ class UserController {
     { page, limit }: UserPaginationArgs,
     user: User,
   ): Promise<IPagination<User>> {
-    return this.repository.userQueue({ limit, page }, user);
+    return userQueue({ limit, page }, user, this.repository);
   }
 
   async create(user: UserInputCreate): Promise<User> {
