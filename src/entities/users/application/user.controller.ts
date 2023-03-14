@@ -11,6 +11,7 @@ import {
   UserInputCreate,
   UserInputUpdate,
 } from "../infrastructure/user.inputs";
+import UserQueueUseCase from "./use-cases/user-queue.use-case";
 import UserUtils from "./user.utils";
 
 class UserController {
@@ -53,8 +54,14 @@ class UserController {
   async userQueue(
     { page, limit }: UserPaginationArgs,
     user: User,
-  ): Promise<IPagination<User>> {
-    return this.repository.userQueue({ limit, page }, user);
+  ): Promise<IPagination<User & { distance: number }>> {
+    const userQueueUseCase = new UserQueueUseCase();
+    const pagination = userQueueUseCase.execute(
+      { limit, page },
+      user,
+      this.repository,
+    );
+    return pagination;
   }
 
   async create(user: UserInputCreate): Promise<User> {
