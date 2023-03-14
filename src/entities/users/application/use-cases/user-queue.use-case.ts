@@ -7,52 +7,61 @@ import UserRepository from "@entities/users/domain/user.repository";
 import { UserPaginationArgs } from "@entities/users/infrastructure/user.args";
 import UserUtils from "../user.utils";
 
-const userQueue = async (
-  { page, limit }: UserPaginationArgs,
-  user: User,
-  userRepository: UserRepository,
-): Promise<IPagination<User & { distance: number }>> => {
-  const interactionRepository = new InteractionRepository();
-  const noInUsers = await interactionRepository.unavailableUsers(user);
+type UserDistance = User & { distance: number };
 
-  const searchQuery = {
-    $and: [{ _id: { $nin: noInUsers } }, { role: IUserRole.LOVER }],
-  };
+class UserQueueUseCase {
+  async execute(
+    { page, limit }: UserPaginationArgs,
+    user: User,
+    repository: UserRepository,
+  ): Promise<IPagination<User & { distance: number }>> {
+    const interactionRepository = new InteractionRepository();
+    const noInUsers = await interactionRepository.unavailableUsers(user);
 
-  const maxDistance = 10000; // 100 km
-  const minDistance = 1000; // 1 km
+    const searchQuery = {
+      $and: [{ _id: { $nin: noInUsers } }, { role: IUserRole.LOVER }],
+    };
 
-  const { coordinates } = user.information.location;
-  const skip = Paginate.getSkip({ page, limit });
+    const maxDistance = 10000; // 100 km
+    const minDistance = 1000; // 1 km
 
-  const pointQuery = UserUtils.pointQuery({
-    coordinates,
-    maxDistance,
-    minDistance,
-  });
+    const { coordinates } = user.information.location;
+    const skip = Paginate.getSkip({ page, limit });
 
-  const totalPromise = userRepository.instance.aggregate<{ total: number }>([
-    pointQuery,
-    { $match: searchQuery },
-    { $count: "total" },
-  ]);
+    const pointQuery = UserUtils.pointQuery({
+      coordinates,
+      maxDistance,
+      minDistance,
+      query: searchQuery,
+    });
 
-  const resultsPromise = userRepository.instance.aggregate<
-    User & { distance: number }
-  >([pointQuery, { $match: searchQuery }, { $skip: skip }, { $limit: limit }]);
+    const totalPromise = repository.instance.aggregate<{ total: number }>([
+      pointQuery,
+      { $count: "total" },
+    ]);
 
-  const [[count], results] = await Promise.all([totalPromise, resultsPromise]);
-  const { total = 0 } = count || {};
-  const pages = Math.ceil(total / limit);
+    const resultsPromise = repository.instance.aggregate<UserDistance>([
+      pointQuery,
+      { $skip: skip },
+      { $limit: limit },
+    ]);
 
-  return {
-    info: {
-      page,
-      total,
-      pages,
-    },
-    results,
-  };
-};
+    const [[count], results] = await Promise.all([
+      totalPromise,
+      resultsPromise,
+    ]);
+    const { total = 0 } = count || {};
+    const pages = Math.ceil(total / limit);
 
-export default userQueue;
+    return {
+      info: {
+        page,
+        total,
+        pages,
+      },
+      results,
+    };
+  }
+}
+
+export default UserQueueUseCase;
