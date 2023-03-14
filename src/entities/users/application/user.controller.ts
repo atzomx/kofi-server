@@ -1,5 +1,6 @@
 import { IPagination } from "@core/domain/interfaces";
 import { Password } from "@core/infrastructure/utils";
+import { Media, MediaInputCreate, MediaController } from "@entities/media";
 import User from "../domain/user.entity";
 import {
   UserAlreadyExistsError,
@@ -50,7 +51,7 @@ class UserController {
     });
   }
 
-  async userQueue(
+  userQueue(
     { page, limit }: UserPaginationArgs,
     user: User,
   ): Promise<IPagination<User>> {
@@ -74,6 +75,35 @@ class UserController {
       .findByIdAndUpdate(id, user)
       .populate(["information.medias"]);
     return updatedUser;
+  }
+
+  async mediaCreate(userId: string, media: MediaInputCreate): Promise<Media[]> {
+    const mediaController = new MediaController();
+    const mediaCreated = await mediaController.create(media);
+    const user = await this.repository
+      .findByIdAndUpdate(userId, {
+        $push: { "information.medias": mediaCreated._id.toString() },
+      })
+      .populate("information.medias");
+    return user.information.medias as Media[];
+  }
+
+  async mediaDelete(userId: string, mediaId: string): Promise<Media[]> {
+    const mediaController = new MediaController();
+    await mediaController.delete(mediaId);
+
+    const user = await this.repository
+      .findByIdAndUpdate(userId, { $pull: { "information.medias": mediaId } })
+      .populate("information.medias");
+
+    return user.information.medias as Media[];
+  }
+
+  async mediaOrder(userId: string, medias: string[]): Promise<Media[]> {
+    const user = await this.repository
+      .findByIdAndUpdate(userId, { "information.medias": medias })
+      .populate("information.medias");
+    return user.information.medias as Media[];
   }
 }
 

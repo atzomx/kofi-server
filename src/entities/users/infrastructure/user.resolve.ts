@@ -1,6 +1,7 @@
 import { IContext } from "@core/domain/interfaces";
 import { ValidateArgs } from "@core/infrastructure/decorators";
 import NamerUtils from "@core/infrastructure/utils/namer.utils";
+import { Media, MediaInputCreate } from "@entities/media";
 import {
   Arg,
   Args,
@@ -101,6 +102,40 @@ class UserResolver {
   @ValidateArgs(UserInputUpdate, "data")
   async updateMe(@Ctx() ctx: IContext, @Arg("data") user: UserInputUpdate) {
     const result = await this.controller.update(ctx.payload.id, user);
+    return result;
+  }
+
+  @Mutation(() => [Media], {
+    description: "Create user media",
+    name: "userMediaCreate",
+  })
+  @Authorized()
+  @ValidateArgs(MediaInputCreate, "data")
+  async userMediaCreate(
+    @Ctx() ctx: IContext,
+    @Arg("data") media: MediaInputCreate,
+  ) {
+    const result = await this.controller.mediaCreate(ctx.payload.id, media);
+    return result;
+  }
+
+  @Mutation(() => [Media], {
+    description: "Delete one user media by id",
+    name: "userMediaDelete",
+  })
+  @Authorized()
+  async userMediaDelete(@Ctx() ctx: IContext, @Arg("id") media: string) {
+    const result = await this.controller.mediaDelete(ctx.payload.id, media);
+    return result;
+  }
+
+  @Mutation(() => [Media], {
+    description: "Altered order user media",
+    name: "userMediaOrder",
+  })
+  @Authorized()
+  async userMediaOrder(@Ctx() ctx: IContext, @Arg("id") medias: string[]) {
+    const result = await this.controller.mediaOrder(ctx.payload.id, medias);
     return result;
   }
 }
