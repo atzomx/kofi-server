@@ -34,6 +34,12 @@ const authorization = {
   MODERATOR: "",
 };
 
+const users = {
+  LOVER: {} as User,
+  ADMIN: {} as User,
+  MODERATOR: {} as User,
+};
+
 beforeAll(async () => {
   //* WE MOCK REDIS PUBSUB */
   const pubSubMock = jest.spyOn(PubSub, "create");
@@ -46,20 +52,23 @@ beforeAll(async () => {
   const userLover = entities.users.find(({ role }) => role === IUserRole.LOVER);
   const userLoverToken = authUtils.getToken(userLover._id.toString());
   authorization.LOVER = `Token ${userLoverToken}`;
+  users.LOVER = userLover;
 
   const userAdmin = entities.users.find(({ role }) => role === IUserRole.ADMIN);
   const userAdminToken = authUtils.getToken(userAdmin._id.toString());
   authorization.ADMIN = `Token ${userAdminToken}`;
+  users.ADMIN = userAdmin;
 
   const userModerator = entities.users.find(
     ({ role }) => role === IUserRole.ADMIN,
   );
   const userModeratorToken = authUtils.getToken(userModerator._id.toString());
   authorization.MODERATOR = `Token ${userModeratorToken}`;
+  users.MODERATOR = userModerator;
 });
 
 afterAll(async () => {
   await server.stop();
 });
 
-export { app, entities, authorization };
+export { app, entities, authorization, users };
