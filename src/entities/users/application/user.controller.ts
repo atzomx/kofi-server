@@ -1,5 +1,7 @@
 import { IPagination } from "@core/domain/interfaces";
 import { Password } from "@core/infrastructure/utils";
+import { Media, MediaCreateInput, MediaController } from "@entities/media";
+import { Types } from "mongoose";
 import User from "../domain/user.entity";
 import {
   UserAlreadyExistsError,
@@ -8,8 +10,8 @@ import {
 import UserRepository from "../domain/user.repository";
 import { UserPaginationArgs } from "../infrastructure/user.args";
 import {
-  UserInputCreate,
-  UserInputUpdate,
+  UserCreateInput,
+  UserUpdateInput,
 } from "../infrastructure/user.inputs";
 import UserQueueUseCase from "./use-cases/user-queue.use-case";
 import UserUtils from "./user.utils";
@@ -51,7 +53,7 @@ class UserController {
     });
   }
 
-  async userQueue(
+  userQueue(
     { page, limit }: UserPaginationArgs,
     user: User,
   ): Promise<IPagination<User & { distance: number }>> {
@@ -64,7 +66,7 @@ class UserController {
     return pagination;
   }
 
-  async create(user: UserInputCreate): Promise<User> {
+  async create(user: UserCreateInput): Promise<User> {
     const query = { email: user.email };
     const existingUser = await this.repository.findOne(query);
     if (existingUser) throw new UserAlreadyExistsError();
@@ -75,12 +77,46 @@ class UserController {
     return result;
   }
 
-  async update(id: string, user: UserInputUpdate): Promise<User> {
+  async update(id: string, user: UserUpdateInput): Promise<User> {
     await this.findById(id);
     const updatedUser = await this.repository
       .findByIdAndUpdate(id, user)
       .populate(["information.medias"]);
     return updatedUser;
+  }
+
+  async mediaCreate(userId: string, media: MediaCreateInput): Promise<Media[]> {
+    const mediaController = new MediaController();
+    const mediaCreated = await mediaController.create(media);
+    const mediaId = mediaCreated._id.toString();
+
+    const user = await this.repository
+      .findByIdAndUpdate(userId, { $push: { "information.medias": mediaId } })
+      .populate("information.medias")
+      .select("information.medias");
+
+    return user.information.medias as Media[];
+  }
+
+  async mediaDelete(userId: string, mediaId: string): Promise<Media[]> {
+    const mediaController = new MediaController();
+    await mediaController.delete(mediaId);
+
+    const user = await this.repository
+      .findByIdAndUpdate(userId, { $pull: { "information.medias": mediaId } })
+      .populate("information.medias")
+      .select("information.medias");
+
+    return user.information.medias as Media[];
+  }
+
+  async mediaOrder(userId: string, medias: Types.ObjectId[]): Promise<Media[]> {
+    const user = await this.repository
+      .findByIdAndUpdate(userId, { "information.medias": medias })
+      .populate("information.medias")
+      .select("information.medias");
+
+    return user.information.medias as Media[];
   }
 }
 

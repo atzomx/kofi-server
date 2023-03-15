@@ -4,7 +4,7 @@ import { Arg, Args, Authorized, Mutation, Query, Resolver } from "type-graphql";
 import { MediaController } from "..";
 import Media from "../domain/media.entity";
 import { MediaPaginationArgs } from "./media.args";
-import { MediaInputCreate } from "./media.input";
+import { MediaCreateInput } from "./media.input";
 import { MediaPaginateResponse } from "./media.response";
 
 const NAMES = NamerUtils.get("media");
@@ -39,8 +39,8 @@ class MediaResolver {
     description: "Register a new media.",
     name: NAMES.create,
   })
-  @ValidateArgs(MediaInputCreate, "data")
-  async create(@Arg("data") media: MediaInputCreate) {
+  @ValidateArgs(MediaCreateInput, "data")
+  async create(@Arg("data") media: MediaCreateInput) {
     const result = await this.controller.create(media);
     return result;
   }

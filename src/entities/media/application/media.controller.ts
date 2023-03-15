@@ -3,7 +3,7 @@ import { MediaRepository } from "..";
 import Media from "../domain/media.entity";
 import { MediaNotFoundError } from "../domain/media.errors";
 import { MediaPaginationArgs } from "../infrastructure/media.args";
-import { MediaInputCreate } from "../infrastructure/media.input";
+import { MediaCreateInput } from "../infrastructure/media.input";
 import mediaUtils from "./media.utils";
 
 class MediaController {
@@ -35,7 +35,7 @@ class MediaController {
     return this.repository.paginate(searchQuery, { limit, page });
   }
 
-  async create(media: MediaInputCreate): Promise<Media> {
+  async create(media: MediaCreateInput): Promise<Media> {
     const newMedia = { ...media };
     const result = await this.repository.create({ ...newMedia });
     return result;

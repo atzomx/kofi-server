@@ -42,7 +42,7 @@ const paginate = gql`
 `;
 
 const mediaCreate = gql`
-  mutation MediaCreate($data: MediaInputCreate!) {
+  mutation MediaCreate($data: MediaCreateInput!) {
     mediaCreate(data: $data) {
       ${media}
     }

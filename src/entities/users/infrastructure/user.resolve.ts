@@ -1,6 +1,8 @@
 import { IContext } from "@core/domain/interfaces";
 import { ValidateArgs } from "@core/infrastructure/decorators";
 import NamerUtils from "@core/infrastructure/utils/namer.utils";
+import { Media, MediaCreateInput } from "@entities/media";
+import { Types } from "mongoose";
 import {
   Arg,
   Args,
@@ -14,7 +16,11 @@ import UserController from "../application/user.controller";
 import User from "../domain/user.entity";
 import { IUserRole } from "../domain/user.enums";
 import { UserPaginationArgs } from "./user.args";
-import { UserInputCreate, UserInputUpdate } from "./user.inputs";
+import {
+  UserCreateInput,
+  UserMediaOrderInput,
+  UserUpdateInput,
+} from "./user.inputs";
 import {
   UserPaginateResponse,
   UserPaginateResponseQueue,
@@ -76,8 +82,8 @@ class UserResolver {
     description: "Register a new user.",
     name: NAMES.create,
   })
-  @ValidateArgs(UserInputCreate, "data")
-  async create(@Arg("data") user: UserInputCreate) {
+  @ValidateArgs(UserCreateInput, "data")
+  async create(@Arg("data") user: UserCreateInput) {
     const result = await this.controller.create(user);
     return result;
   }
@@ -87,8 +93,8 @@ class UserResolver {
     name: NAMES.update,
   })
   @Authorized(IUserRole.ADMIN, IUserRole.MODERATOR)
-  @ValidateArgs(UserInputUpdate, "data")
-  async update(@Arg("id") id: string, @Arg("data") user: UserInputUpdate) {
+  @ValidateArgs(UserUpdateInput, "data")
+  async update(@Arg("id") id: string, @Arg("data") user: UserUpdateInput) {
     const result = await this.controller.update(id.toString(), user);
     return result;
   }
@@ -98,9 +104,56 @@ class UserResolver {
     name: `${NAMES.update}Me`,
   })
   @Authorized()
-  @ValidateArgs(UserInputUpdate, "data")
-  async updateMe(@Ctx() ctx: IContext, @Arg("data") user: UserInputUpdate) {
+  @ValidateArgs(UserUpdateInput, "data")
+  async updateMe(@Ctx() ctx: IContext, @Arg("data") user: UserUpdateInput) {
     const result = await this.controller.update(ctx.payload.id, user);
+    return result;
+  }
+
+  @Mutation(() => [Media], {
+    description: "Create user media",
+    name: "userMediaCreate",
+  })
+  @Authorized()
+  @ValidateArgs(MediaCreateInput, "data")
+  async userMediaCreate(
+    @Ctx() ctx: IContext,
+    @Arg("data") media: MediaCreateInput,
+  ) {
+    const result = await this.controller.mediaCreate(ctx.payload.id, media);
+    return result;
+  }
+
+  @Mutation(() => [Media], {
+    description: "Delete one user media by id",
+    name: "userMediaDelete",
+  })
+  @Authorized()
+  async userMediaDelete(
+    @Ctx() ctx: IContext,
+    @Arg("id") media: Types.ObjectId,
+  ) {
+    const result = await this.controller.mediaDelete(
+      ctx.payload.id,
+      media.toString(),
+    );
+    return result;
+  }
+
+  @Mutation(() => [Media], {
+    description: "Altered order user media",
+    name: "userMediaOrder",
+  })
+  @Authorized()
+  @ValidateArgs(UserMediaOrderInput, "data")
+  async userMediaOrder(
+    @Ctx() ctx: IContext,
+    @Arg("data") data: UserMediaOrderInput,
+  ) {
+    const result = await this.controller.mediaOrder(
+      ctx.payload.id,
+      data.medias,
+    );
     return result;
   }
 }
