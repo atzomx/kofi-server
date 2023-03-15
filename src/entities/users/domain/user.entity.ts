@@ -37,5 +37,4 @@ class User extends Entity {
   public information?: UserInformation;
 }
 
-export { UserInformation, UserPreference };
 export default User;

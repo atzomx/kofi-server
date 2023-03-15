@@ -3,7 +3,7 @@ import { Field, InputType } from "type-graphql";
 import { IUserRole, IUserStatus } from "../../domain/user.enums";
 
 @InputType()
-export class UserInputCreate {
+export class UserCreateInput {
   @Field({ description: "User name" })
   @MinLength(1)
   @MaxLength(50)

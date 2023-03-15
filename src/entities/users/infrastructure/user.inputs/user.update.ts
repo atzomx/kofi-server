@@ -4,7 +4,7 @@ import { UserInformationUpdate } from "./user-information.update";
 import { UserPreferenceUpdate } from "./user-preferences.update";
 
 @InputType()
-export class UserInputUpdate {
+export class UserUpdateInput {
   @Field({ nullable: true, description: "User name" })
   @IsOptional()
   @MinLength(1)

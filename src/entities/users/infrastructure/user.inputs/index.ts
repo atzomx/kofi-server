@@ -1,2 +1,3 @@
-export { UserInputCreate } from "./user.create";
-export { UserInputUpdate } from "./user.update";
+export { UserCreateInput } from "./user.create";
+export { UserUpdateInput } from "./user.update";
+export { UserMediaOrderInput } from "./user-medias.order";
