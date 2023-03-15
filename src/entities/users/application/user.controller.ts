@@ -11,6 +11,7 @@ import {
   UserInputCreate,
   UserInputUpdate,
 } from "../infrastructure/user.inputs";
+import UserQueueUseCase from "./use-cases/user-queue.use-case";
 import UserUtils from "./user.utils";
 
 class UserController {
@@ -42,19 +43,25 @@ class UserController {
       endDate,
       startDate,
     });
-    return this.repository.paginate(
-      searchQuery,
-      { limit, page },
-      { updatedAt: -1 },
-      ["information.medias"],
-    );
+    return this.repository.paginate(searchQuery, {
+      limit,
+      page,
+      sort: { updatedAt: -1 },
+      populate: "information.medias",
+    });
   }
 
   async userQueue(
     { page, limit }: UserPaginationArgs,
-    idUser: string,
-  ): Promise<IPagination<User>> {
-    return this.repository.userQueue({ limit, page }, idUser);
+    user: User,
+  ): Promise<IPagination<User & { distance: number }>> {
+    const userQueueUseCase = new UserQueueUseCase();
+    const pagination = userQueueUseCase.execute(
+      { limit, page },
+      user,
+      this.repository,
+    );
+    return pagination;
   }
 
   async create(user: UserInputCreate): Promise<User> {

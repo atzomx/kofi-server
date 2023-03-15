@@ -50,12 +50,14 @@ class Repository<T> {
     {
       page = 1,
       limit = DEFAULT_PAGINATION,
+      sort,
+      populate,
     }: {
       page?: number;
       limit?: number;
+      sort?: string | { [key: string]: SortOrder };
+      populate?: string | string[];
     },
-    sort?: string | { [key: string]: SortOrder },
-    populate?: string | string[],
   ) {
     const skip = Paginate.getSkip({ page, limit });
     const documentsPromise = this.instance

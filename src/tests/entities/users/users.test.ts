@@ -254,7 +254,7 @@ describe("User Test", () => {
 
   it("Should update by user token", async () => {
     const preferencesNew = UserFaker.getPreferences();
-    const informationNew = UserFaker.getInformation(entities.medias);
+    const informationNew = UserFaker.getInformation(entities.medias, true);
     const dataToSent = {
       name: "AlteredName",
       preferences: preferencesNew,
@@ -292,12 +292,8 @@ describe("User Test", () => {
     expect(information.sexualOrientation).toBe(
       informationNew.sexualOrientation,
     );
-    expect(information.location.latitude).toBe(
-      informationNew.location.latitude,
-    );
-    expect(information.location.longitude).toBe(
-      informationNew.location.longitude,
-    );
+    expect(information.location[0]).toBe(informationNew.location[0]);
+    expect(information.location[1]).toBe(informationNew.location[1]);
     information.medias.forEach((media) => {
       expect(media).toHaveProperty("type");
       expect(media).toHaveProperty("url");

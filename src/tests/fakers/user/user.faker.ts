@@ -46,14 +46,14 @@ class UserFaker {
     } as UserPreference;
   }
 
-  static getInformation(_medias: Media[] = []): UserInformation {
+  static getInformation(_medias: Media[] = [], update = false) {
     const mediasId = _medias.map(({ _id }) => _id.toString());
     const medias = faker.helpers.arrayElements(mediasId, 3);
 
     return {
       location: {
-        latitude: +faker.address.latitude(),
-        longitude: +faker.address.longitude(),
+        ...(!update ? { type: "Point" } : {}),
+        coordinates: [+faker.address.longitude(), +faker.address.latitude()],
       },
       birthday: faker.date.birthdate(),
       degree: getEnumRandom(IUserDegree),
@@ -83,7 +83,7 @@ class UserFaker {
       status: IUserStatus.active,
       role,
       preferences,
-      information,
+      information: information as UserInformation,
     };
 
     return complete;
