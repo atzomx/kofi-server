@@ -9,6 +9,7 @@ import {
   InteractionInputCreate,
   InteractionInputUpdate,
 } from "../infrastructure/interaction.inputs";
+import CreateInteractionUseCase from "./use-cases/create-interaction.use-case";
 
 class InteractionController {
   private readonly repository: InteractionRepository;
@@ -42,10 +43,12 @@ class InteractionController {
   ): Promise<Interaction & { generatedMatch: boolean; name: string }> {
     const { name } = await this.userController.findById(userFrom);
     await this.userController.findById(interaction.userTo.toString());
-    const result = await this.repository.findOrCreateInteraction(
+    const createInteractionUseCase = new CreateInteractionUseCase();
+    const result = await createInteractionUseCase.execute(
       interaction,
       userFrom,
       name,
+      this.repository,
     );
     return result;
   }
