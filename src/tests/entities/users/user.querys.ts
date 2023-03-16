@@ -1,5 +1,11 @@
 import { gql } from "apollo-server-core";
 
+const media = `
+  _id
+  type
+  url
+`;
+
 const user = `
   _id
   name
@@ -20,9 +26,7 @@ const user = `
   }
   information {
     medias {
-      _id
-      type
-      url
+      ${media}
     }
     birthday
     description
@@ -104,7 +108,7 @@ const paginate = gql`
 `;
 
 const userCreate = gql`
-  mutation UserCreate($data: UserInputCreate!) {
+  mutation UserCreate($data: UserCreateInput!) {
     userCreate(data: $data) {
       ${user}
     }
@@ -112,7 +116,7 @@ const userCreate = gql`
 `;
 
 const userUpdate = gql`
-  mutation Mutation($data: UserInputUpdate!, $userId: String!) {
+  mutation Mutation($data: UserUpdateInput!, $userId: String!) {
     userUpdate(data: $data, id: $userId) {
       ${user}
     }
@@ -120,9 +124,33 @@ const userUpdate = gql`
 `;
 
 const userUpdateMe = gql`
-  mutation Mutation($data: UserInputUpdate!) {
+  mutation Mutation($data: UserUpdateInput!) {
     userUpdateMe(data: $data) {
       ${user}
+    }
+  }
+`;
+
+const userMediaCreate = gql`
+  mutation UserMediaCreate($data: MediaCreateInput!) {
+    userMediaCreate(data: $data) {
+      ${media}
+    }
+  }
+`;
+
+const userMediaDelete = gql`
+  mutation UserMediaDelete($id: ObjectId!) {
+    userMediaDelete(id: $id) {
+      ${media}
+    }
+  }
+`;
+
+const userMediaOrder = gql`
+  mutation UserMediaOrder($data: UserMediaOrderInput!) {
+    userMediaOrder(data: $data) {
+      ${media}
     }
   }
 `;
@@ -135,4 +163,7 @@ export default {
   userMe,
   userUpdateMe,
   userQueue,
+  userMediaCreate,
+  userMediaDelete,
+  userMediaOrder,
 };

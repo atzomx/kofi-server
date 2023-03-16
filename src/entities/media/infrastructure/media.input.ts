@@ -3,7 +3,7 @@ import { Field, InputType } from "type-graphql";
 import { IMediaType } from "../domain/media.enum";
 
 @InputType()
-export class MediaInputCreate {
+export class MediaCreateInput {
   @Field(() => IMediaType, { description: "Media Type." })
   public type!: IMediaType;
 
@@ -14,7 +14,7 @@ export class MediaInputCreate {
 }
 
 @InputType()
-export class MediaInputUpdate {
+export class MediaUpdateInput {
   @Field({ nullable: true, description: "Media Type" })
   @IsOptional()
   public type?: IMediaType;

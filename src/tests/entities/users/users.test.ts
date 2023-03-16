@@ -1,8 +1,10 @@
 import { IPagination } from "@core/domain/interfaces";
 import TestUtils from "@core/infrastructure/utils/test.utils";
+import { Media } from "@entities/media";
 import { User } from "@entities/users";
 import { IUserRole } from "@entities/users/domain/user.enums";
-import { app, authorization, entities } from "@test/setup";
+import MediaFaker from "@test/fakers/media/media.faker";
+import { app, authorization, entities, users } from "@test/setup";
 import { Types } from "mongoose";
 import request from "supertest-graphql";
 import UserFaker from "../../fakers/user/user.faker";
@@ -328,5 +330,63 @@ describe("User Test", () => {
         expect(user).toHaveProperty(key);
       });
     });
+  });
+
+  it("Should create an user media", async () => {
+    const result = await request<{ userMediaCreate: Media[] }>(app)
+      .query(userQuerys.userMediaCreate)
+      .variables({ data: MediaFaker.get() })
+      .set("authorization", authorization.LOVER);
+
+    expect(result.errors).toBeUndefined();
+    expect(result.data).toHaveProperty("userMediaCreate");
+    const data = result.data["userMediaCreate"];
+    data.forEach((media) => {
+      expect(media).toHaveProperty("_id");
+      expect(media).toHaveProperty("url");
+      expect(media).toHaveProperty("type");
+    });
+  });
+
+  it("Should delete an user media", async () => {
+    const [mediaId] = users.LOVER.information.medias;
+    const result = await request<{ userMediaDelete: Media[] }>(app)
+      .query(userQuerys.userMediaDelete)
+      .variables({ id: mediaId.toString() })
+      .set("authorization", authorization.LOVER);
+
+    expect(result.errors).toBeUndefined();
+    expect(result.data).toHaveProperty("userMediaDelete");
+    const data = result.data["userMediaDelete"];
+    data.forEach((media) => {
+      expect(media).toHaveProperty("_id");
+      expect(media).toHaveProperty("url");
+      expect(media).toHaveProperty("type");
+    });
+    const newMedias = data.map(({ _id }) => _id.toString());
+    users.LOVER.information.medias = newMedias;
+  });
+
+  it("Should order an user medias", async () => {
+    const medias = users.LOVER.information.medias.map((value) =>
+      value.toString(),
+    );
+    const [first, ...rest] = medias;
+    const mediasAltered = [...rest, first];
+    const result = await request<{ userMediaOrder: Media[] }>(app)
+      .query(userQuerys.userMediaOrder)
+      .variables({ data: { medias: mediasAltered } })
+      .set("authorization", authorization.LOVER);
+
+    expect(result.errors).toBeUndefined();
+    expect(result.data).toHaveProperty("userMediaOrder");
+    const data = result.data["userMediaOrder"];
+    data.forEach((media) => {
+      expect(media).toHaveProperty("_id");
+      expect(media).toHaveProperty("url");
+      expect(media).toHaveProperty("type");
+    });
+    const orderedMedias = data.map(({ _id }) => _id.toString());
+    expect(mediasAltered).toStrictEqual(orderedMedias);
   });
 });

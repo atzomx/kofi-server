@@ -4,10 +4,11 @@ import {
   getRandomNumber,
 } from "@core/infrastructure/utils/test.utils";
 import { Media } from "@entities/media";
-import User, {
+import {
   UserInformation,
   UserPreference,
-} from "@entities/users/domain/user.entity";
+} from "@entities/users/domain/object-types";
+import User from "@entities/users/domain/user.entity";
 import {
   IUserDegree,
   IUserInterests,
@@ -46,7 +47,7 @@ class UserFaker {
     } as UserPreference;
   }
 
-  static getInformation(_medias: Media[] = [], update = false) {
+  static getInformation(_medias: Media[], update = false) {
     const mediasId = _medias.map(({ _id }) => _id.toString());
     const medias = faker.helpers.arrayElements(mediasId, 3);
 
