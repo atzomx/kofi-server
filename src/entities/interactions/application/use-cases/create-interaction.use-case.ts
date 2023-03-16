@@ -3,56 +3,69 @@ import Interaction from "@entities/interactions/domain/interaction.entity";
 import { IInteractionTypes } from "@entities/interactions/domain/interaction.enums";
 import { InteractionInputCreate } from "@entities/interactions/infrastructure/interaction.inputs";
 import { MatchRepository } from "@entities/match";
-import { Types } from "mongoose";
+import { User } from "@entities/users";
 
+type TCreateInteractionUseCase = {
+  interaction: InteractionInputCreate;
+  repository: InteractionRepository;
+  user: User;
+};
 class CreateInteractionUseCase {
-  async execute(
-    interaction: InteractionInputCreate,
-    userFrom: string,
-    name: string,
-    repository: InteractionRepository,
-  ): Promise<Interaction & { generatedMatch: boolean; name: string }> {
-    const matchRepository = new MatchRepository();
+  private interaction: InteractionInputCreate;
+  private repository: InteractionRepository;
+  private user: User;
+
+  constructor({ interaction, repository, user }: TCreateInteractionUseCase) {
+    this.interaction = interaction;
+    this.repository = repository;
+    this.user = user;
+  }
+
+  async existsReverseInteraction() {
     const queryReverse = {
       $and: [
-        { userFrom: interaction.userTo },
-        { userTo: userFrom },
+        { userFrom: this.interaction.userTo },
+        { userTo: this.user._id },
         { type: { $ne: IInteractionTypes.rejected } },
       ],
     };
 
-    let generatedMatch = false;
+    const interaccion = await this.repository.exists(queryReverse);
+    if (!interaccion) return false;
 
-    const reverseInteraccion = await repository.findOne(queryReverse);
-    if (reverseInteraccion) {
-      generatedMatch = !!(await matchRepository.findOrCreateMatch([
-        userFrom,
-        interaction.userTo.toString(),
-      ]));
-    }
+    const matchRepository = new MatchRepository();
+    await matchRepository.findOrCreateMatch([
+      this.user._id.toString(),
+      this.interaction.userTo.toString(),
+    ]);
+    return true;
+  }
 
+  async getInteraction() {
     const query = {
       $and: [
-        { userFrom: userFrom },
-        { userTo: interaction.userTo },
-        { type: interaction.type },
+        { userFrom: this.user._id },
+        { userTo: this.interaction.userTo },
+        { type: this.interaction.type },
       ],
     };
-    const date = new Date();
-    const existingInteraccion = await repository.instance
-      .findOneAndUpdate(query, {
-        updateAt: date.toISOString(),
-      })
-      .lean();
-    if (existingInteraccion) {
-      return { ...existingInteraccion, generatedMatch, name };
-    }
+    const existedInteraction = await this.repository.instance
+      .findOneAndUpdate(query, { updateAt: new Date().toISOString() })
+      .lean<Interaction>();
 
-    const result = await repository.create({
-      userFrom: new Types.ObjectId(userFrom),
-      ...interaction,
+    if (existedInteraction) return existedInteraction;
+
+    const interaction = await this.repository.create({
+      userFrom: this.user._id,
+      ...this.interaction,
     });
-    return { ...result, generatedMatch, name };
+    return interaction;
+  }
+
+  async execute() {
+    const generatedMatch = await this.existsReverseInteraction();
+    const interaction = await this.getInteraction();
+    return { interaction, generatedMatch };
   }
 }
 

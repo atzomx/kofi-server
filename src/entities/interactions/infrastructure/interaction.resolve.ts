@@ -70,34 +70,38 @@ class InteractionResolver {
   @Authorized()
   @ValidateArgs(InteractionInputCreate, "data")
   async create(
-    @Arg("data") interaction: InteractionInputCreate,
+    @Arg("data") interactionInput: InteractionInputCreate,
     @Ctx() ctx: IContext,
     @PubSub(ISubscriptionsTypes.NOTIFICATIONS) publish: Publisher<Notification>,
   ) {
-    const userFrom = ctx.payload.id;
-
-    const { generatedMatch, name, ...result } = await this.controller.create(
-      interaction,
-      userFrom,
-    );
+    const userFrom = ctx.payload.user;
+    const { generatedMatch, interaction, userTo } =
+      await this.controller.create(interactionInput, userFrom);
 
     if (generatedMatch) {
-      const notificationMatch = await NotificationFactory.create(
-        INotificationType.match,
-        { from: name, owner: interaction.userTo },
+      const paramsTo = { from: userFrom.name, owner: interactionInput.userTo };
+      const paramsFrom = { from: userTo.name, owner: userFrom._id };
+      const { to, from } = await NotificationFactory.match(
+        paramsTo,
+        paramsFrom,
       );
-      await publish(notificationMatch);
+      publish(to);
+      publish(from);
     }
 
-    if (!generatedMatch && result.type !== IInteractionTypes.rejected) {
+    if (!generatedMatch && interaction.type !== IInteractionTypes.rejected) {
+      const likeParams = {
+        from: userFrom.name,
+        owner: interactionInput.userTo,
+      };
       const notificationLike = await NotificationFactory.create(
         INotificationType.like,
-        { from: name, owner: interaction.userTo },
+        likeParams,
       );
-      await publish(notificationLike);
+      publish(notificationLike);
     }
 
-    return result;
+    return interaction;
   }
 
   @Mutation(() => Interaction, {

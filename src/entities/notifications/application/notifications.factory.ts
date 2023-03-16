@@ -64,6 +64,26 @@ class NotificationFactory {
     const result = await notificationRepository.create(notification);
     return result;
   }
+
+  static async match(
+    paramsTo: TNotificationBase,
+    paramsFrom: TNotificationBase,
+  ) {
+    const notificationToPromise = this.create(
+      INotificationType.match,
+      paramsTo,
+    );
+    const notificationFromPromise = this.create(
+      INotificationType.match,
+      paramsFrom,
+    );
+    const [to, from] = await Promise.all([
+      notificationToPromise,
+      notificationFromPromise,
+    ]);
+
+    return { to, from };
+  }
 }
 
 export default NotificationFactory;

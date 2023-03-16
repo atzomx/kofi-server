@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import { IPagination } from "@core/domain/interfaces";
-import { UserController } from "@entities/users";
+import { User, UserController } from "@entities/users";
 import Interaction from "../domain/interaction.entity";
 import { InteractionNotFoundError } from "../domain/interaction.erros";
 import InteractionRepository from "../domain/interaction.repository";
@@ -39,18 +39,26 @@ class InteractionController {
 
   async create(
     interaction: InteractionInputCreate,
-    userFrom: string,
-  ): Promise<Interaction & { generatedMatch: boolean; name: string }> {
-    const { name } = await this.userController.findById(userFrom);
-    await this.userController.findById(interaction.userTo.toString());
-    const createInteractionUseCase = new CreateInteractionUseCase();
-    const result = await createInteractionUseCase.execute(
-      interaction,
-      userFrom,
-      name,
-      this.repository,
+    useFrom: User,
+  ): Promise<{
+    interaction: Interaction;
+    generatedMatch: boolean;
+    userTo: User;
+  }> {
+    const userTo = await this.userController.findById(
+      interaction.userTo.toString(),
     );
-    return result;
+    const createInteractionUseCase = new CreateInteractionUseCase({
+      interaction,
+      user: useFrom,
+      repository: this.repository,
+    });
+    const result = await createInteractionUseCase.execute();
+    return {
+      userTo,
+      interaction: result.interaction,
+      generatedMatch: result.generatedMatch,
+    };
   }
 
   async update(
