@@ -12,11 +12,11 @@ import {
 
 @ObjectType("distance")
 export class DistanceRangePreference {
-  @Field(() => Number, { description: "User min distance range" })
+  @Field(() => Number, { description: "User min distance range km" })
   @prop({ required: false, default: 0 })
   public min: number;
 
-  @Field(() => Number, { description: "User max distance range" })
+  @Field(() => Number, { description: "User max distance range km" })
   @prop({ required: false, default: 0 })
   public max: number;
 }
