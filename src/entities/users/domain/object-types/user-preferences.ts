@@ -10,6 +10,17 @@ import {
   IUserSexualOrientation,
 } from "../user.enums";
 
+@ObjectType("distance")
+export class DistanceRangePreference {
+  @Field(() => Number, { description: "User min distance range km" })
+  @prop({ required: false, default: 0 })
+  public min: number;
+
+  @Field(() => Number, { description: "User max distance range km" })
+  @prop({ required: false, default: 1 })
+  public max: number;
+}
+
 @ObjectType("ageRange")
 export class AgeRangePreference {
   @Field(() => Number, { description: "User min age range" })
@@ -56,6 +67,10 @@ export class UserPreference {
   @Field(() => AgeRangePreference, { description: "User age range" })
   @prop({ required: false })
   public ageRange?: AgeRangePreference;
+
+  @Field(() => DistanceRangePreference, { description: "User distance range" })
+  @prop({ required: false })
+  public distance?: DistanceRangePreference;
 }
 
 export default UserPreference;
