@@ -44,6 +44,10 @@ class UserFaker {
         min: getRandomNumber(18, 30),
         max: getRandomNumber(31, 90),
       },
+      distance: {
+        min: getRandomNumber(1, 50),
+        max: getRandomNumber(50, 200),
+      },
     } as UserPreference;
   }
 
