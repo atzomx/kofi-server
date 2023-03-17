@@ -17,7 +17,7 @@ export class DistanceRangePreference {
   public min: number;
 
   @Field(() => Number, { description: "User max distance range km" })
-  @prop({ required: false, default: 0 })
+  @prop({ required: false, default: 1 })
   public max: number;
 }
 
