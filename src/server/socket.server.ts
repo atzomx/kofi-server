@@ -11,7 +11,7 @@ const create = async (httpServer: http.Server, schema: GraphQLSchema) => {
     path: "/graphql",
   });
 
-  const server = useServer<IContext>(
+  const server = useServer(
     {
       schema,
       context: (ctx: IContext) => ctx,
