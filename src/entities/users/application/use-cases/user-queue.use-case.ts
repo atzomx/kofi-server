@@ -9,6 +9,8 @@ import UserUtils from "../user.utils";
 
 type UserDistance = User & { distance: number };
 
+const METERS_BY_KM = 1000;
+
 class UserQueueUseCase {
   async execute(
     { page, limit }: UserPaginationArgs,
@@ -22,8 +24,8 @@ class UserQueueUseCase {
       $and: [{ _id: { $nin: noInUsers } }, { role: IUserRole.LOVER }],
     };
 
-    const maxDistance = user.preferences.distance.min * 1000;
-    const minDistance = user.preferences.distance.max * 1000;
+    const maxDistance = user.preferences.distance.min * METERS_BY_KM;
+    const minDistance = user.preferences.distance.max * METERS_BY_KM;
 
     const { coordinates } = user.information.location;
     const skip = Paginate.getSkip({ page, limit });

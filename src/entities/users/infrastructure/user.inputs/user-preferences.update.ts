@@ -12,12 +12,12 @@ import {
 
 @InputType()
 export class DistanceRangePreferenceUpdate {
-  @Field(() => Number, { description: "User min distance range" })
+  @Field(() => Number, { description: "User min distance range km" })
   @Min(0)
   @Max(10)
   public min: number;
 
-  @Field(() => Number, { description: "User max distance range" })
+  @Field(() => Number, { description: "User max distance range km" })
   @Min(1)
   @Max(200)
   public max: number;
