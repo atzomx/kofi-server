@@ -22,8 +22,8 @@ class UserQueueUseCase {
       $and: [{ _id: { $nin: noInUsers } }, { role: IUserRole.LOVER }],
     };
 
-    const maxDistance = 10000; // 100 km
-    const minDistance = 1000; // 1 km
+    const maxDistance = user.preferences.distance.min * 1000;
+    const minDistance = user.preferences.distance.max * 1000;
 
     const { coordinates } = user.information.location;
     const skip = Paginate.getSkip({ page, limit });
