@@ -21,4 +21,9 @@ module.exports = {
     "!**/src/entities/**/index.ts",
     "!**/dist/**",
   ],
+  coverageThreshold: {
+    global: {
+      lines: 80,
+    },
+  },
 };
