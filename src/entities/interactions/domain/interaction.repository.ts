@@ -10,9 +10,9 @@ class InteractionRepository extends Repository<Interaction> {
   }
 
   async unavailableUsers(user: User): Promise<Types.ObjectId[]> {
-    const searchQuery2 = { userFrom: user._id.toString() };
+    const searchQuery = { userFrom: user._id.toString() };
     const interactionOfThisUser = await this.instance
-      .find(searchQuery2)
+      .find(searchQuery)
       .select("userTo");
 
     const noInUsers = [...interactionOfThisUser]
