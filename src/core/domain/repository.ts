@@ -97,6 +97,10 @@ class Repository<T> {
     return this.instance.insertMany(documents);
   }
 
+  exists(filter: FilterQuery<T>) {
+    return this.instance.exists(filter) as unknown as Promise<boolean>;
+  }
+
   custom() {
     return this.instance;
   }

@@ -44,6 +44,10 @@ class UserFaker {
         min: getRandomNumber(18, 30),
         max: getRandomNumber(31, 90),
       },
+      distance: {
+        min: getRandomNumber(1, 50),
+        max: getRandomNumber(50, 200),
+      },
     } as UserPreference;
   }
 
@@ -51,10 +55,17 @@ class UserFaker {
     const mediasId = _medias.map(({ _id }) => _id.toString());
     const medias = faker.helpers.arrayElements(mediasId, 3);
 
+    const nearLatitudeOaxaca = faker.address.latitude(17.0778324, 17.072716, 5);
+    const nearLongitudeOaxaca = faker.address.longitude(
+      -96.726647,
+      -96.743276,
+      5,
+    );
+    // TODO review order of coordinates
     return {
       location: {
         ...(!update ? { type: "Point" } : {}),
-        coordinates: [+faker.address.longitude(), +faker.address.latitude()],
+        coordinates: [+nearLongitudeOaxaca, +nearLatitudeOaxaca],
       },
       birthday: faker.date.birthdate(),
       degree: getEnumRandom(IUserDegree),
