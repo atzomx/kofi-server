@@ -15,7 +15,7 @@ class MatchController {
   async findById(id: string) {
     const currentMatch = await this.repository
       .findById(id)
-      .populate("participants");
+      .populate("participants", ["name", "email", "status"]);
     if (!currentMatch) throw new MatchNotFoundError();
     return currentMatch;
   }
@@ -28,14 +28,18 @@ class MatchController {
   }: MatchPaginationArgs & { user: string }): Promise<IPagination<Match>> {
     return this.repository.paginate(
       { participants: user, status },
-      { limit, page },
+      {
+        limit,
+        page,
+        populate: { path: "participants", select: ["name", "email", "status"] },
+      },
     );
   }
 
   async update(id: string, match: MatchInputUpdate): Promise<Match> {
     const updatedMatch = await this.repository
       .findByIdAndUpdate(id, match)
-      .populate("participants");
+      .populate("participants", ["name", "email", "status"]);
     if (!updatedMatch) throw new MatchNotFoundError();
     return updatedMatch;
   }
