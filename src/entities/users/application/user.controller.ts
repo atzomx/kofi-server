@@ -49,7 +49,7 @@ class UserController {
       limit,
       page,
       sort: { updatedAt: -1 },
-      populate: "information.medias",
+      populate: { path: "information.medias" },
     });
   }
 

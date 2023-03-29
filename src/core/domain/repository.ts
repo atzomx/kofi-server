@@ -5,6 +5,7 @@ import {
   FilterQuery,
   HydratedDocument,
   Model,
+  PopulateOptions,
   SortOrder,
   Types,
 } from "mongoose";
@@ -56,7 +57,7 @@ class Repository<T> {
       page?: number;
       limit?: number;
       sort?: string | { [key: string]: SortOrder };
-      populate?: string | string[];
+      populate?: PopulateOptions;
     },
   ) {
     const skip = Paginate.getSkip({ page, limit });

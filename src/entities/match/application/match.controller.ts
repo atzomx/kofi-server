@@ -28,7 +28,11 @@ class MatchController {
   }: MatchPaginationArgs & { user: string }): Promise<IPagination<Match>> {
     return this.repository.paginate(
       { participants: user, status },
-      { limit, page },
+      {
+        limit,
+        page,
+        populate: { path: "participants", select: ["name", "email", "status"] },
+      },
     );
   }
 
