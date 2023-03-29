@@ -1,6 +1,5 @@
 import { IContext } from "@core/domain/interfaces";
 import { ValidateArgs } from "@core/infrastructure/decorators";
-import NamerUtils from "@core/infrastructure/utils/namer.utils";
 import { Media, MediaCreateInput } from "@entities/media";
 import { Types } from "mongoose";
 import {
@@ -16,6 +15,7 @@ import UserController from "../application/user.controller";
 import User from "../domain/user.entity";
 import { IUserRole } from "../domain/user.enums";
 import { UserPaginationArgs } from "./user.args";
+import { UserDocs } from "./user.docs";
 import {
   UserCreateInput,
   UserMediaOrderInput,
@@ -26,8 +26,6 @@ import {
   UserPaginateResponseQueue,
 } from "./user.response";
 
-const NAMES = NamerUtils.get("user");
-
 @Resolver(User)
 class UserResolver {
   private controller: UserController;
@@ -36,20 +34,14 @@ class UserResolver {
     this.controller = new UserController();
   }
 
-  @Query(() => User, {
-    description: "Returns one user by id",
-    name: NAMES.find,
-  })
+  @Query(() => User, UserDocs.UserQueryDocs)
   @Authorized(IUserRole.ADMIN, IUserRole.MODERATOR)
   async findById(@Arg("id") id: string): Promise<User> {
     const user = await this.controller.findById(id);
     return user;
   }
 
-  @Query(() => User, {
-    description: "Returns one user by token",
-    name: NAMES.me,
-  })
+  @Query(() => User, UserDocs.UserMeQueryDocs)
   @Authorized()
   async userMe(@Ctx() ctx: IContext) {
     const userId = ctx.payload.id;
@@ -57,20 +49,17 @@ class UserResolver {
     return user;
   }
 
-  @Query(() => UserPaginateResponse, {
-    description: "Returns an array of users.",
-    name: NAMES.paginate,
-  })
+  @Query(() => UserPaginateResponse, UserDocs.UserPaginateResponseDocs)
   @Authorized(IUserRole.ADMIN, IUserRole.MODERATOR)
   async paginate(@Args() paginate: UserPaginationArgs) {
     const results = await this.controller.paginate(paginate);
     return results;
   }
 
-  @Query(() => UserPaginateResponseQueue, {
-    description: "Returns an array of available users.",
-    name: "userQueue",
-  })
+  @Query(
+    () => UserPaginateResponseQueue,
+    UserDocs.UserPaginateResponseQueueDocs,
+  )
   @Authorized()
   async userQueue(@Ctx() ctx: IContext, @Args() paginate: UserPaginationArgs) {
     const { user } = ctx.payload;
@@ -78,20 +67,14 @@ class UserResolver {
     return results;
   }
 
-  @Mutation(() => User, {
-    description: "Register a new user.",
-    name: NAMES.create,
-  })
+  @Mutation(() => User, UserDocs.UserMutationDocs)
   @ValidateArgs(UserCreateInput, "data")
   async create(@Arg("data") user: UserCreateInput) {
     const result = await this.controller.create(user);
     return result;
   }
 
-  @Mutation(() => User, {
-    description: "Update an existing user by id.",
-    name: NAMES.update,
-  })
+  @Mutation(() => User, UserDocs.UserUpdateMutationDocs)
   @Authorized(IUserRole.ADMIN, IUserRole.MODERATOR)
   @ValidateArgs(UserUpdateInput, "data")
   async update(@Arg("id") id: string, @Arg("data") user: UserUpdateInput) {
@@ -99,10 +82,7 @@ class UserResolver {
     return result;
   }
 
-  @Mutation(() => User, {
-    description: "Update current user by token.",
-    name: `${NAMES.update}Me`,
-  })
+  @Mutation(() => User, UserDocs.UserUpdateMeMutationDocs)
   @Authorized()
   @ValidateArgs(UserUpdateInput, "data")
   async updateMe(@Ctx() ctx: IContext, @Arg("data") user: UserUpdateInput) {
@@ -110,10 +90,7 @@ class UserResolver {
     return result;
   }
 
-  @Mutation(() => [Media], {
-    description: "Create user media",
-    name: "userMediaCreate",
-  })
+  @Mutation(() => [Media], UserDocs.UserMediaMutationDocs)
   @Authorized()
   @ValidateArgs(MediaCreateInput, "data")
   async userMediaCreate(
@@ -124,10 +101,7 @@ class UserResolver {
     return result;
   }
 
-  @Mutation(() => [Media], {
-    description: "Delete one user media by id",
-    name: "userMediaDelete",
-  })
+  @Mutation(() => [Media], UserDocs.UserMediaDeleteMutationDocs)
   @Authorized()
   async userMediaDelete(
     @Ctx() ctx: IContext,
@@ -140,10 +114,7 @@ class UserResolver {
     return result;
   }
 
-  @Mutation(() => [Media], {
-    description: "Altered order user media",
-    name: "userMediaOrder",
-  })
+  @Mutation(() => [Media], UserDocs.UserMediaAltereMutationDocs)
   @Authorized()
   @ValidateArgs(UserMediaOrderInput, "data")
   async userMediaOrder(

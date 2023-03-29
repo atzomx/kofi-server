@@ -13,6 +13,7 @@ import {
 import NotificationController from "../application/notification.controller";
 import Notification from "../domain/notification.entity";
 import { NotificationPaginationArgs } from "./notification.args";
+import { NotificationDocs } from "./notification.docs";
 import { NotificationPaginateResponse } from "./notification.response";
 
 const NAMES = namerUtils.get("notification");
@@ -25,10 +26,10 @@ class NotificationResolver {
     this.controller = new NotificationController();
   }
 
-  @Query(() => NotificationPaginateResponse, {
-    description: "Returns an array of Notification by user.",
-    name: NAMES.paginate,
-  })
+  @Query(
+    () => NotificationPaginateResponse,
+    NotificationDocs.NotificationPaginateResponseDocs,
+  )
   @Authorized()
   async paginate(
     @Args() paginate: NotificationPaginationArgs,
