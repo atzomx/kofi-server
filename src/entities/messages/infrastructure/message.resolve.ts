@@ -22,9 +22,9 @@ import MessageController from "../application/message.controller";
 import { IMessageExtra } from "../domain/interfaces";
 import Message from "../domain/message.entity";
 import { MessagePaginationArgs } from "./message.args";
+import { MessageDocs } from "./message.docs";
 import { MessageInputCreate } from "./message.inputs";
 import { MessagePaginateResponse } from "./message.response";
-
 const NAMES = namerUtils.get("message");
 
 @Resolver(Message)
@@ -35,20 +35,14 @@ class MessageResolver {
     this.controller = new MessageController();
   }
 
-  @Query(() => MessagePaginateResponse, {
-    description: "Returns an array of message by chat.",
-    name: NAMES.paginate,
-  })
+  @Query(() => MessagePaginateResponse, MessageDocs.MessagePaginateResponseDocs)
   @Authorized()
   async paginate(@Args() paginate: MessagePaginationArgs) {
     const results = await this.controller.paginate(paginate);
     return results;
   }
 
-  @Mutation(() => Message, {
-    description: "Create a new message.",
-    name: NAMES.create,
-  })
+  @Mutation(() => Message, MessageDocs.MessageCreateMutationDocs)
   @Authorized()
   @ValidateArgs(MessageInputCreate, "data")
   async create(

@@ -1,7 +1,6 @@
 import { ISubscriptionsTypes } from "@core/domain/enums";
 import { IContext } from "@core/domain/interfaces";
 import { ValidateArgs } from "@core/infrastructure/decorators";
-import NamerUtils from "@core/infrastructure/utils/namer.utils";
 import { Notification } from "@entities/notifications";
 import NotificationFactory from "@entities/notifications/application/notifications.factory";
 import { INotificationType } from "@entities/notifications/domain/notification.enum";
@@ -20,6 +19,7 @@ import InteractionController from "../application/interaction.controller";
 import Interaction from "../domain/interaction.entity";
 import { IInteractionTypes } from "../domain/interaction.enums";
 import { InteractionPaginationArgs } from "./interaction.args";
+import { InteractionDocs } from "./interaction.docs";
 import {
   InteractionInputCreate,
   InteractionInputUpdate,
@@ -29,8 +29,6 @@ import {
   InteractionPaginateResponse,
 } from "./interaction.response";
 
-const NAMES = NamerUtils.get("interaction");
-
 @Resolver(Interaction)
 class InteractionResolver {
   private controller: InteractionController;
@@ -39,20 +37,17 @@ class InteractionResolver {
     this.controller = new InteractionController();
   }
 
-  @Query(() => Interaction, {
-    description: "Returns one Interaction by id",
-    name: NAMES.find,
-  })
+  @Query(() => Interaction, InteractionDocs.InteractionQueryDocs)
   @Authorized()
   async findById(@Arg("id") id: string): Promise<Interaction> {
     const interaction = await this.controller.findById(id);
     return interaction;
   }
 
-  @Query(() => InteractionPaginateResponse, {
-    description: "Returns an array of Interaction by user and type.",
-    name: NAMES.paginate,
-  })
+  @Query(
+    () => InteractionPaginateResponse,
+    InteractionDocs.InteractionPaginateResponseDocs,
+  )
   @Authorized()
   async paginate(
     @Args() paginate: InteractionPaginationArgs,
@@ -63,10 +58,10 @@ class InteractionResolver {
     return results;
   }
 
-  @Mutation(() => InteractionCreateResponse, {
-    description: "Register a new Interaction.",
-    name: NAMES.create,
-  })
+  @Mutation(
+    () => InteractionCreateResponse,
+    InteractionDocs.InteractionCreateResponseDocs,
+  )
   @Authorized()
   @ValidateArgs(InteractionInputCreate, "data")
   async create(
@@ -104,10 +99,7 @@ class InteractionResolver {
     return interaction;
   }
 
-  @Mutation(() => Interaction, {
-    description: "Update an existing Interaction by id.",
-    name: NAMES.update,
-  })
+  @Mutation(() => Interaction, InteractionDocs.InteractionMutationDocs)
   @Authorized()
   @ValidateArgs(InteractionInputUpdate, "data")
   async update(
