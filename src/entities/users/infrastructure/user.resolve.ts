@@ -21,7 +21,6 @@ import {
   UserMediaOrderInput,
   UserUpdateInput,
 } from "./user.inputs";
-import { UserFindById } from "./user.outputs";
 import {
   UserPaginateResponse,
   UserPaginateResponseQueue,
@@ -37,7 +36,7 @@ class UserResolver {
   @Authorized()
   async findById(@Arg("id") id: string) {
     const user = await this.controller.findById(id);
-    return user as UserFindById;
+    return user;
   }
 
   @Query(() => User, UserDocs.UserMeQueryDocs)
