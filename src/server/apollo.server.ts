@@ -62,7 +62,7 @@ async function start() {
   try {
     const PORT = Number(process.env.PORT ?? 4000);
     await create(PORT);
-    Log.i("Server is ready at http://localhost:4000/graphql");
+    Log.i(`Server is ready at http://localhost:${PORT}/graphql`);
   } catch (err) {
     Log.e("Error starting the node server", err);
   }
