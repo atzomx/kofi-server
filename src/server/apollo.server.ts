@@ -33,7 +33,7 @@ export async function create(port: number, dir = __dirname) {
     context: UserContext,
     cache: "bounded",
     persistedQueries: false,
-    introspection: process.env.ENV !== "production",
+    introspection: process.env.NODE_ENV !== "production",
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
       {

@@ -25,13 +25,14 @@ const create = async (httpServer: http.Server, schema: GraphQLSchema) => {
     },
     wsServer,
   );
-
-  wsServer.addListener("listening", () => {
-    Log.i("Server Socket is ready to subscriptions");
-  });
-  wsServer.addListener("error", () => {
-    Log.e("Server Socket error to create");
-  });
+  if (process.env.NODE_ENV !== "test") {
+    wsServer.addListener("listening", () => {
+      Log.i("Server Socket is ready to subscriptions");
+    });
+    wsServer.addListener("error", () => {
+      Log.e("Server Socket error to create");
+    });
+  }
 
   return server;
 };
