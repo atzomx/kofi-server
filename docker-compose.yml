@@ -1,5 +1,5 @@
 services: 
-  exchangedb:
+  mongo:
     image: mongo:5.0.0
     container_name: kofi-database
     environment:
@@ -12,17 +12,29 @@ services:
       - 'kofi-db-network'
   redis:
     image: redis
+    container_name: kofi-redis
     restart: always
     ports:
-      - "6379:6379"
-    expose:
-      - 6379
+      - "6379:6379" 
     environment:
-      - REDIS_HOST=localhost
+      - REDIS_HOST=redis
       - REDIS_PORT=6379
     networks:
       - 'kofi-db-network'
-    
+  app:
+    build: .
+    container_name: kofi-server
+    ports:
+      - "5000:5000" 
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - MONGO_URL=mongodb://mongo:27017/kofi-database
+    depends_on:
+      - redis
+      - mongo
+    networks:
+      - 'kofi-db-network'
 networks:
   kofi-db-network:
     driver: bridge

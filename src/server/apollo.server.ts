@@ -14,6 +14,7 @@ import SocketServer from "./socket.server";
 
 export async function create(port: number, dir = __dirname) {
   const app = express();
+
   const httpServer = http.createServer(app);
 
   const schema = await buildSchema({
@@ -29,8 +30,10 @@ export async function create(port: number, dir = __dirname) {
   const server = new ApolloServer({
     debug: false,
     schema,
-    introspection: process.env.NODE_ENV !== "production",
     context: UserContext,
+    cache: "bounded",
+    persistedQueries: false,
+    introspection: process.env.ENV !== "production",
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
       {
@@ -64,7 +67,7 @@ async function start() {
     await create(PORT);
     Log.i(`Server is ready at http://localhost:${PORT}/graphql`);
   } catch (err) {
-    Log.e("Error starting the node server", err);
+    Log.e("Server Graphql error starting the node server", err);
   }
 }
 

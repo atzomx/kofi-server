@@ -14,7 +14,7 @@ const error = (message?: any, ...optionalParams: any[]) => {
 };
 
 const info = (message?: any, ...optionalParams: any[]) => {
-  console.log(chalk.blue(MESSAGE), chalk.blue(message), ...optionalParams);
+  console.log(chalk.cyan(MESSAGE), chalk.cyan(message), ...optionalParams);
 };
 
 const warning = (message?: any, ...optionalParams: any[]) => {
