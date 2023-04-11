@@ -1,7 +1,7 @@
-For run locally we need a database
+For run locally we need a run mongodb and redis container
 
 ```
-docker-compose up -d
+docker-compose up -d -f docker-compose-install.yml
 ```
 
 - `-d` means **detached**
@@ -12,13 +12,17 @@ docker-compose up -d
 mongodb://localhost:27017/kofi-database
 ```
 
-## Redis setup
+## Redis URL Local
 
 ```
-docker pull redis
+localhost:6379
 ```
 
-run redis image with port 6379
+## Build only the app
+
+```
+docker build -t kofi-app-prod .
+```
 
 ## Getting Started
 

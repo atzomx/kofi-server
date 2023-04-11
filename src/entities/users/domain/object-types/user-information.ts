@@ -19,7 +19,9 @@ export class LocationInformation {
   @prop({ required: false, default: "Point" })
   public type: string;
 
-  @Field(() => [Number, Number], { description: "User location coordinates [longitude, latitude]" })
+  @Field(() => [Number, Number], {
+    description: "User location coordinates [longitude, latitude]",
+  })
   @prop({ required: true, type: [Number, Number] })
   public coordinates: [number, number];
 }

@@ -4,8 +4,7 @@
     "es2021": true
   },
   "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/eslint-plugin",
     "plugin:import/recommended",
     "prettier"
   ],
