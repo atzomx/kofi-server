@@ -1,4 +1,5 @@
 import Entity from "@core/domain/entity";
+import { OwnerProp } from "@core/infrastructure/decorators";
 import { prop } from "@typegoose/typegoose";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
@@ -28,13 +29,14 @@ class User extends Entity {
   @prop({ required: true })
   public password!: string;
 
-  @Field({ description: "User preferences", nullable: true })
-  @prop({ required: false, default: null })
-  public preferences?: UserPreference;
-
   @Field({ description: "User information", nullable: true })
   @prop({ required: false, default: null })
   public information?: UserInformation;
+
+  @Field({ description: "User preferences", nullable: true })
+  @prop({ required: false, default: null })
+  @OwnerProp()
+  public preferences?: UserPreference;
 }
 
 export default User;

@@ -3,7 +3,6 @@ import { Password } from "@core/infrastructure/utils";
 import { Media, MediaController, MediaCreateInput } from "@entities/media";
 import { Types } from "mongoose";
 import User from "../domain/user.entity";
-import { IUserRole } from "../domain/user.enums";
 import {
   UserAlreadyExistsError,
   UserNotFoundError,
@@ -24,12 +23,10 @@ class UserController {
     this.repository = new UserRepository();
   }
 
-  async findById(id: string, userCtx?: User) {
-    const select = userCtx?.role === IUserRole.LOVER ? "-preferences" : "";
+  async findById(id: string) {
     const currentUser = await this.repository
       .findById(id)
       .populate(["information.medias"])
-      .select(select)
       .lean();
 
     if (!currentUser) throw new UserNotFoundError();

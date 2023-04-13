@@ -28,17 +28,14 @@ import {
 
 @Resolver(User)
 class UserResolver {
-  private controller: UserController;
-
-  constructor() {
+  constructor(private controller: UserController) {
     this.controller = new UserController();
   }
 
   @Query(() => User, UserDocs.UserQueryDocs)
   @Authorized()
-  async findById(@Arg("id") id: string, @Ctx() ctx: IContext) {
-    const current = ctx.payload.user;
-    const user = await this.controller.findById(id, current);
+  async findById(@Arg("id") id: string) {
+    const user = await this.controller.findById(id);
     return user;
   }
 
