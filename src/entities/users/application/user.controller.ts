@@ -1,6 +1,6 @@
 import { IPagination } from "@core/domain/interfaces";
 import { Password } from "@core/infrastructure/utils";
-import { Media, MediaCreateInput, MediaController } from "@entities/media";
+import { Media, MediaController, MediaCreateInput } from "@entities/media";
 import { Types } from "mongoose";
 import User from "../domain/user.entity";
 import {
@@ -23,10 +23,12 @@ class UserController {
     this.repository = new UserRepository();
   }
 
-  async findById(id: string) {
+  async findById(id: string, userCtx?: User) {
     const currentUser = await this.repository
       .findById(id)
-      .populate(["information.medias"]);
+      .populate(["information.medias"])
+      .lean();
+
     if (!currentUser) throw new UserNotFoundError();
     return currentUser;
   }
@@ -68,7 +70,7 @@ class UserController {
 
   async create(user: UserCreateInput): Promise<User> {
     const query = { email: user.email };
-    const existingUser = await this.repository.findOne(query);
+    const existingUser = await this.repository.findOne(query).lean();
     if (existingUser) throw new UserAlreadyExistsError();
 
     const password = Password.encrypt(user.password);
@@ -81,7 +83,8 @@ class UserController {
     await this.findById(id);
     const updatedUser = await this.repository
       .findByIdAndUpdate(id, user)
-      .populate(["information.medias"]);
+      .populate(["information.medias"])
+      .lean();
     return updatedUser;
   }
 
@@ -93,7 +96,8 @@ class UserController {
     const user = await this.repository
       .findByIdAndUpdate(userId, { $push: { "information.medias": mediaId } })
       .populate("information.medias")
-      .select("information.medias");
+      .select("information.medias")
+      .lean();
 
     return user.information.medias as Media[];
   }
@@ -105,7 +109,8 @@ class UserController {
     const user = await this.repository
       .findByIdAndUpdate(userId, { $pull: { "information.medias": mediaId } })
       .populate("information.medias")
-      .select("information.medias");
+      .select("information.medias")
+      .lean();
 
     return user.information.medias as Media[];
   }
@@ -114,7 +119,8 @@ class UserController {
     const user = await this.repository
       .findByIdAndUpdate(userId, { "information.medias": medias })
       .populate("information.medias")
-      .select("information.medias");
+      .select("information.medias")
+      .lean();
 
     return user.information.medias as Media[];
   }

@@ -28,15 +28,13 @@ import {
 
 @Resolver(User)
 class UserResolver {
-  private controller: UserController;
-
-  constructor() {
+  constructor(private controller: UserController) {
     this.controller = new UserController();
   }
 
   @Query(() => User, UserDocs.UserQueryDocs)
-  @Authorized(IUserRole.ADMIN, IUserRole.MODERATOR)
-  async findById(@Arg("id") id: string): Promise<User> {
+  @Authorized()
+  async findById(@Arg("id") id: string) {
     const user = await this.controller.findById(id);
     return user;
   }

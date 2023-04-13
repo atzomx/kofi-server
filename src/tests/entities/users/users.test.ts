@@ -64,9 +64,7 @@ describe("User Test", () => {
 
     expect(result.errors).toBeTruthy();
     const [error] = result.errors;
-    expect(error.message).toBe(
-      "Access denied! You don't have permission for this action!",
-    );
+    expect(error.message).toBe("User not found");
   });
 
   it("Should paginate users", async () => {
