@@ -2,8 +2,13 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
 
 async function start() {
-  const mongodb = await MongoMemoryServer.create();
-  const MONGO_URL = mongodb.getUri();
+  let { MONGO_URL } = process.env;
+
+  if (process.env.NODE_ENV === "test") {
+    const mongod = await MongoMemoryServer.create();
+    MONGO_URL = mongod.getUri();
+  }
+  
   await mongoose.connect(MONGO_URL);
 }
 
