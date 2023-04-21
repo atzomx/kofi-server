@@ -8,7 +8,7 @@ async function start() {
     const mongod = await MongoMemoryServer.create();
     MONGO_URL = mongod.getUri();
   }
-  
+
   await mongoose.connect(MONGO_URL);
 }
 

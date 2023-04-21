@@ -5,13 +5,13 @@ import dotenv from "dotenv";
 dotenv.config();
 
 async function create() {
-try {
+  try {
     await IndexMigrate.up();
     Log.i("Seeds created successfully");
-    await IndexMigrate.down();
   } catch (err) {
     Log.e("Error: ", err);
   }
+  process.exit();
 }
 
 create();
