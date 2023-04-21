@@ -13,8 +13,7 @@
     "prod:start": "node ./dist/index.js",
     "test:coverage": "jest --detectOpenHandles --forceExit --coverage --no-cache",
     "test:husky": "jest --onlyChanged --detectOpenHandles --forceExit",
-    "test": "jest --detectOpenHandles --forceExit",
-    "dev:seed": "cross-env NODE_ENV=dev ts-node -r tsconfig-paths/register ./src/seeds/seed.ts"
+    "test": "jest --detectOpenHandles --forceExit"
   },
   "devDependencies": {
     "@commitlint/cli": "17.0.3",
