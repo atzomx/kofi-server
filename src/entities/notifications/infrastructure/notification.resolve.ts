@@ -1,10 +1,19 @@
+import { ISubscriptionsTypes } from "@core/domain/enums";
 import { IContext } from "@core/domain/interfaces";
 import namerUtils from "@core/infrastructure/utils/namer.utils";
-import { AuthMiddleware } from "@entities/auth";
-import { Args, Ctx, Query, Resolver, UseMiddleware } from "type-graphql";
-import NotificationController from "../application/Notification.controller";
+import {
+  Args,
+  Authorized,
+  Ctx,
+  Query,
+  Resolver,
+  Root,
+  Subscription,
+} from "type-graphql";
+import NotificationController from "../application/notification.controller";
 import Notification from "../domain/notification.entity";
 import { NotificationPaginationArgs } from "./notification.args";
+import { NotificationDocs } from "./notification.docs";
 import { NotificationPaginateResponse } from "./notification.response";
 
 const NAMES = namerUtils.get("notification");
@@ -17,11 +26,11 @@ class NotificationResolver {
     this.controller = new NotificationController();
   }
 
-  @Query(() => NotificationPaginateResponse, {
-    description: "Returns an array of Notification by user.",
-    name: NAMES.paginate,
-  })
-  @UseMiddleware(AuthMiddleware.IsAuth)
+  @Query(
+    () => NotificationPaginateResponse,
+    NotificationDocs.NotificationPaginateResponseDocs,
+  )
+  @Authorized()
   async paginate(
     @Args() paginate: NotificationPaginationArgs,
     @Ctx() ctx: IContext,
@@ -29,6 +38,26 @@ class NotificationResolver {
     const user = ctx.payload.id;
     const results = await this.controller.paginate({ user, ...paginate });
     return results;
+  }
+
+  @Subscription({
+    description: "Subscription for a notifications.",
+    name: NAMES.new,
+    topics: ISubscriptionsTypes.NOTIFICATIONS,
+    filter: ({
+      payload,
+      context,
+    }: {
+      payload: Notification;
+      context: IContext;
+    }) => payload.owner.toString() === context.payload.id,
+  })
+  newNotification(@Root() notification: Notification): Notification {
+    return {
+      ...notification,
+      createdAt: new Date(notification.createdAt),
+      updatedAt: new Date(notification.updatedAt),
+    };
   }
 }
 

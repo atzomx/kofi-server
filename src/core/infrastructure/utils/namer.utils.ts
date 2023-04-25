@@ -5,6 +5,8 @@ const get = (base: string) => {
     paginate: `${base}Paginate`,
     find: `${base}ById`,
     new: `${base}New`,
+    delete: `${base}Delete`,
+    me: `${base}Me`,
   };
 };
 

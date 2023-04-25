@@ -1,15 +1,27 @@
-For run locally we need a database
+For run locally we need a run mongodb and redis container
 
 ```
-docker-compose up -d
+docker-compose up -d -f docker-compose-install.yml
 ```
 
-* `-d` means __detached__
+- `-d` means **detached**
 
 ## Mongo DB URL Local
 
 ```
-mongodb://localhost:27017/exchangedb
+mongodb://localhost:27017/kofi-database
+```
+
+## Redis URL Local
+
+```
+localhost:6379
+```
+
+## Build only the app
+
+```
+docker build -t kofi-app-prod .
 ```
 
 ## Getting Started
@@ -23,4 +35,13 @@ yarn dev:start
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Tests Coverage
 
+How to run tests with coverage?
+`yarn test:coverage`
+
+See folder `coverage/Icov-report/index.html`
+
+## Run seed
+
+`cross-env NODE_ENV=dev ts-node -r tsconfig-paths/register ./src/scripts/seed.ts`

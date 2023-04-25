@@ -4,8 +4,7 @@
     "es2021": true
   },
   "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/eslint-plugin",
     "plugin:import/recommended",
     "prettier"
   ],
@@ -22,7 +21,7 @@
     "semi": ["error", "always"],
     "strict": [2, "never"],
     "brace-style": "off",
-    "no-underscore-dangle": ["error", { "allow": ["_id"] }],
+    "no-underscore-dangle": ["error", { "allow": ["_id", "_doc"] }],
     "exhaustive-deps": "off",
     "max-len": ["error", 150, { "ignoreComments": true }],
     "comma-dangle": ["error", "always-multiline"],
@@ -38,21 +37,16 @@
     "prefer-template": "off",
     "camelcase": "error",
     "@typescript-eslint/explicit-module-boundary-types": "off",
-    "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "no-unused-vars": [
+      "error",
+      { "argsIgnorePattern": "^_", "ignoreRestSiblings": true }
+    ],
     "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
     "import/order": [
       "error",
       {
         "groups": ["builtin", "external", "internal"],
-        "pathGroups": [
-          {
-            "pattern": "react",
-            "group": "external",
-            "position": "before"
-          }
-        ],
-        "newlines-between": "never",
         "alphabetize": {
           "order": "asc",
           "caseInsensitive": true

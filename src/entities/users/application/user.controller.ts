@@ -1,5 +1,7 @@
 import { IPagination } from "@core/domain/interfaces";
-import { Password, Sanitize } from "@core/infrastructure/utils";
+import { Password } from "@core/infrastructure/utils";
+import { Media, MediaController, MediaCreateInput } from "@entities/media";
+import { Types } from "mongoose";
 import User from "../domain/user.entity";
 import {
   UserAlreadyExistsError,
@@ -8,9 +10,10 @@ import {
 import UserRepository from "../domain/user.repository";
 import { UserPaginationArgs } from "../infrastructure/user.args";
 import {
-  UserInputCreate,
-  UserInputUpdate,
+  UserCreateInput,
+  UserUpdateInput,
 } from "../infrastructure/user.inputs";
+import UserQueueUseCase from "./use-cases/user-queue.use-case";
 import UserUtils from "./user.utils";
 
 class UserController {
@@ -20,13 +23,17 @@ class UserController {
     this.repository = new UserRepository();
   }
 
-  async findById(id: string) {
-    const currentUser = await this.repository.findById(id);
+  async findById(id: string, userCtx?: User) {
+    const currentUser = await this.repository
+      .findById(id)
+      .populate(["information.medias"])
+      .lean();
+
     if (!currentUser) throw new UserNotFoundError();
     return currentUser;
   }
 
-  async paginate({
+  paginate({
     page,
     limit,
     search,
@@ -40,53 +47,82 @@ class UserController {
       endDate,
       startDate,
     });
-
-    const paginator = this.repository.paginate(searchQuery, { limit, page });
-
-    const [results, total] = await Promise.all([
-      paginator.getResults(),
-      paginator.getTotal(),
-    ]);
-
-    const pages = Math.ceil(total / limit);
-    return {
-      results: results,
-      info: {
-        total,
-        page,
-        pages,
-      },
-    };
+    return this.repository.paginate(searchQuery, {
+      limit,
+      page,
+      sort: { updatedAt: -1 },
+      populate: { path: "information.medias" },
+    });
   }
 
-  async create(user: UserInputCreate): Promise<User> {
-    const query = {
-      $or: [
-        { userName: user.userName },
-      ],
-    };
-    const existingUser = await this.repository.findOne(query);
-    if (existingUser) throw new UserAlreadyExistsError(existingUser, user);
-    
-    user.name = Sanitize.clean(user.name);
-    
+  userQueue(
+    { page, limit }: UserPaginationArgs,
+    user: User,
+  ): Promise<IPagination<User & { distance: number }>> {
+    const userQueueUseCase = new UserQueueUseCase();
+    const pagination = userQueueUseCase.execute(
+      { limit, page },
+      user,
+      this.repository,
+    );
+    return pagination;
+  }
+
+  async create(user: UserCreateInput): Promise<User> {
+    const query = { email: user.email };
+    const existingUser = await this.repository.findOne(query).lean();
+    if (existingUser) throw new UserAlreadyExistsError();
+
     const password = Password.encrypt(user.password);
     const newUser = { ...user };
     const result = await this.repository.create({ ...newUser, password });
     return result;
   }
 
-  async update(id: string, user: UserInputUpdate): Promise<User> {
-    const currentUser = await this.findById(id);
-
-    user.name = Sanitize.clean(user.name ?? currentUser.name);
-
-    const dataToUpdate = { ...user };
-    const updatedUser = await this.repository.findByIdAndUpdate(
-      id,
-      dataToUpdate,
-    );
+  async update(id: string, user: UserUpdateInput): Promise<User> {
+    await this.findById(id);
+    const updatedUser = await this.repository
+      .findByIdAndUpdate(id, user)
+      .populate(["information.medias"])
+      .lean();
     return updatedUser;
+  }
+
+  async mediaCreate(userId: string, media: MediaCreateInput): Promise<Media[]> {
+    const mediaController = new MediaController();
+    const mediaCreated = await mediaController.create(media);
+    const mediaId = mediaCreated._id.toString();
+
+    const user = await this.repository
+      .findByIdAndUpdate(userId, { $push: { "information.medias": mediaId } })
+      .populate("information.medias")
+      .select("information.medias")
+      .lean();
+
+    return user.information.medias as Media[];
+  }
+
+  async mediaDelete(userId: string, mediaId: string): Promise<Media[]> {
+    const mediaController = new MediaController();
+    await mediaController.delete(mediaId);
+
+    const user = await this.repository
+      .findByIdAndUpdate(userId, { $pull: { "information.medias": mediaId } })
+      .populate("information.medias")
+      .select("information.medias")
+      .lean();
+
+    return user.information.medias as Media[];
+  }
+
+  async mediaOrder(userId: string, medias: Types.ObjectId[]): Promise<Media[]> {
+    const user = await this.repository
+      .findByIdAndUpdate(userId, { "information.medias": medias })
+      .populate("information.medias")
+      .select("information.medias")
+      .lean();
+
+    return user.information.medias as Media[];
   }
 }
 

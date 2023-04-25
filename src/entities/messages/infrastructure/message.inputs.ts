@@ -10,5 +10,5 @@ export class MessageInputCreate {
   public message!: string;
 
   @Field(() => String, { nullable: true, description: "Message media" })
-  public media?: string;
+  public media?: Types.ObjectId;
 }

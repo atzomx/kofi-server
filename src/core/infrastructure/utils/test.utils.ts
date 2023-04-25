@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
+import { uniq, take } from "lodash";
+
 export const getRandomNumber = (max: number, min = 0) => {
   const rand = Math.floor(Math.random() * (max - min)) + min;
   return rand;
@@ -16,19 +18,12 @@ export const getRandomChar = () => {
   return character;
 };
 
-export const getByFormat = (format: string) => {
-  let acum = "";
-  for (let i = 0; i < format.length; i++) {
-    const letter = format[i];
-    if (letter === "S") acum += getRandomChar();
-    else if (letter === "#") acum += getRandomNumber(9);
-    else throw Error("Invalid format");
-  }
-  return acum;
-};
-
 export const getOneFromArray = <T extends {}>(array: Array<T>) => {
   return array[getRandomNumber(array.length)];
+};
+
+export const notInArray = (a: string[], b: string[]) => {
+  return a.filter((value) => b.indexOf(value) === -1);
 };
 
 export const getManyFromArray = <T extends {}>(
@@ -38,9 +33,16 @@ export const getManyFromArray = <T extends {}>(
   return Array.from({ length: size }).map(() => getOneFromArray(array));
 };
 
+export const getManyFromArrayUnique = <T extends {}>(
+  array: Array<T>,
+  size: number,
+) => {
+  return take(uniq(array), size);
+};
+
 export default {
   getEnumRandom,
-  getByFormat,
   getManyFromArray,
   getOneFromArray,
+  getManyFromArrayUnique,
 };

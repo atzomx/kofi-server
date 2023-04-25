@@ -1,31 +1,24 @@
 /* eslint-disable indent */
-import { Sanitizer } from "@core/infrastructure/utils";
 import {
   IVerificationPoses,
   IVerificationStatus,
 } from "../domain/verification.enums";
 
 type TSeaching = {
-  search?: string;
+  userId?: string;
   createdAt?: Date;
   status?: IVerificationStatus;
   pose?: IVerificationPoses;
 };
 
-const searchingQuery = ({
-  search = "",
-  status,
-  pose,
-  createdAt,
-}: TSeaching) => {
-  const cleanSearch = new Sanitizer(search).clean().accents().toString();
-  const textQuery = cleanSearch
+const searchingQuery = ({ userId, status, pose, createdAt }: TSeaching) => {
+  const textQuery = userId
     ? {
-        userId: cleanSearch,
+        userId: userId,
       }
     : null;
 
-  const dateQuery = createdAt ? { createdAt: { createdAt } } : null;
+  const dateQuery = createdAt ? { createdAt } : null;
 
   return {
     ...(status ? { status } : {}),

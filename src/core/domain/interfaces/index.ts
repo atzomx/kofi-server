@@ -1,3 +1,4 @@
+import { User } from "@entities/users";
 import { Request, Response } from "express";
 
 export interface ICustomError {
@@ -6,10 +7,10 @@ export interface ICustomError {
 }
 
 export interface IContext {
-  connectionParams?: { Authorization: string; [key: string]: string };
+  connectionParams?: { authorization: string; [key: string]: string };
   req?: Request;
   res?: Response;
-  payload?: { id: string };
+  payload?: { id: string; user: User | null };
 }
 
 export interface IPagination<T> {

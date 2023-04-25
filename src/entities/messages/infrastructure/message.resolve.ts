@@ -2,28 +2,29 @@ import { ISubscriptionsTypes } from "@core/domain/enums";
 import { IContext } from "@core/domain/interfaces";
 import { ValidateArgs } from "@core/infrastructure/decorators";
 import namerUtils from "@core/infrastructure/utils/namer.utils";
-import AuthMiddleware from "@entities/auth/infrastructure/auth.middleware";
+import NotificationFactory from "@entities/notifications/application/notifications.factory";
+import { INotificationType } from "@entities/notifications/domain/notification.enum";
 import { Types } from "mongoose";
 import {
   Arg,
   Args,
+  Authorized,
   Ctx,
   Mutation,
-  Publisher,
   PubSub,
+  PubSubEngine,
   Query,
   Resolver,
   Root,
   Subscription,
-  UseMiddleware,
 } from "type-graphql";
 import MessageController from "../application/message.controller";
 import { IMessageExtra } from "../domain/interfaces";
 import Message from "../domain/message.entity";
 import { MessagePaginationArgs } from "./message.args";
+import { MessageDocs } from "./message.docs";
 import { MessageInputCreate } from "./message.inputs";
 import { MessagePaginateResponse } from "./message.response";
-
 const NAMES = namerUtils.get("message");
 
 @Resolver(Message)
@@ -34,31 +35,35 @@ class MessageResolver {
     this.controller = new MessageController();
   }
 
-  @Query(() => MessagePaginateResponse, {
-    description: "Returns an array of message by chat.",
-    name: NAMES.paginate,
-  })
-  @UseMiddleware(AuthMiddleware.IsAuth)
+  @Query(() => MessagePaginateResponse, MessageDocs.MessagePaginateResponseDocs)
+  @Authorized()
   async paginate(@Args() paginate: MessagePaginationArgs) {
     const results = await this.controller.paginate(paginate);
     return results;
   }
 
-  @Mutation(() => Message, {
-    description: "Create a new message.",
-    name: NAMES.create,
-  })
-  @UseMiddleware(AuthMiddleware.IsAuth)
+  @Mutation(() => Message, MessageDocs.MessageCreateMutationDocs)
+  @Authorized()
   @ValidateArgs(MessageInputCreate, "data")
   async create(
     @Arg("data") message: MessageInputCreate,
     @Ctx() ctx: IContext,
-    @PubSub(ISubscriptionsTypes.MESSAGES) publish: Publisher<IMessageExtra>,
+    @PubSub() pubsub: PubSubEngine,
   ) {
     const { id } = ctx.payload;
     const remitent = new Types.ObjectId(id);
     const result = await this.controller.create({ remitent, ...message });
-    await publish({ destinatary: message.destinatary, ...result });
+
+    await pubsub.publish(ISubscriptionsTypes.MESSAGES, {
+      destinatary: message.destinatary,
+      ...result,
+    });
+
+    const notification = await NotificationFactory.create(
+      INotificationType.message,
+      { owner: message.destinatary, idReference: result.chat.toString() },
+    );
+    await pubsub.publish(ISubscriptionsTypes.NOTIFICATIONS, notification);
     return result;
   }
 
@@ -81,7 +86,11 @@ class MessageResolver {
     },
   })
   newMessage(@Root() message: Message, @Arg("chat") _chat: string): Message {
-    return message;
+    return {
+      ...message,
+      createdAt: new Date(message.createdAt),
+      updatedAt: new Date(message.updatedAt),
+    };
   }
 }
 

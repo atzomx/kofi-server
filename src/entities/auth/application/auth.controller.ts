@@ -1,7 +1,7 @@
 import { Password } from "@core/infrastructure/utils";
+import AuthUtils from "@core/infrastructure/utils/token.utils";
 import { UserRepository } from "@entities/users";
 import { InvalidCredentialsError } from "../domain/auth.errors";
-import AuthUtils from "./auth.utils";
 
 class AuthController {
   private repository: UserRepository;
@@ -11,9 +11,7 @@ class AuthController {
   }
 
   async getToken(userName: string, password: string): Promise<string> {
-    const user = await this.repository.findOne({
-      $or: [{ userName }, { email: userName }],
-    });
+    const user = await this.repository.findOne({ email: userName });
     if (!user) throw new InvalidCredentialsError();
     const isValid = Password.compare(user.password, password);
 

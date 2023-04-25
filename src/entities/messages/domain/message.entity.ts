@@ -1,4 +1,5 @@
 import Entity from "@core/domain/entity";
+import { Media } from "@entities/media";
 import { prop } from "@typegoose/typegoose";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
@@ -25,9 +26,13 @@ class Message extends Entity {
   @prop({ required: true })
   public status!: IMessageType;
 
-  @Field(() => String, { nullable: true, description: "Media file message" })
-  @prop({ required: false })
-  public media?: string;
+  @Field(() => Media, { description: "Media file message.", nullable: true })
+  @prop({
+    type: () => Types.ObjectId,
+    ref: Media,
+    default: null,
+  })
+  public media?: Types.ObjectId;
 }
 
 export default Message;

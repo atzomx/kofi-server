@@ -13,11 +13,15 @@ async function start() {
 }
 
 async function stop() {
-  const { app: appServer, server: gqlServer } = server;
-  await new Promise((resolve, reject) => {
-    appServer.close((err) => (!err ? resolve(null) : reject()));
-  });
-  await gqlServer.stop();
+  try {
+    const { app: appServer, server: gqlServer } = server;
+    await new Promise((resolve, reject) => {
+      appServer.close((err) => (!err ? resolve(null) : reject()));
+    });
+    await gqlServer.stop();
+  } catch (error) {
+    return;
+  }
 }
 
 export default { start, stop };

@@ -1,13 +1,34 @@
 import { gql } from "apollo-server-core";
 
+const media = `
+  _id
+  type
+  url
+`;
+
 const user = `
-    _id
-    name
-    userName
+  _id
+  name
+  email
+  status
+  preferences {
+    personality
+    maritalStatus
+    lookingFor
+    pets
+    sexualPreference
+    degree
+    religion
+    ageRange {
+      min
+      max
+    }
+  }
+  information {
+    medias {
+      ${media}
+    }
     birthday
-    location
-    status
-    password
     description
     interest
     personality
@@ -16,15 +37,43 @@ const user = `
     employer
     pets
     sexualOrientation
+    location {
+      type
+      coordinates
+    }
     degree
     religion
     nacionality
+  }
 `;
 
 const userById = gql`
   query UserById($user: String!) {
     userById(id: $user) {
       ${user}
+    }
+  }
+`;
+
+const userMe = gql`
+  query UserMe {
+    userMe {
+      ${user}
+    }
+  }
+`;
+
+const userQueue = gql`
+  query UserQueue($limit: Int, $page: Int) {
+    userQueue(limit: $limit, page: $page) {
+      results {
+        ${user}
+      }
+      info {
+        page
+        pages
+        total
+      }
     }
   }
 `;
@@ -37,7 +86,6 @@ const paginate = gql`
     $status: Status, 
     $startDate: DateTime, 
     $endDate: DateTime, 
-    $gender: Gender
   ) {
     userPaginate(
       page: $page, 
@@ -46,7 +94,6 @@ const paginate = gql`
       status: $status, 
       startDate: $startDate, 
       endDate: $endDate, 
-      gender: $gender
     ) {
       info {
         page
@@ -61,7 +108,7 @@ const paginate = gql`
 `;
 
 const userCreate = gql`
-  mutation UserCreate($data: UserInputCreate!) {
+  mutation UserCreate($data: UserCreateInput!) {
     userCreate(data: $data) {
       ${user}
     }
@@ -69,11 +116,54 @@ const userCreate = gql`
 `;
 
 const userUpdate = gql`
-  mutation Mutation($data: UserInputUpdate!, $userId: String!) {
+  mutation Mutation($data: UserUpdateInput!, $userId: String!) {
     userUpdate(data: $data, id: $userId) {
       ${user}
     }
   }
 `;
 
-export default { userById, paginate, userCreate, userUpdate };
+const userUpdateMe = gql`
+  mutation Mutation($data: UserUpdateInput!) {
+    userUpdateMe(data: $data) {
+      ${user}
+    }
+  }
+`;
+
+const userMediaCreate = gql`
+  mutation UserMediaCreate($data: MediaCreateInput!) {
+    userMediaCreate(data: $data) {
+      ${media}
+    }
+  }
+`;
+
+const userMediaDelete = gql`
+  mutation UserMediaDelete($id: ObjectId!) {
+    userMediaDelete(id: $id) {
+      ${media}
+    }
+  }
+`;
+
+const userMediaOrder = gql`
+  mutation UserMediaOrder($data: UserMediaOrderInput!) {
+    userMediaOrder(data: $data) {
+      ${media}
+    }
+  }
+`;
+
+export default {
+  userById,
+  paginate,
+  userCreate,
+  userUpdate,
+  userMe,
+  userUpdateMe,
+  userQueue,
+  userMediaCreate,
+  userMediaDelete,
+  userMediaOrder,
+};

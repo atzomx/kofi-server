@@ -1,25 +1,13 @@
 /* eslint-disable indent */
-import { Sanitize, Sanitizer } from "@core/infrastructure/utils";
+import { Sanitizer } from "@core/infrastructure/utils";
+import { AnyObject, PipelineStage } from "mongoose";
 import { IUserStatus } from "../domain/user.enums";
-
-type TSanitize = {
-  name: string;
-};
 
 type TSeaching = {
   search?: string;
   endDate?: Date;
   startDate?: Date;
   status?: IUserStatus;
-};
-
-const sanitize = ({
-  name: _nm,
-}: TSanitize) => {
-  const fullName = Sanitize.clean(_nm);
-  return {
-    fullName,
-  };
 };
 
 const searchingQuery = ({
@@ -32,10 +20,8 @@ const searchingQuery = ({
   const textQuery = cleanSearch
     ? {
         $or: [
-          { normalizedFullName: { $regex: cleanSearch, $options: "i" } },
           { email: { $regex: cleanSearch, $options: "i" } },
-          { phoneNumber: { $regex: cleanSearch, $options: "i" } },
-          { userName: { $regex: cleanSearch, $options: "i" } },
+          { name: { $regex: cleanSearch, $options: "i" } },
         ],
       }
     : null;
@@ -51,7 +37,38 @@ const searchingQuery = ({
   };
 };
 
+type TPointQuery = {
+  coordinates?: [number, number];
+  maxDistance?: number;
+  minDistance?: number;
+  query: AnyObject;
+};
+
+const pointQuery = ({
+  coordinates,
+  maxDistance,
+  minDistance,
+  query,
+}: TPointQuery): PipelineStage.GeoNear => {
+  const pointQuery: PipelineStage.GeoNear = {
+    $geoNear: {
+      near: {
+        type: "Point",
+        coordinates: coordinates,
+      },
+      distanceField: "distance",
+      maxDistance: maxDistance,
+      minDistance: minDistance,
+      spherical: true,
+      distanceMultiplier: 0.001,
+      key: "information.location",
+      query,
+    },
+  };
+  return pointQuery;
+};
+
 export default {
-  sanitize,
   searchingQuery,
+  pointQuery,
 };

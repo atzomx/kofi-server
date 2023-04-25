@@ -22,43 +22,34 @@ class VerificationController {
     this.userController = new UserController();
   }
 
+  async findByUserId(id: string) {
+    const query = { userId: id };
+    const userVerification = await this.repository.findOne(query);
+    return userVerification;
+  }
+
   async findById(id: string) {
     const currentVerification = await this.repository.findById(id);
     if (!currentVerification) throw new VerificationNotFoundError();
     return currentVerification;
   }
 
-  async paginate({
+  paginate({
     page,
     limit,
-    search,
+    userId,
     status,
     pose,
     createdAt,
   }: VerificationPaginationArgs): Promise<IPagination<Verification>> {
     const searchQuery = VerificationUtils.searchingQuery({
-      search,
+      userId,
       status,
       pose,
       createdAt,
     });
 
-    const paginator = this.repository.paginate(searchQuery, { limit, page });
-
-    const [results, total] = await Promise.all([
-      paginator.getResults(),
-      paginator.getTotal(),
-    ]);
-
-    const pages = Math.ceil(total / limit);
-    return {
-      results: results,
-      info: {
-        total,
-        page,
-        pages,
-      },
-    };
+    return this.repository.paginate(searchQuery, { limit, page });
   }
 
   async create(verification: VerificationInputCreate): Promise<Verification> {
@@ -67,11 +58,7 @@ class VerificationController {
       $or: [{ userId: verification.userId }],
     };
     const existingVerification = await this.repository.findOne(query);
-    if (existingVerification)
-      throw new VerificationAlreadyExistsError(
-        existingVerification,
-        verification,
-      );
+    if (existingVerification) throw new VerificationAlreadyExistsError();
 
     const result = await this.repository.create(verification);
     return result;

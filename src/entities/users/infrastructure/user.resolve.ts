@@ -1,70 +1,128 @@
-import {
-  ValidateArgs,
-  ValidateIdentifier,
-} from "@core/infrastructure/decorators";
-import NamerUtils from "@core/infrastructure/utils/namer.utils";
-import AuthMiddleware from "@entities/auth/infrastructure/auth.middleware";
+import { IContext } from "@core/domain/interfaces";
+import { ValidateArgs } from "@core/infrastructure/decorators";
+import { Media, MediaCreateInput } from "@entities/media";
+import { Types } from "mongoose";
 import {
   Arg,
   Args,
+  Authorized,
+  Ctx,
   Mutation,
   Query,
   Resolver,
-  UseMiddleware,
 } from "type-graphql";
 import UserController from "../application/user.controller";
 import User from "../domain/user.entity";
+import { IUserRole } from "../domain/user.enums";
 import { UserPaginationArgs } from "./user.args";
-import { UserInputCreate, UserInputUpdate } from "./user.inputs";
-import { UserPaginateResponse } from "./user.response";
-
-const NAMES = NamerUtils.get("user");
+import { UserDocs } from "./user.docs";
+import {
+  UserCreateInput,
+  UserMediaOrderInput,
+  UserUpdateInput,
+} from "./user.inputs";
+import {
+  UserPaginateResponse,
+  UserPaginateResponseQueue,
+} from "./user.response";
 
 @Resolver(User)
 class UserResolver {
-  private controller: UserController;
-
-  constructor() {
+  constructor(private controller: UserController) {
     this.controller = new UserController();
   }
 
-  @Query(() => User, {
-    description: "Returns one user by id",
-    name: NAMES.find,
-  })
-  async findById(@Arg("id") id: string): Promise<User> {
+  @Query(() => User, UserDocs.UserQueryDocs)
+  @Authorized()
+  async findById(@Arg("id") id: string) {
     const user = await this.controller.findById(id);
     return user;
   }
 
-  @Query(() => UserPaginateResponse, {
-    description: "Returns an array of users.",
-    name: NAMES.paginate,
-  })
+  @Query(() => User, UserDocs.UserMeQueryDocs)
+  @Authorized()
+  async userMe(@Ctx() ctx: IContext) {
+    const userId = ctx.payload.id;
+    const user = await this.controller.findById(userId);
+    return user;
+  }
+
+  @Query(() => UserPaginateResponse, UserDocs.UserPaginateResponseDocs)
+  @Authorized(IUserRole.ADMIN, IUserRole.MODERATOR)
   async paginate(@Args() paginate: UserPaginationArgs) {
     const results = await this.controller.paginate(paginate);
     return results;
   }
 
-  @Mutation(() => User, {
-    description: "Register a new user.",
-    name: NAMES.create,
-  })
-  @ValidateArgs(UserInputCreate, "data")
-  async create(@Arg("data") user: UserInputCreate) {
+  @Query(
+    () => UserPaginateResponseQueue,
+    UserDocs.UserPaginateResponseQueueDocs,
+  )
+  @Authorized()
+  async userQueue(@Ctx() ctx: IContext, @Args() paginate: UserPaginationArgs) {
+    const { user } = ctx.payload;
+    const results = await this.controller.userQueue(paginate, user);
+    return results;
+  }
+
+  @Mutation(() => User, UserDocs.UserMutationDocs)
+  @ValidateArgs(UserCreateInput, "data")
+  async create(@Arg("data") user: UserCreateInput) {
     const result = await this.controller.create(user);
     return result;
   }
 
-  @Mutation(() => User, {
-    description: "Update an existing user by id.",
-    name: NAMES.update,
-  })
-  @UseMiddleware(AuthMiddleware.IsAuth)
-  @ValidateIdentifier(UserInputUpdate, "id")
-  @ValidateArgs(UserInputUpdate, "data")
-  async update(@Arg("id") id: string, @Arg("data") user: UserInputUpdate) {
+  @Mutation(() => User, UserDocs.UserUpdateMutationDocs)
+  @Authorized(IUserRole.ADMIN, IUserRole.MODERATOR)
+  @ValidateArgs(UserUpdateInput, "data")
+  async update(@Arg("id") id: string, @Arg("data") user: UserUpdateInput) {
     const result = await this.controller.update(id.toString(), user);
+    return result;
+  }
+
+  @Mutation(() => User, UserDocs.UserUpdateMeMutationDocs)
+  @Authorized()
+  @ValidateArgs(UserUpdateInput, "data")
+  async updateMe(@Ctx() ctx: IContext, @Arg("data") user: UserUpdateInput) {
+    const result = await this.controller.update(ctx.payload.id, user);
+    return result;
+  }
+
+  @Mutation(() => [Media], UserDocs.UserMediaMutationDocs)
+  @Authorized()
+  @ValidateArgs(MediaCreateInput, "data")
+  async userMediaCreate(
+    @Ctx() ctx: IContext,
+    @Arg("data") media: MediaCreateInput,
+  ) {
+    const result = await this.controller.mediaCreate(ctx.payload.id, media);
+    return result;
+  }
+
+  @Mutation(() => [Media], UserDocs.UserMediaDeleteMutationDocs)
+  @Authorized()
+  async userMediaDelete(
+    @Ctx() ctx: IContext,
+    @Arg("id") media: Types.ObjectId,
+  ) {
+    const result = await this.controller.mediaDelete(
+      ctx.payload.id,
+      media.toString(),
+    );
+    return result;
+  }
+
+  @Mutation(() => [Media], UserDocs.UserMediaAltereMutationDocs)
+  @Authorized()
+  @ValidateArgs(UserMediaOrderInput, "data")
+  async userMediaOrder(
+    @Ctx() ctx: IContext,
+    @Arg("data") data: UserMediaOrderInput,
+  ) {
+    const result = await this.controller.mediaOrder(
+      ctx.payload.id,
+      data.medias,
+    );
     return result;
   }
 }

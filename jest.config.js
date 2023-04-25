@@ -12,5 +12,13 @@ module.exports = {
     "^@core$": "<rootDir>/src/core",
     "^@entities/(.*)$": "<rootDir>/src/entities/$1",
     "^@entities$": "<rootDir>/src/entities",
+    "^@test/(.*)$": "<rootDir>/src/tests/$1",
+    "^@test$": "<rootDir>/src/tests",
   },
+  collectCoverageFrom: [
+    "**/src/entities/**",
+    "**/src/tests/fakers/**",
+    "!**/src/entities/**/index.ts",
+    "!**/dist/**",
+  ],
 };
