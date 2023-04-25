@@ -31,8 +31,8 @@ class MessageController {
     const chatRepository = new ChatRepository();
 
     const chat = await chatRepository.findOrCreateChat([
-      inputMessage.destinatary.toString(),
-      inputMessage.remitent.toString(),
+      inputMessage.destinatary,
+      inputMessage.remitent,
     ]);
 
     const created = await this.repository.create({

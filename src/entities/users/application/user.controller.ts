@@ -23,7 +23,7 @@ class UserController {
     this.repository = new UserRepository();
   }
 
-  async findById(id: string, userCtx?: User) {
+  async findById(id: string) {
     const currentUser = await this.repository
       .findById(id)
       .populate(["information.medias"])
