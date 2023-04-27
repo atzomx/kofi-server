@@ -8,14 +8,14 @@ import { faker } from "@faker-js/faker";
 import { Types } from "mongoose";
 
 class NotificationFaker {
-  static get(user: string): Notification {
+  static get(owner: string, from: string, interaction: string): Notification {
     return {
-      from: faker.name.firstName(),
+      from: new Types.ObjectId(from),
       status: getEnumRandom(INotificationStatus),
       type: getEnumRandom(INotificationType),
       message: faker.random.word(),
-      owner: new Types.ObjectId(user),
-      idReference: user,
+      owner: new Types.ObjectId(owner),
+      idReference: interaction,
     };
   }
 }

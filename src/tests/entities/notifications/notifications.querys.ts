@@ -10,7 +10,12 @@ const paginate = gql`
         status
         type
         owner
-        from
+        from {
+          _id
+          name
+          email
+          status
+        }
         message
         idReference
       }
@@ -30,7 +35,12 @@ const subscription = gql`
       status
       type
       owner
-      from
+      from {
+        _id
+        name
+        email
+        status
+      }
       message
       idReference
     }

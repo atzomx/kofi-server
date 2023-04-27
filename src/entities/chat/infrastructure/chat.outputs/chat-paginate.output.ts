@@ -1,16 +1,9 @@
-import Entity from "@core/domain/entity";
+import Chat from "@entities/chat/domain/chat.entity";
 import { Message } from "@entities/messages";
 import { User } from "@entities/users";
-import { Types } from "mongoose";
-import { Field, ID, ObjectType } from "type-graphql";
+import { Field, ObjectType } from "type-graphql";
 @ObjectType()
-class ChatOutput extends Entity {
-  @Field(() => ID)
-  readonly _id?: Types.ObjectId;
-
-  @Field(() => [Types.ObjectId], { description: "Chat participants." })
-  public participants?: Types.ObjectId[];
-
+class ChatOutput extends Chat {
   @Field(() => Message, { nullable: true })
   public lastMessage?: Message;
 

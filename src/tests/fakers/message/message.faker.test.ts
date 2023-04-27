@@ -5,10 +5,7 @@ import MessageFaker from "./message.faker";
 
 describe("Chat faker", () => {
   it("Should return a chat random", () => {
-    const participants = [
-      new Types.ObjectId().toString(),
-      new Types.ObjectId().toString(),
-    ];
+    const participants = [new Types.ObjectId(), new Types.ObjectId()];
     const chat: Chat = {
       participants,
       _id: new Types.ObjectId(),

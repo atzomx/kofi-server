@@ -17,7 +17,7 @@ const up = async () => {
   const verifications = await VerificationMigrate.up(users);
   const matchs = await MatchMigrate.up(users);
   const interactions = await InteractionMigrate.up(matchs);
-  const notifications = await NotificationMigrate.up(users);
+  const notifications = await NotificationMigrate.up(users, interactions);
 
   return {
     users,

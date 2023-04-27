@@ -1,7 +1,7 @@
 import { ISubscriptionsTypes } from "@core/domain/enums";
 import { IContext } from "@core/domain/interfaces";
 import namerUtils from "@core/infrastructure/utils/namer.utils";
-import { User, UserRepository } from "@entities/users";
+import { UserRepository } from "@entities/users";
 import {
   Args,
   Authorized,
@@ -43,7 +43,7 @@ class NotificationResolver {
     return results;
   }
 
-  @FieldResolver(() => User)
+  @FieldResolver()
   async from(@Root() notification: Notification) {
     if (notification.type === INotificationType.like || !notification.from)
       return null;

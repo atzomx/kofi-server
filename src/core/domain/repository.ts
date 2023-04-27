@@ -74,6 +74,7 @@ class Repository<T> {
       totalPromise,
     ]);
     const pages = Math.ceil(total / limit);
+
     return {
       results,
       info: {

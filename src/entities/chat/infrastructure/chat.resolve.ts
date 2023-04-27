@@ -1,6 +1,6 @@
 import { IContext } from "@core/domain/interfaces";
-import { Message, MessageRepository } from "@entities/messages";
-import { User, UserRepository } from "@entities/users";
+import { MessageRepository } from "@entities/messages";
+import { UserRepository } from "@entities/users";
 import {
   Args,
   Authorized,
@@ -33,7 +33,7 @@ class ChatResolver {
     return results;
   }
 
-  @FieldResolver(() => Message)
+  @FieldResolver()
   async lastMessage(@Root() chat: Chat) {
     const messageRepository = new MessageRepository();
     const message = await messageRepository
@@ -43,14 +43,18 @@ class ChatResolver {
     return message;
   }
 
-  @FieldResolver(() => User)
+  @FieldResolver()
   async destinatary(@Root() chat: Chat, @Ctx() context: IContext) {
     const userRepository = new UserRepository();
     const current = context.payload.id;
-    const [first, second] = chat.participants;
 
-    const destinatary = first.equals(current) ? first : second;
-    const user = await userRepository.findById(destinatary).lean();
+    const destinatary = chat.participants.find((participant) =>
+      participant.equals(current),
+    );
+    const user = await userRepository
+      .findById(destinatary)
+      .populate({ path: "information.medias" })
+      .lean();
     return user;
   }
 }
