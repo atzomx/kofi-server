@@ -44,4 +44,4 @@ See folder `coverage/Icov-report/index.html`
 
 ## Run seed
 
-`cross-env NODE_ENV=dev ts-node -r tsconfig-paths/register ./src/scripts/seed.ts`
+`npx cross-env NODE_ENV=dev ts-node -r tsconfig-paths/register ./src/tests/scripts/seed.ts`

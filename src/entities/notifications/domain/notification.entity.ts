@@ -22,8 +22,8 @@ class Notification extends Entity {
   public owner!: Types.ObjectId;
 
   @Field(() => String, { description: "Notification from origin" })
-  @prop({ required: false, default: "" })
-  public from?: string;
+  @prop({ required: false, default: null })
+  public from?: Types.ObjectId;
 
   @Field(() => String, { description: "Notification message" })
   @prop({ required: false, default: "" })

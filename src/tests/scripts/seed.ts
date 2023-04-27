@@ -6,8 +6,9 @@ dotenv.config();
 
 async function create() {
   try {
+    Log.i("Seeds creation started");
     await Migration.up();
-    Log.i("Seeds created successfully");
+    Log.s("Seeds creation successfully");
   } catch (err) {
     Log.e("Error: ", err);
   }
