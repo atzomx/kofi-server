@@ -33,7 +33,5 @@ ENV PORT 5000
 ENV MONGO_URL mongodb://localhost:27017/kofi-database
 ENV JWT_SECRET aa94589d5c9ba798fd9ade7cd8b19ddb9528b34b
 ENV JWT_EXPIRED_TIME 30
-ENV REDIS_HOST localhost
-ENV REDIS_PORT 6379
 
 CMD ["node", "dist/index.js"]
