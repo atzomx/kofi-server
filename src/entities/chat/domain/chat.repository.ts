@@ -1,4 +1,5 @@
 import { Repository } from "@core/domain";
+import { Types } from "mongoose";
 import Chat from "./chat.entity";
 import ChatModel from "./chat.model";
 
@@ -7,7 +8,7 @@ class ChatRepository extends Repository<Chat> {
     super(ChatModel);
   }
 
-  async findOrCreateChat(ids: string[]): Promise<Chat> {
+  async findOrCreateChat(ids: Types.ObjectId[]): Promise<Chat> {
     const reverseIds = [...ids].reverse();
 
     const query = {

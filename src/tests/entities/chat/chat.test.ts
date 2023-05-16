@@ -5,7 +5,14 @@ import { app, authorization } from "@test/setup";
 import request from "supertest-graphql";
 import chatQuerys from "./chat.querys";
 
-const keysMandatories = ["createdAt", "updatedAt", "_id", "participants"];
+const keysMandatories = [
+  "createdAt",
+  "updatedAt",
+  "_id",
+  "participants",
+  "lastMessage",
+  "destinatary",
+];
 
 describe("Chat test", () => {
   it("Should paginate chats", async () => {
@@ -18,8 +25,6 @@ describe("Chat test", () => {
       .query(chatQuerys.paginate)
       .variables(variables)
       .set("authorization", authorization.LOVER);
-
-    expect(result.errors).toBeUndefined();
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("chatPaginate");

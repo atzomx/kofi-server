@@ -1,6 +1,6 @@
 import { PaginateResponse } from "@core/infrastructure/responses";
 import { ObjectType } from "type-graphql";
-import Chat from "../domain/chat.entity";
+import { ChatOutput } from "./chat.outputs";
 
 @ObjectType()
-export class ChatPaginateResponse extends PaginateResponse(Chat) {}
+export class ChatPaginateResponse extends PaginateResponse(ChatOutput) {}

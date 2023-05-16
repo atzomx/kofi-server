@@ -103,9 +103,7 @@ class UserFaker {
 
   static basic() {
     const name = faker.name.findName();
-    const userFirst = faker.internet.userName(faker.name.findName());
-    const userSecond = faker.internet.userName(faker.name.findName());
-    const email = faker.internet.email(userFirst, userSecond);
+    const email = faker.internet.email(name).toLowerCase();
     const password = DEFAULT_PASSWORD;
     const user = { name, email, password };
     return user;

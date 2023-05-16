@@ -6,6 +6,8 @@ describe("Notification faker", () => {
   it("Should return a notification random", () => {
     const notification = NotificationsFaker.get(
       new Types.ObjectId().toString(),
+      new Types.ObjectId().toString(),
+      new Types.ObjectId().toString(),
     );
     expect(notification).toHaveProperty("from");
     expect(notification).toHaveProperty("status");

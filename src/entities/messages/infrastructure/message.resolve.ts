@@ -2,6 +2,7 @@ import { ISubscriptionsTypes } from "@core/domain/enums";
 import { IContext } from "@core/domain/interfaces";
 import { ValidateArgs } from "@core/infrastructure/decorators";
 import namerUtils from "@core/infrastructure/utils/namer.utils";
+import messageUtils from "@core/infrastructure/utils/message.utils";
 import NotificationFactory from "@entities/notifications/application/notifications.factory";
 import { INotificationType } from "@entities/notifications/domain/notification.enum";
 import { Types } from "mongoose";
@@ -61,7 +62,12 @@ class MessageResolver {
 
     const notification = await NotificationFactory.create(
       INotificationType.message,
-      { owner: message.destinatary, idReference: result.chat.toString() },
+      {
+        owner: message.destinatary,
+        from: remitent,
+        idReference: result.chat.toString(),
+        message: messageUtils.getMessage(message.message),
+      },
     );
     await pubsub.publish(ISubscriptionsTypes.NOTIFICATIONS, notification);
     return result;
