@@ -1,7 +1,10 @@
+import { Types } from "mongoose";
+
 import { IPagination } from "@core/domain/interfaces";
 import { Password } from "@core/infrastructure/utils";
 import { Media, MediaController, MediaCreateInput } from "@entities/media";
-import { Types } from "mongoose";
+import UserQueueUseCase from "./use-cases/user-queue.use-case";
+import UserUtils from "./user.utils";
 import User from "../domain/user.entity";
 import {
   UserAlreadyExistsError,
@@ -13,8 +16,6 @@ import {
   UserCreateInput,
   UserUpdateInput,
 } from "../infrastructure/user.inputs";
-import UserQueueUseCase from "./use-cases/user-queue.use-case";
-import UserUtils from "./user.utils";
 
 class UserController {
   private repository: UserRepository;
@@ -23,7 +24,7 @@ class UserController {
     this.repository = new UserRepository();
   }
 
-  async findById(id: string, userCtx?: User) {
+  async findById(id: string) {
     const currentUser = await this.repository
       .findById(id)
       .populate(["information.medias"])

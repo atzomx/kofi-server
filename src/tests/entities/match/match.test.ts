@@ -1,4 +1,6 @@
 import "reflect-metadata";
+import { Types } from "mongoose";
+import request from "supertest-graphql";
 import { IPagination } from "@core/domain/interfaces";
 import TestUtils, {
   getEnumRandom,
@@ -9,10 +11,8 @@ import { IInteractionTypes } from "@entities/interactions/domain/interaction.enu
 import { Match } from "@entities/match";
 import { IMatchStatus } from "@entities/match/domain/match.enums";
 import { entities, app, authorization } from "@test/setup";
-import { Types } from "mongoose";
-import request from "supertest-graphql";
-import interactionQuerys from "../interaction/interaction.query";
 import matchQuerys from "./match.query";
+import interactionQuerys from "../interaction/interaction.query";
 
 const keysMandatories = Object.keys(Match);
 describe("Match Test", () => {

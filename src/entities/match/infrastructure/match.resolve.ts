@@ -1,5 +1,3 @@
-import { IContext } from "@core/domain/interfaces";
-import { ValidateArgs } from "@core/infrastructure/decorators";
 import {
   Arg,
   Args,
@@ -9,12 +7,14 @@ import {
   Query,
   Resolver,
 } from "type-graphql";
-import MatchController from "../application/match.controller";
-import Match from "../domain/match.entity";
+import { IContext } from "@core/domain/interfaces";
+import { ValidateArgs } from "@core/infrastructure/decorators";
 import { MatchPaginationArgs } from "./match.args";
 import { MatchDocs } from "./match.docs";
 import { MatchInputUpdate } from "./match.inputs";
 import { MatchPaginateResponse } from "./match.response";
+import MatchController from "../application/match.controller";
+import Match from "../domain/match.entity";
 
 @Resolver(Match)
 class MatchResolver {

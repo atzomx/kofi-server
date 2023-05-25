@@ -1,7 +1,8 @@
-import Entity from "@core/domain/entity";
 import { prop } from "@typegoose/typegoose";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
+import Entity from "@core/domain/entity";
+import { User } from "@entities/users";
 import { INotificationStatus, INotificationType } from "./notification.enum";
 
 @ObjectType()
@@ -21,9 +22,12 @@ class Notification extends Entity {
   @prop({ required: true })
   public owner!: Types.ObjectId;
 
-  @Field(() => String, { description: "Notification from origin" })
-  @prop({ required: false, default: "" })
-  public from?: string;
+  @Field(() => User, {
+    description: "Notification from origin",
+    nullable: true,
+  })
+  @prop({ required: false, default: null })
+  public from?: Types.ObjectId;
 
   @Field(() => String, { description: "Notification message" })
   @prop({ required: false, default: "" })

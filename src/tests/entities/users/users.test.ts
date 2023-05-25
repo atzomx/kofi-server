@@ -1,3 +1,6 @@
+import "reflect-metadata";
+import { Types } from "mongoose";
+import request from "supertest-graphql";
 import { IPagination } from "@core/domain/interfaces";
 import TestUtils from "@core/infrastructure/utils/test.utils";
 import { Media } from "@entities/media";
@@ -5,10 +8,8 @@ import { User } from "@entities/users";
 import { IUserRole } from "@entities/users/domain/user.enums";
 import MediaFaker from "@test/fakers/media/media.faker";
 import { app, authorization, entities, users } from "@test/setup";
-import { Types } from "mongoose";
-import request from "supertest-graphql";
-import UserFaker from "../../fakers/user/user.faker";
 import userQuerys from "./user.querys";
+import UserFaker from "../../fakers/user/user.faker";
 
 const keysMandatories = Object.keys(User);
 

@@ -12,11 +12,12 @@ const paginate = gql`
         createdAt
         updatedAt
         _id
-        participants {
-          _id
+        participants
+        lastMessage {
+          message
+        }
+        destinatary {
           name
-          email
-          status
         }
       }
     }

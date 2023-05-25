@@ -8,7 +8,7 @@ import NotificationRepository from "../domain/notification.repository";
 
 type TNotificationBase = {
   message?: string;
-  from?: string;
+  from?: Types.ObjectId;
   owner: Types.ObjectId;
   idReference?: string;
 };

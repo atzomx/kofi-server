@@ -1,10 +1,10 @@
+import { GraphQLSchema } from "graphql";
+import { useServer } from "graphql-ws/lib/use/ws";
+import { WebSocketServer } from "ws";
 import http from "http";
 import { IContext } from "@core/domain/interfaces";
 import { Log } from "@core/infrastructure/utils";
 import { AuthGuard } from "@entities/auth";
-import { GraphQLSchema } from "graphql";
-import { useServer } from "graphql-ws/lib/use/ws";
-import { WebSocketServer } from "ws";
 
 const create = async (httpServer: http.Server, schema: GraphQLSchema) => {
   const wsServer = new WebSocketServer({

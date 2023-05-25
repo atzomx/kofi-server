@@ -11,7 +11,7 @@ const up = async (users: User[]) => {
   const newChats = Array.from({ length: TOTAL_CHATS }).map(() => {
     const userOne = getOneFromArray(users)._id;
     const userTwo = getOneFromArray(users)._id;
-    const participants = [userOne.toString(), userTwo.toString()];
+    const participants = [userOne, userTwo];
     return ChatFaker.get(participants);
   });
 

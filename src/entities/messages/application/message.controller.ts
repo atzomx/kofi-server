@@ -1,7 +1,7 @@
+import { Types } from "mongoose";
 import { IPagination } from "@core/domain/interfaces";
 import { ChatRepository } from "@entities/chat";
 import { MessageRepository } from "@entities/messages";
-import { Types } from "mongoose";
 import Message from "../domain/message.entity";
 import { IMessageType } from "../domain/message.enums";
 import { MessagePaginationArgs } from "../infrastructure/message.args";
@@ -31,8 +31,8 @@ class MessageController {
     const chatRepository = new ChatRepository();
 
     const chat = await chatRepository.findOrCreateChat([
-      inputMessage.destinatary.toString(),
-      inputMessage.remitent.toString(),
+      inputMessage.destinatary,
+      inputMessage.remitent,
     ]);
 
     const created = await this.repository.create({

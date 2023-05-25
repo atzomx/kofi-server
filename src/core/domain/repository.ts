@@ -1,4 +1,3 @@
-import { Paginate } from "@core/infrastructure/utils";
 import {
   AnyKeys,
   AnyObject,
@@ -9,6 +8,7 @@ import {
   SortOrder,
   Types,
 } from "mongoose";
+import { Paginate } from "@core/infrastructure/utils";
 
 const DEFAULT_PAGINATION = 15;
 
@@ -74,6 +74,7 @@ class Repository<T> {
       totalPromise,
     ]);
     const pages = Math.ceil(total / limit);
+
     return {
       results,
       info: {

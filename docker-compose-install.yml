@@ -12,6 +12,7 @@ services:
       - 'kofi-db-network'
   redis:
     image: redis
+    container_name: kofi-redis
     restart: always
     ports:
       - "6379:6379"

@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import { IPagination } from "@core/domain/interfaces";
 import { User, UserController } from "@entities/users";
+import CreateInteractionUseCase from "./use-cases/create-interaction.use-case";
 import Interaction from "../domain/interaction.entity";
 import { InteractionNotFoundError } from "../domain/interaction.erros";
 import InteractionRepository from "../domain/interaction.repository";
@@ -9,7 +10,6 @@ import {
   InteractionInputCreate,
   InteractionInputUpdate,
 } from "../infrastructure/interaction.inputs";
-import CreateInteractionUseCase from "./use-cases/create-interaction.use-case";
 
 class InteractionController {
   private readonly repository: InteractionRepository;

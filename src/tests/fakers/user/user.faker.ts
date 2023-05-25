@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import { faker } from "@faker-js/faker";
 import {
   getEnumRandom,
   getRandomNumber,
@@ -21,7 +22,6 @@ import {
   IUserSexualOrientation,
   IUserStatus,
 } from "@entities/users/domain/user.enums";
-import { faker } from "@faker-js/faker";
 
 export const DEFAULT_PASSWORD = "123456.hello";
 
@@ -103,9 +103,7 @@ class UserFaker {
 
   static basic() {
     const name = faker.name.findName();
-    const userFirst = faker.internet.userName(faker.name.findName());
-    const userSecond = faker.internet.userName(faker.name.findName());
-    const email = faker.internet.email(userFirst, userSecond);
+    const email = faker.internet.email(name).toLowerCase();
     const password = DEFAULT_PASSWORD;
     const user = { name, email, password };
     return user;

@@ -1,10 +1,10 @@
 import { IPagination } from "@core/domain/interfaces";
+import mediaUtils from "./media.utils";
 import { MediaRepository } from "..";
 import Media from "../domain/media.entity";
 import { MediaNotFoundError } from "../domain/media.errors";
 import { MediaPaginationArgs } from "../infrastructure/media.args";
 import { MediaCreateInput } from "../infrastructure/media.input";
-import mediaUtils from "./media.utils";
 
 class MediaController {
   private repository: MediaRepository;

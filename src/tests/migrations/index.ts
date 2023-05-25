@@ -1,4 +1,3 @@
-import mongodb from "../config/db";
 import ChatMigrate from "./chat.migrate";
 import InteractionMigrate from "./interaction.migrate";
 import MatchMigrate from "./match.migrate";
@@ -7,6 +6,7 @@ import MessageMigrate from "./message.migrate";
 import NotificationMigrate from "./notification.migrate";
 import UserMigrate from "./user.migrate";
 import VerificationMigrate from "./verification.migrate";
+import mongodb from "../config/db";
 
 const up = async () => {
   await mongodb.start();
@@ -17,7 +17,7 @@ const up = async () => {
   const verifications = await VerificationMigrate.up(users);
   const matchs = await MatchMigrate.up(users);
   const interactions = await InteractionMigrate.up(matchs);
-  const notifications = await NotificationMigrate.up(users);
+  const notifications = await NotificationMigrate.up(users, interactions);
 
   return {
     users,

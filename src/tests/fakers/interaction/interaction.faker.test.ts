@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { IInteractionTypes } from "@entities/interactions/domain/interaction.enums";
 import { Types } from "mongoose";
+import { IInteractionTypes } from "@entities/interactions/domain/interaction.enums";
 import MatchFaker from "./interaction.faker";
 
 describe("Interaction faker", () => {

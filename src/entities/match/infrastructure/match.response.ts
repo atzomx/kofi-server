@@ -1,5 +1,5 @@
-import { PaginateResponse } from "@core/infrastructure/responses";
 import { ObjectType } from "type-graphql";
+import { PaginateResponse } from "@core/infrastructure/responses";
 import Match from "../domain/match.entity";
 
 @ObjectType()

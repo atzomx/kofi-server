@@ -1,9 +1,3 @@
-import { ISubscriptionsTypes } from "@core/domain/enums";
-import { IContext } from "@core/domain/interfaces";
-import { ValidateArgs } from "@core/infrastructure/decorators";
-import { Notification } from "@entities/notifications";
-import NotificationFactory from "@entities/notifications/application/notifications.factory";
-import { INotificationType } from "@entities/notifications/domain/notification.enum";
 import {
   Arg,
   Args,
@@ -15,9 +9,12 @@ import {
   Query,
   Resolver,
 } from "type-graphql";
-import InteractionController from "../application/interaction.controller";
-import Interaction from "../domain/interaction.entity";
-import { IInteractionTypes } from "../domain/interaction.enums";
+import { ISubscriptionsTypes } from "@core/domain/enums";
+import { IContext } from "@core/domain/interfaces";
+import { ValidateArgs } from "@core/infrastructure/decorators";
+import { Notification } from "@entities/notifications";
+import NotificationFactory from "@entities/notifications/application/notifications.factory";
+import { INotificationType } from "@entities/notifications/domain/notification.enum";
 import { InteractionPaginationArgs } from "./interaction.args";
 import { InteractionDocs } from "./interaction.docs";
 import {
@@ -28,6 +25,9 @@ import {
   InteractionCreateResponse,
   InteractionPaginateResponse,
 } from "./interaction.response";
+import InteractionController from "../application/interaction.controller";
+import Interaction from "../domain/interaction.entity";
+import { IInteractionTypes } from "../domain/interaction.enums";
 
 @Resolver(Interaction)
 class InteractionResolver {
@@ -74,8 +74,8 @@ class InteractionResolver {
       await this.controller.create(interactionInput, userFrom);
 
     if (generatedMatch) {
-      const paramsTo = { from: userFrom.name, owner: interactionInput.userTo };
-      const paramsFrom = { from: userTo.name, owner: userFrom._id };
+      const paramsTo = { from: userFrom._id, owner: interactionInput.userTo };
+      const paramsFrom = { from: userTo._id, owner: userFrom._id };
       const { to, from } = await NotificationFactory.match(
         paramsTo,
         paramsFrom,
@@ -86,7 +86,7 @@ class InteractionResolver {
 
     if (!generatedMatch && interaction.type !== IInteractionTypes.rejected) {
       const likeParams = {
-        from: userFrom.name,
+        from: userFrom._id,
         owner: interactionInput.userTo,
       };
       const notificationLike = await NotificationFactory.create(

@@ -21,7 +21,6 @@ class ChatController {
         limit,
         page,
         sort: { updatedAt: -1 },
-        populate: { path: "participants" },
       },
     );
   }

@@ -1,3 +1,6 @@
+import "reflect-metadata";
+import { Types } from "mongoose";
+import request from "supertest-graphql";
 import { IPagination } from "@core/domain/interfaces";
 import TestUtils, {
   getEnumRandom,
@@ -12,10 +15,8 @@ import {
 import UserFaker from "@test/fakers/user/user.faker";
 import VerificationFaker from "@test/fakers/verifications/verification.faker";
 import { app, authorization, entities } from "@test/setup";
-import { Types } from "mongoose";
-import request from "supertest-graphql";
-import userQuerys from "../users/user.querys";
 import verificationQuerys from "./verification.query";
+import userQuerys from "../users/user.querys";
 
 const keysMandatories = Object.keys(Verification);
 

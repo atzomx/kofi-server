@@ -1,5 +1,5 @@
-import { PaginateArgs } from "@core/infrastructure/responses";
 import { ArgsType, Field } from "type-graphql";
+import { PaginateArgs } from "@core/infrastructure/responses";
 import {
   IVerificationStatus,
   IVerificationPoses,

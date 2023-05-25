@@ -1,7 +1,7 @@
+import { Types } from "mongoose";
 import { getEnumRandom } from "@core/infrastructure/utils/test.utils";
 import { Interaction } from "@entities/interactions";
 import { IInteractionTypes } from "@entities/interactions/domain/interaction.enums";
-import { Types } from "mongoose";
 
 class InteractionFaker {
   static get(users: Types.ObjectId[]): Interaction {

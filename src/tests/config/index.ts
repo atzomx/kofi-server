@@ -1,8 +1,8 @@
 import "reflect-metadata";
-import path from "path";
 import dotenv from "dotenv";
-import migrations from "../migrations";
+import path from "path";
 import server from "./server";
+import migrations from "../migrations";
 
 const file = path.join(__dirname, "../../../", ".env.example");
 

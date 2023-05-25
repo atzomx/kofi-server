@@ -1,9 +1,3 @@
-import { ISubscriptionsTypes } from "@core/domain/enums";
-import { IContext } from "@core/domain/interfaces";
-import { ValidateArgs } from "@core/infrastructure/decorators";
-import namerUtils from "@core/infrastructure/utils/namer.utils";
-import NotificationFactory from "@entities/notifications/application/notifications.factory";
-import { INotificationType } from "@entities/notifications/domain/notification.enum";
 import { Types } from "mongoose";
 import {
   Arg,
@@ -18,13 +12,21 @@ import {
   Root,
   Subscription,
 } from "type-graphql";
-import MessageController from "../application/message.controller";
-import { IMessageExtra } from "../domain/interfaces";
-import Message from "../domain/message.entity";
+import { ISubscriptionsTypes } from "@core/domain/enums";
+import { IContext } from "@core/domain/interfaces";
+import { ValidateArgs } from "@core/infrastructure/decorators";
+import messageUtils from "@core/infrastructure/utils/message.utils";
+import namerUtils from "@core/infrastructure/utils/namer.utils";
+import NotificationFactory from "@entities/notifications/application/notifications.factory";
+import { INotificationType } from "@entities/notifications/domain/notification.enum";
 import { MessagePaginationArgs } from "./message.args";
 import { MessageDocs } from "./message.docs";
 import { MessageInputCreate } from "./message.inputs";
 import { MessagePaginateResponse } from "./message.response";
+import MessageController from "../application/message.controller";
+import { IMessageExtra } from "../domain/interfaces";
+import Message from "../domain/message.entity";
+
 const NAMES = namerUtils.get("message");
 
 @Resolver(Message)
@@ -61,7 +63,12 @@ class MessageResolver {
 
     const notification = await NotificationFactory.create(
       INotificationType.message,
-      { owner: message.destinatary, idReference: result.chat.toString() },
+      {
+        owner: message.destinatary,
+        from: remitent,
+        idReference: result.chat.toString(),
+        message: messageUtils.getMessage(message.message),
+      },
     );
     await pubsub.publish(ISubscriptionsTypes.NOTIFICATIONS, notification);
     return result;

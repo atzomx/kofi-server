@@ -3,19 +3,15 @@
     "browser": true,
     "es2021": true
   },
-  "extends": [
-    "plugin:@typescript-eslint/eslint-plugin",
-    "plugin:import/recommended",
-    "prettier"
-  ],
+  "extends": ["prettier"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint", "import"],
+  "plugins": ["@typescript-eslint", "import", "prettier"],
   "rules": {
-    "indent": ["error", 2, { "SwitchCase": 1 }],
+    "indent": "off",
     "linebreak-style": "off",
     "quotes": ["error", "double"],
     "semi": ["error", "always"],
@@ -37,16 +33,28 @@
     "prefer-template": "off",
     "camelcase": "error",
     "@typescript-eslint/explicit-module-boundary-types": "off",
-    "no-unused-vars": [
-      "error",
-      { "argsIgnorePattern": "^_", "ignoreRestSiblings": true }
-    ],
     "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
     "import/order": [
-      "error",
+      1,
       {
-        "groups": ["builtin", "external", "internal"],
+        "groups": [
+          "external",
+          "builtin",
+          "internal",
+          "sibling",
+          "parent",
+          "index"
+        ],
+        "pathGroups": [
+          { "pattern": "@core", "group": "internal" },
+          { "pattern": "@core/**", "group": "internal" },
+          { "pattern": "@entities", "group": "internal" },
+          { "pattern": "@entities/**", "group": "internal" },
+          { "pattern": "@test", "group": "internal" },
+          { "pattern": "@test/**", "group": "internal" }
+        ],
+        "pathGroupsExcludedImportTypes": ["internal"],
         "alphabetize": {
           "order": "asc",
           "caseInsensitive": true
