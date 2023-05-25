@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
+import { Types } from "mongoose";
 import { InteractionRepository } from "@entities/interactions";
 import { Match } from "@entities/match";
-import { Types } from "mongoose";
 import InteractionFaker from "../fakers/interaction/interaction.faker";
 
 const up = async (matchs: Match[]) => {

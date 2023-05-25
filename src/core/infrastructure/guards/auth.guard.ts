@@ -1,5 +1,5 @@
-import { IContext } from "@core/domain/interfaces";
 import { AuthChecker } from "type-graphql";
+import { IContext } from "@core/domain/interfaces";
 
 const authChecker: AuthChecker<IContext> = async (
   { context },

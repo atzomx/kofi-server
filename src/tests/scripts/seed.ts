@@ -1,6 +1,6 @@
-import Migration from "../migrations";
-import { Log } from "@core/infrastructure/utils";
 import dotenv from "dotenv";
+import { Log } from "@core/infrastructure/utils";
+import Migration from "../migrations";
 
 dotenv.config();
 

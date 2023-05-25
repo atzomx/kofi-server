@@ -1,7 +1,7 @@
-import { Media } from "@entities/media";
 import { index, prop, Ref } from "@typegoose/typegoose";
 import { Types } from "mongoose";
 import { Field, ObjectType } from "type-graphql";
+import { Media } from "@entities/media";
 import {
   IUserDegree,
   IUserInterests,

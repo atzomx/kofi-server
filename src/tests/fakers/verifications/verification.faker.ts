@@ -1,11 +1,11 @@
+import { faker } from "@faker-js/faker";
+import { Types } from "mongoose";
 import { getEnumRandom } from "@core/infrastructure/utils/test.utils";
 import { Verification } from "@entities/verifications";
 import {
   IVerificationStatus,
   IVerificationPoses,
 } from "@entities/verifications/domain/verification.enums";
-import { faker } from "@faker-js/faker";
-import { Types } from "mongoose";
 
 class VerificationFaker {
   static create(userId: Types.ObjectId) {

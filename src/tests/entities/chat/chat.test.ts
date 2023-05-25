@@ -1,8 +1,7 @@
-import "reflect-metadata";
+import request from "supertest-graphql";
 import { IPagination } from "@core/domain/interfaces";
 import { Chat } from "@entities/chat";
 import { app, authorization } from "@test/setup";
-import request from "supertest-graphql";
 import chatQuerys from "./chat.querys";
 
 const keysMandatories = [

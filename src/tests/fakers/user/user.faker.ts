@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import { faker } from "@faker-js/faker";
 import {
   getEnumRandom,
   getRandomNumber,
@@ -21,7 +22,6 @@ import {
   IUserSexualOrientation,
   IUserStatus,
 } from "@entities/users/domain/user.enums";
-import { faker } from "@faker-js/faker";
 
 export const DEFAULT_PASSWORD = "123456.hello";
 

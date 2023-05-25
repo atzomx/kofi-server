@@ -1,7 +1,3 @@
-import { ISubscriptionsTypes } from "@core/domain/enums";
-import { IContext } from "@core/domain/interfaces";
-import namerUtils from "@core/infrastructure/utils/namer.utils";
-import { UserRepository } from "@entities/users";
 import {
   Args,
   Authorized,
@@ -12,12 +8,16 @@ import {
   Root,
   Subscription,
 } from "type-graphql";
-import NotificationController from "../application/notification.controller";
-import Notification from "../domain/notification.entity";
-import { INotificationType } from "../domain/notification.enum";
+import { ISubscriptionsTypes } from "@core/domain/enums";
+import { IContext } from "@core/domain/interfaces";
+import namerUtils from "@core/infrastructure/utils/namer.utils";
+import { UserRepository } from "@entities/users";
 import { NotificationPaginationArgs } from "./notification.args";
 import { NotificationDocs } from "./notification.docs";
 import { NotificationPaginateResponse } from "./notification.response";
+import NotificationController from "../application/notification.controller";
+import Notification from "../domain/notification.entity";
+import { INotificationType } from "../domain/notification.enum";
 
 const NAMES = namerUtils.get("notification");
 

@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { Chat } from "@entities/chat";
 import { Types } from "mongoose";
+import { Chat } from "@entities/chat";
 import MessageFaker from "./message.faker";
 
 describe("Chat faker", () => {

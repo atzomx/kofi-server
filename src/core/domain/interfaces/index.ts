@@ -1,5 +1,5 @@
-import { User } from "@entities/users";
 import { Request, Response } from "express";
+import { User } from "@entities/users";
 
 export interface ICustomError {
   constrains: string;

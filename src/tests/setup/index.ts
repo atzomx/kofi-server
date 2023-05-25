@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import http from "http";
 import PubSub from "@core/application/PubSub";
 import authUtils from "@core/infrastructure/utils/token.utils";

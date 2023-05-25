@@ -1,11 +1,11 @@
 import "reflect-metadata";
+import { Types } from "mongoose";
+import request from "supertest-graphql";
 import { IPagination } from "@core/domain/interfaces";
 import testUtils from "@core/infrastructure/utils/test.utils";
 import { Media } from "@entities/media";
 import MediaFaker from "@test/fakers/media/media.faker";
 import { app, authorization, entities } from "@test/setup";
-import { Types } from "mongoose";
-import request from "supertest-graphql";
 import mediaQuerys from "./media.querys";
 
 const keysRequired = ["_id", "type", "url"];

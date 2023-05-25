@@ -1,5 +1,5 @@
-import { Log } from "@core/infrastructure/utils";
 import mongoose from "mongoose";
+import { Log } from "@core/infrastructure/utils";
 
 export async function create() {
   const { MONGO_URL } = process.env;
