@@ -1,6 +1,6 @@
 /* eslint-disable indent */
-import { Sanitizer } from "@core/infrastructure/utils";
 import { AnyObject, PipelineStage } from "mongoose";
+import { Sanitizer } from "@core/infrastructure/utils";
 import { IUserStatus } from "../domain/user.enums";
 
 type TSeaching = {

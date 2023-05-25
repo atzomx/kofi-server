@@ -1,5 +1,6 @@
 import { IPagination } from "@core/domain/interfaces";
 import { UserController } from "@entities/users";
+import VerificationUtils from "./verification.utils";
 import Verification from "../domain/verification.entity";
 import {
   VerificationAlreadyExistsError,
@@ -11,7 +12,6 @@ import {
   VerificationInputUpdate,
   VerificationInputCreate,
 } from "../infrastructure/verification.inputs";
-import VerificationUtils from "./verification.utils";
 
 class VerificationController {
   private repository: VerificationRepository;

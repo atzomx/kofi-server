@@ -1,11 +1,11 @@
-import { ValidateArgs } from "@core/infrastructure/decorators";
 import { Arg, Args, Authorized, Mutation, Query, Resolver } from "type-graphql";
-import { MediaController } from "..";
-import Media from "../domain/media.entity";
+import { ValidateArgs } from "@core/infrastructure/decorators";
 import { MediaPaginationArgs } from "./media.args";
 import { MediaDocs } from "./media.docs";
 import { MediaCreateInput } from "./media.input";
 import { MediaPaginateResponse } from "./media.response";
+import { MediaController } from "..";
+import Media from "../domain/media.entity";
 
 @Resolver(Media)
 class MediaResolver {

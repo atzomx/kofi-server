@@ -12,24 +12,19 @@ const searchingQuery = ({
   endDate = new Date(),
 }: TSeaching) => {
   const cleanSearch = new Sanitizer(search).clean().accents().toString();
-  const textQuery = cleanSearch
-    ? {
-        $or: [
-          { normalizedFullName: { $regex: cleanSearch, $options: "i" } },
-          { email: { $regex: cleanSearch, $options: "i" } },
-          { phoneNumber: { $regex: cleanSearch, $options: "i" } },
-          { userName: { $regex: cleanSearch, $options: "i" } },
-        ],
-      }
-    : null;
+  const textQuery = {
+    $or: [
+      { normalizedFullName: { $regex: cleanSearch, $options: "i" } },
+      { email: { $regex: cleanSearch, $options: "i" } },
+      { phoneNumber: { $regex: cleanSearch, $options: "i" } },
+      { userName: { $regex: cleanSearch, $options: "i" } },
+    ],
+  };
 
-  const dateQuery = startDate
-    ? { createdAt: { $gte: startDate, $lt: endDate } }
-    : null;
-
+  const dateQuery = { createdAt: { $gte: startDate, $lt: endDate } };
   return {
-    ...(textQuery ?? {}),
-    ...(dateQuery ?? {}),
+    ...(cleanSearch ? textQuery : {}),
+    ...(startDate ? dateQuery : {}),
   };
 };
 

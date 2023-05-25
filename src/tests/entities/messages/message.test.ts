@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import supertest, { supertestWs } from "supertest-graphql";
 import { IPagination } from "@core/domain/interfaces";
 import {
   getOneFromArray,
@@ -7,7 +8,6 @@ import {
 import authUtils from "@core/infrastructure/utils/token.utils";
 import { Message } from "@entities/messages";
 import { app, authorization, entities } from "@test/setup";
-import supertest, { supertestWs } from "supertest-graphql";
 import messageQuerys from "./message.querys";
 
 describe("Chat Test", () => {

@@ -1,6 +1,3 @@
-import { IContext } from "@core/domain/interfaces";
-import { ValidateArgs } from "@core/infrastructure/decorators";
-import { Media, MediaCreateInput } from "@entities/media";
 import { Types } from "mongoose";
 import {
   Arg,
@@ -11,9 +8,9 @@ import {
   Query,
   Resolver,
 } from "type-graphql";
-import UserController from "../application/user.controller";
-import User from "../domain/user.entity";
-import { IUserRole } from "../domain/user.enums";
+import { IContext } from "@core/domain/interfaces";
+import { ValidateArgs } from "@core/infrastructure/decorators";
+import { Media, MediaCreateInput } from "@entities/media";
 import { UserPaginationArgs } from "./user.args";
 import { UserDocs } from "./user.docs";
 import {
@@ -25,6 +22,9 @@ import {
   UserPaginateResponse,
   UserPaginateResponseQueue,
 } from "./user.response";
+import UserController from "../application/user.controller";
+import User from "../domain/user.entity";
+import { IUserRole } from "../domain/user.enums";
 
 @Resolver(User)
 class UserResolver {

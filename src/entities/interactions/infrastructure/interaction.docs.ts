@@ -1,5 +1,5 @@
-import NamerUtils from "@core/infrastructure/utils/namer.utils";
 import { AdvancedOptions } from "type-graphql/dist/decorators/types";
+import NamerUtils from "@core/infrastructure/utils/namer.utils";
 const NAMES = NamerUtils.get("interaction");
 
 const InteractionQueryDocs: AdvancedOptions = {

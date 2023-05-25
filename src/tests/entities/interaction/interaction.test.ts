@@ -1,4 +1,7 @@
 import "reflect-metadata";
+import { map } from "lodash";
+import { Types } from "mongoose";
+import request from "supertest-graphql";
 import { IPagination } from "@core/domain/interfaces";
 import TestUtils, {
   getEnumRandom,
@@ -7,11 +10,8 @@ import authUtils from "@core/infrastructure/utils/token.utils";
 import { Interaction } from "@entities/interactions";
 import { IInteractionTypes } from "@entities/interactions/domain/interaction.enums";
 import { entities, app, authorization } from "@test/setup";
-import { map } from "lodash";
-import { Types } from "mongoose";
-import request from "supertest-graphql";
-import InteractionFaker from "../../fakers/interaction/interaction.faker";
 import interactionQuerys from "./interaction.query";
+import InteractionFaker from "../../fakers/interaction/interaction.faker";
 
 const keysMandatories = Object.keys(Interaction);
 describe("Interaction Test", () => {

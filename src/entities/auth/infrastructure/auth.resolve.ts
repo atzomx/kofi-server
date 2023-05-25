@@ -1,7 +1,7 @@
 import { Arg, Mutation, Resolver } from "type-graphql";
-import AuthController from "../application/auth.controller";
 import { LoginDocs } from "./auth.docs";
 import { LoginResponse } from "./auth.response";
+import AuthController from "../application/auth.controller";
 
 @Resolver()
 class AuthResolver {

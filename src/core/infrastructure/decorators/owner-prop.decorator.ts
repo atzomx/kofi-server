@@ -1,6 +1,6 @@
-import { IContext } from "@core/domain/interfaces";
 import { createMethodDecorator } from "type-graphql";
 import { MethodAndPropDecorator } from "type-graphql/dist/decorators/types";
+import { IContext } from "@core/domain/interfaces";
 
 function OwnerProp() {
   return createMethodDecorator<IContext>(({ root, context, info }) => {

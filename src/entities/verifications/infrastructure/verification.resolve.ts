@@ -1,5 +1,3 @@
-import { IContext } from "@core/domain/interfaces";
-import { ValidateArgs } from "@core/infrastructure/decorators";
 import {
   Arg,
   Args,
@@ -9,8 +7,8 @@ import {
   Query,
   Resolver,
 } from "type-graphql";
-import VerificationController from "../application/verification.controller";
-import Verification from "../domain/verification.entity";
+import { IContext } from "@core/domain/interfaces";
+import { ValidateArgs } from "@core/infrastructure/decorators";
 import { VerificationPaginationArgs } from "./verification.args";
 import { VerificationDocs } from "./verification.docs";
 import {
@@ -18,6 +16,8 @@ import {
   VerificationInputUpdate,
 } from "./verification.inputs";
 import { VerificationPaginateResponse } from "./verification.response";
+import VerificationController from "../application/verification.controller";
+import Verification from "../domain/verification.entity";
 
 @Resolver(Verification)
 class VerificationResolver {

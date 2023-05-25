@@ -1,5 +1,5 @@
-import { ICustomError } from "@core/domain/interfaces";
 import { UserInputError } from "apollo-server-core";
+import { ICustomError } from "@core/domain/interfaces";
 
 export class MatchNotFoundError extends UserInputError {
   constructor() {

@@ -1,20 +1,20 @@
 import "reflect-metadata";
+import { map } from "lodash";
+import supertest, { supertestWs } from "supertest-graphql";
 import { IPagination } from "@core/domain/interfaces";
 import testUtils, {
   getOneFromArray,
 } from "@core/infrastructure/utils/test.utils";
 import { getToken } from "@core/infrastructure/utils/token.utils";
+import { Interaction } from "@entities/interactions";
+import { IInteractionTypes } from "@entities/interactions/domain/interaction.enums";
 import { Message } from "@entities/messages";
 import { Notification } from "@entities/notifications";
 import { app, authorization, entities } from "@test/setup";
-import supertest, { supertestWs } from "supertest-graphql";
-import messageQuerys from "../messages/message.querys";
-import interactionQuerys from "../interaction/interaction.query";
 import notificationsQuerys from "./notifications.querys";
-import { map } from "lodash";
 import InteractionFaker from "../../fakers/interaction/interaction.faker";
-import { Interaction } from "@entities/interactions";
-import { IInteractionTypes } from "@entities/interactions/domain/interaction.enums";
+import interactionQuerys from "../interaction/interaction.query";
+import messageQuerys from "../messages/message.querys";
 
 describe("Chat Test", () => {
   it("Should paginate notifications", async () => {

@@ -1,6 +1,6 @@
+import { Types } from "mongoose";
 import { Repository } from "@core/domain";
 import { User } from "@entities/users";
-import { Types } from "mongoose";
 import Interaction from "./interaction.entity";
 import InteractionModel from "./interaction.model";
 

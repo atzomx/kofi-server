@@ -1,9 +1,9 @@
 import "reflect-metadata";
+import { Types } from "mongoose";
 import {
   IVerificationPoses,
   IVerificationStatus,
 } from "@entities/verifications/domain/verification.enums";
-import { Types } from "mongoose";
 import VerificationFaker from "./verification.faker";
 
 const keysRequired = ["media", "userId", "detail", "status", "pose"];

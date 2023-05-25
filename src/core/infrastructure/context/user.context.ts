@@ -1,7 +1,7 @@
+import { AuthenticationError } from "apollo-server-core";
 import { IContext } from "@core/domain/interfaces";
 import AuthUtils from "@core/infrastructure/utils/token.utils";
 import { UserRepository } from "@entities/users";
-import { AuthenticationError } from "apollo-server-core";
 
 const userContext = async (context: IContext) => {
   const { authorization } = context.req.headers;

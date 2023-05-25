@@ -1,6 +1,3 @@
-import { IContext } from "@core/domain/interfaces";
-import { MessageRepository } from "@entities/messages";
-import { UserRepository } from "@entities/users";
 import {
   Args,
   Authorized,
@@ -10,12 +7,15 @@ import {
   Resolver,
   Root,
 } from "type-graphql";
-import ChatController from "../application/chat.controller";
-import Chat from "../domain/chat.entity";
+import { IContext } from "@core/domain/interfaces";
+import { MessageRepository } from "@entities/messages";
+import { UserRepository } from "@entities/users";
 import { ChatPaginationArgs } from "./chat.args";
 import { ChatDocs } from "./chat.docs";
 import { ChatOutput } from "./chat.outputs";
 import { ChatPaginateResponse } from "./chat.response";
+import ChatController from "../application/chat.controller";
+import Chat from "../domain/chat.entity";
 
 @Resolver(ChatOutput)
 class ChatResolver {
