@@ -1,5 +1,5 @@
-import { Repository } from "@core/domain";
 import { Types } from "mongoose";
+import { Repository } from "@core/domain";
 import Chat from "./chat.entity";
 import ChatModel from "./chat.model";
 

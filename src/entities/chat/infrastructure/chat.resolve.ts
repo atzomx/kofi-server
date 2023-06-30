@@ -8,8 +8,6 @@ import {
   Root,
 } from "type-graphql";
 import { IContext } from "@core/domain/interfaces";
-import { MessageRepository } from "@entities/messages";
-import { UserRepository } from "@entities/users";
 import { ChatPaginationArgs } from "./chat.args";
 import { ChatDocs } from "./chat.docs";
 import { ChatOutput } from "./chat.outputs";
@@ -34,28 +32,24 @@ class ChatResolver {
   }
 
   @FieldResolver()
-  async lastMessage(@Root() chat: Chat) {
-    const messageRepository = new MessageRepository();
-    const message = await messageRepository
-      .findOne({ chat: chat._id })
-      .sort({ createdAt: -1 })
-      .lean();
-    return message;
+  lastMessage(@Root() chat: Chat) {
+    return this.controller.lastMessage({ chat: chat._id.toString() });
   }
 
   @FieldResolver()
-  async destinatary(@Root() chat: Chat, @Ctx() context: IContext) {
-    const userRepository = new UserRepository();
-    const current = context.payload.id;
+  destinatary(@Root() chat: Chat, @Ctx() context: IContext) {
+    return this.controller.findDestinatary({
+      participants: chat.participants,
+      user: context.payload.id,
+    });
+  }
 
-    const destinatary = chat.participants.find((participant) =>
-      participant.equals(current),
-    );
-    const user = await userRepository
-      .findById(destinatary)
-      .populate({ path: "information.medias" })
-      .lean();
-    return user;
+  @FieldResolver()
+  unreadedMessages(@Root() chat: Chat, @Ctx() context: IContext) {
+    return this.controller.countUnread({
+      chat: chat._id.toString(),
+      user: context.payload.id,
+    });
   }
 }
 
