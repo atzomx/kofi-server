@@ -21,7 +21,7 @@ describe("User Test", () => {
     const result = await request<{ userById: User }>(app)
       .query(userQuerys.userById)
       .variables({ user: userId })
-      .set("authorization", authorization.MODERATOR);
+      .set("Authorization", authorization.MODERATOR);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("userById");
@@ -36,7 +36,7 @@ describe("User Test", () => {
     const result = await request<{ userById: User }>(app)
       .query(userQuerys.userById)
       .variables({ user: userId })
-      .set("authorization", authorization.MODERATOR);
+      .set("Authorization", authorization.MODERATOR);
 
     expect(result.errors).toBeTruthy();
     const [error] = result.errors;
@@ -46,7 +46,7 @@ describe("User Test", () => {
   it("Should return an user from token", async () => {
     const result = await request<{ userMe: User }>(app)
       .query(userQuerys.userMe)
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("userMe");
@@ -61,7 +61,7 @@ describe("User Test", () => {
     const result = await request<{ userById: User }>(app)
       .query(userQuerys.userById)
       .variables({ user })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeTruthy();
     const [error] = result.errors;
@@ -87,7 +87,7 @@ describe("User Test", () => {
     const result = await request<{ userPaginate: IPagination<User> }>(app)
       .query(userQuerys.paginate)
       .variables(variables)
-      .set("authorization", authorization.MODERATOR);
+      .set("Authorization", authorization.MODERATOR);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("userPaginate");
@@ -116,7 +116,7 @@ describe("User Test", () => {
     const result = await request<{ userPaginate: IPagination<User> }>(app)
       .query(userQuerys.paginate)
       .variables(variables)
-      .set("authorization", authorization.MODERATOR);
+      .set("Authorization", authorization.MODERATOR);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("userPaginate");
@@ -172,7 +172,7 @@ describe("User Test", () => {
     const { errors, data } = await request<{ userUpdate: User }>(app)
       .query(userQuerys.userUpdate)
       .variables({ data: dataToSent, userId })
-      .set("authorization", authorization.MODERATOR);
+      .set("Authorization", authorization.MODERATOR);
 
     expect(errors).toBeUndefined();
     expect(data.userUpdate.name).toBe(dataToSent.name);
@@ -188,7 +188,7 @@ describe("User Test", () => {
     const { errors } = await request<{ userUpdate: User }>(app)
       .query(userQuerys.userUpdate)
       .variables({ data: dataToSent, userId })
-      .set("authorization", authorization.MODERATOR);
+      .set("Authorization", authorization.MODERATOR);
 
     expect(errors).toBeTruthy();
   });
@@ -202,7 +202,7 @@ describe("User Test", () => {
     const { errors } = await request<{ userUpdate: User }>(app)
       .query(userQuerys.userUpdate)
       .variables({ data: dataToSent, userId: `${userId}xxss` })
-      .set("authorization", authorization.MODERATOR);
+      .set("Authorization", authorization.MODERATOR);
 
     expect(errors).toBeTruthy();
   });
@@ -215,7 +215,7 @@ describe("User Test", () => {
     const { errors } = await request<{ userCreate: User }>(app)
       .query(userQuerys.userCreate)
       .variables({ data: newUser })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(errors).toBeTruthy();
     const [error] = errors;
@@ -247,7 +247,7 @@ describe("User Test", () => {
     const result = await request<{ userPaginate: IPagination<User> }>(app)
       .query(userQuerys.paginate)
       .variables(variables)
-      .set("authorization", `Not${authorization}`);
+      .set("Authorization", `Not${authorization}`);
 
     const [error] = result.errors;
     expect(error.message).toBe("Context creation failed: Invalid Credentials");
@@ -264,7 +264,7 @@ describe("User Test", () => {
     const { data, errors } = await request<{ userUpdateMe: User }>(app)
       .query(userQuerys.userUpdateMe)
       .variables({ data: dataToSent })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(errors).toBeUndefined();
     expect(data).not.toBeUndefined();
@@ -311,7 +311,7 @@ describe("User Test", () => {
     const result = await request<{ userQueue: IPagination<User> }>(app)
       .query(userQuerys.userQueue)
       .variables(variables)
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("userQueue");
@@ -335,7 +335,7 @@ describe("User Test", () => {
     const result = await request<{ userMediaCreate: Media[] }>(app)
       .query(userQuerys.userMediaCreate)
       .variables({ data: MediaFaker.get() })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("userMediaCreate");
@@ -352,7 +352,7 @@ describe("User Test", () => {
     const result = await request<{ userMediaDelete: Media[] }>(app)
       .query(userQuerys.userMediaDelete)
       .variables({ id: mediaId.toString() })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("userMediaDelete");
@@ -375,7 +375,7 @@ describe("User Test", () => {
     const result = await request<{ userMediaOrder: Media[] }>(app)
       .query(userQuerys.userMediaOrder)
       .variables({ data: { medias: mediasAltered } })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("userMediaOrder");

@@ -18,7 +18,7 @@ describe("Media Test", () => {
     const result = await request<{ mediaById: Media }>(app)
       .query(mediaQuerys.mediaById)
       .variables({ media: mediaId })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("mediaById");
@@ -34,7 +34,7 @@ describe("Media Test", () => {
     const result = await request<{ mediaById: Media }>(app)
       .query(mediaQuerys.mediaById)
       .variables({ media })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeTruthy();
     const [error] = result.errors;
@@ -59,7 +59,7 @@ describe("Media Test", () => {
     const result = await request<{ mediaPaginate: IPagination<Media> }>(app)
       .query(mediaQuerys.paginate)
       .variables(variables)
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("mediaPaginate");
@@ -88,7 +88,7 @@ describe("Media Test", () => {
     const result = await request<{ mediaPaginate: IPagination<Media> }>(app)
       .query(mediaQuerys.paginate)
       .variables(variables)
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("mediaPaginate");
@@ -140,7 +140,7 @@ describe("Media Test", () => {
     const result = await request<{ mediaDelete: Media }>(app)
       .query(mediaQuerys.mediaDelete)
       .variables({ mediaId })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
   });

@@ -23,7 +23,7 @@ describe("Match Test", () => {
     const result = await request<{ matchById: Match }>(app)
       .query(matchQuerys.matchById)
       .variables({ matchByIdId: matchId })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("matchById");
@@ -39,7 +39,7 @@ describe("Match Test", () => {
     const result = await request<{ matchById: Match }>(app)
       .query(matchQuerys.matchById)
       .variables({ matchByIdId: matchId })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeTruthy();
     const [error] = result.errors;
@@ -59,7 +59,7 @@ describe("Match Test", () => {
         data: dataToSent,
         matchUpdateId: matchExist._id.toString(),
       })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("matchUpdate");
@@ -81,7 +81,7 @@ describe("Match Test", () => {
         data: dataToSent,
         matchUpdateId: matchExistId,
       })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(errors).toBeTruthy();
     const [error] = errors;
@@ -101,7 +101,7 @@ describe("Match Test", () => {
     const result = await request<{ interactionCreate: Interaction }>(app)
       .query(interactionQuerys.interactionCreate)
       .variables({ data: { userTo, type } })
-      .set("authorization", `Token ${userFromToken}`);
+      .set("Authorization", `Token ${userFromToken}`);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("interactionCreate");
@@ -123,7 +123,7 @@ describe("Match Test", () => {
     }>(app)
       .query(matchQuerys.matchPagination)
       .variables(variables)
-      .set("authorization", token);
+      .set("Authorization", token);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("matchPaginate");

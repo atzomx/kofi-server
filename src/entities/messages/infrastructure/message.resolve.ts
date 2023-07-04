@@ -87,12 +87,13 @@ class MessageResolver {
       context: IContext;
       args: { chat: string };
     }) => {
-      const isFromMyChat = `${payload.chat}` === args.chat;
-      const isForMe = `${payload.destinatary}` === context.payload.id;
+      const isFromMyChat = payload.chat.toString() === args.chat;
+      const isForMe = payload.destinatary.toString() === context.payload.id;
       return isFromMyChat && isForMe;
     },
   })
   newMessage(@Root() message: Message, @Arg("chat") _chat: string): Message {
+    this.controller.readMessage({ message: message._id });
     return {
       ...message,
       createdAt: new Date(message.createdAt),

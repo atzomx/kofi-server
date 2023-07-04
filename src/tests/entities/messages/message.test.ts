@@ -26,7 +26,7 @@ describe("Chat Test", () => {
     )
       .query(messageQuerys.paginate)
       .variables(variables)
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("messagePaginate");
@@ -52,7 +52,7 @@ describe("Chat Test", () => {
     )
       .query(messageQuerys.paginate)
       .variables(variables)
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("messagePaginate");
@@ -85,7 +85,7 @@ describe("Chat Test", () => {
     const result = await supertest<{ messageCreate: Message }>(app)
       .query(messageQuerys.create)
       .variables({ data: message })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("messageCreate");
@@ -103,7 +103,7 @@ describe("Chat Test", () => {
     const result = await supertest<{ messageCreate: Message }>(app)
       .query(messageQuerys.create)
       .variables({ data: message })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("messageCreate");
@@ -125,21 +125,19 @@ describe("Chat Test", () => {
     const response = await supertest<{ messageCreate: Message }>(app)
       .query(messageQuerys.create)
       .variables({ data: message })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     const chat = response.data.messageCreate.chat.toString();
 
     const sub = await supertestWs<{ messageNew: Message }>(app)
       .subscribe(messageQuerys.subscription)
       .variables({ chat })
-      .connectionParams({
-        authorization: authorizationRecieber,
-      });
+      .connectionParams({ Authorization: authorizationRecieber });
 
     await supertest<{ messageCreate: Message }>(app)
       .query(messageQuerys.create)
       .variables({ data: message })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     const { data, errors } = await sub.next();
     expect(errors).toBeUndefined();

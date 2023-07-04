@@ -31,7 +31,7 @@ describe("Chat Test", () => {
     }>(app)
       .query(notificationsQuerys.paginate)
       .variables(variables)
-      .set("authorization", authtoken);
+      .set("Authorization", authtoken);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("notificationPaginate");
@@ -59,7 +59,7 @@ describe("Chat Test", () => {
     const result1 = await supertest<{ messageCreate: Message }>(app)
       .query(messageQuerys.create)
       .variables({ data: message })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result1.errors).toBeUndefined();
     expect(result1.data).toHaveProperty("messageCreate");
@@ -67,13 +67,13 @@ describe("Chat Test", () => {
     const sub = await supertestWs<{ notificationNew: Notification }>(app)
       .subscribe(notificationsQuerys.subscription)
       .connectionParams({
-        authorization: authorizationRecieber,
+        Authorization: authorizationRecieber,
       });
 
     const result2 = await supertest<{ messageCreate: Message }>(app)
       .query(messageQuerys.create)
       .variables({ data: message })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result2.errors).toBeUndefined();
     expect(result2.data).toHaveProperty("messageCreate");
@@ -105,13 +105,13 @@ describe("Chat Test", () => {
     const sub = await supertestWs<{ notificationNew: Notification }>(app)
       .subscribe(notificationsQuerys.subscription)
       .connectionParams({
-        authorization: authorizationRecieber,
+        Authorization: authorizationRecieber,
       });
 
     const result = await supertest<{ interactionCreate: Interaction }>(app)
       .query(interactionQuerys.interactionCreate)
       .variables({ data: { userTo, type: IInteractionTypes.like } })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("interactionCreate");
