@@ -2,6 +2,7 @@ import { Types } from "mongoose";
 import { IPagination } from "@core/domain/interfaces";
 import { ChatRepository } from "@entities/chat";
 import { MessageRepository } from "@entities/messages";
+import { ReadMessageUseCase } from "./use-cases";
 import Message from "../domain/message.entity";
 import { IMessageType } from "../domain/message.enums";
 import { MessagePaginationArgs } from "../infrastructure/message.args";
@@ -43,6 +44,12 @@ class MessageController {
       status: IMessageType.sent,
     });
     return created;
+  }
+
+  async readMessage({ message }: { message: Types.ObjectId }) {
+    const readMessageUseCase = new ReadMessageUseCase({ message });
+    const readedMessage = readMessageUseCase.execute();
+    return readedMessage;
   }
 }
 
