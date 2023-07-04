@@ -19,6 +19,7 @@ const paginate = gql`
         destinatary {
           name
         }
+        unreadedMessages
       }
     }
   }
