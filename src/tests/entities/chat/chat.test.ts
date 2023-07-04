@@ -23,7 +23,7 @@ describe("Chat test", () => {
     const result = await request<{ chatPaginate: IPagination<Chat> }>(app)
       .query(chatQuerys.paginate)
       .variables(variables)
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("chatPaginate");
@@ -47,7 +47,7 @@ describe("Chat test", () => {
   it("Should paginate chats without params", async () => {
     const result = await request<{ chatPaginate: IPagination<Chat> }>(app)
       .query(chatQuerys.paginate)
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
 

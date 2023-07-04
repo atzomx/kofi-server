@@ -28,7 +28,7 @@ describe("Verification Test", () => {
     const result = await request<{ verificationById: Verification }>(app)
       .query(verificationQuerys.verificationById)
       .variables({ verificationById: verificationId })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("verificationById");
@@ -45,7 +45,7 @@ describe("Verification Test", () => {
 
     const result = await request<{ verificationMe: Verification }>(app)
       .query(verificationQuerys.verificationMe)
-      .set("authorization", authorization);
+      .set("Authorization", authorization);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("verificationMe");
@@ -60,7 +60,7 @@ describe("Verification Test", () => {
     const result = await request<{ verificationById: Verification }>(app)
       .query(verificationQuerys.verificationById)
       .variables({ verificationById: verification })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeTruthy();
     const [error] = result.errors;
@@ -84,7 +84,7 @@ describe("Verification Test", () => {
     }>(app)
       .query(verificationQuerys.verificationPaginate)
       .variables(variables)
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("verificationPaginate");
@@ -115,7 +115,7 @@ describe("Verification Test", () => {
     }>(app)
       .query(verificationQuerys.verificationPaginate)
       .variables(variables)
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("verificationPaginate");
@@ -161,7 +161,7 @@ describe("Verification Test", () => {
     const result = await request<{ verificationCreate: Verification }>(app)
       .query(verificationQuerys.verificationCreate)
       .variables({ data: newVerification })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("verificationCreate");
@@ -181,7 +181,7 @@ describe("Verification Test", () => {
     const { errors } = await request<{ verificationCreate: Verification }>(app)
       .query(verificationQuerys.verificationCreate)
       .variables({ data: newVerification })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(errors).toBeTruthy();
   });
@@ -199,7 +199,7 @@ describe("Verification Test", () => {
         data: dataToSent,
         verificationUpdateId: verificationExistId,
       })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toHaveProperty("verificationUpdate");
@@ -221,7 +221,7 @@ describe("Verification Test", () => {
         data: dataToSent,
         verificationUpdateId: verificationExistId,
       })
-      .set("authorization", authorization.LOVER);
+      .set("Authorization", authorization.LOVER);
 
     expect(errors).toBeTruthy();
   });
